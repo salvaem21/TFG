@@ -4,11 +4,5 @@
 		<img src="/img/home-alt.png" alt="INICIO" style="width:40px;">
 	</a>
 	
-	<a th:if="${session.usuario==null}" href="/login">LOGIN</a>
 
-	<span class="text-secondary" th:if="${session.usuario!=null}" th:text="|Hola ${session.usuario.nombre} /   |"/>
-	<a th:if="${session.usuario!=null}" href="/logout">LOGOUT</a>
-
-
-	
 </nav>

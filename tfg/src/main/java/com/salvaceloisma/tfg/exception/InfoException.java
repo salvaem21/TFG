@@ -1,4 +1,4 @@
-package org.agaray.spring.pap2024.exception;
+package com.salvaceloisma.tfg.exception;
 
 public class InfoException extends Exception {
     public InfoException() {

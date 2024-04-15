@@ -1,4 +1,4 @@
-package org.agaray.spring.pap2024.exception;
+package com.salvaceloisma.tfg.exception;
 
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;

@@ -1,7 +1,7 @@
-package org.agaray.spring.pap2024.helper;
+package com.salvaceloisma.tfg.helper;
 
-import org.agaray.spring.pap2024.exception.InfoException;
-import org.agaray.spring.pap2024.exception.DangerException;
+import com.salvaceloisma.tfg.exception.DangerException;
+import com.salvaceloisma.tfg.exception.InfoException;
 
 public class PRG {
 

@@ -1,4 +1,4 @@
-package org.agaray.spring.pap2024.controller.web;
+package com.salvaceloisma.tfg.controller.web;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -37,5 +37,5 @@ public class HomeController {
 		return "/_t/frame";
 	}
 
-    
+	
 }
