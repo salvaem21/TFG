@@ -1,0 +1,44 @@
+<div class="container">
+
+    <h1>Nueva persona</h1>
+
+    <form action="/persona/c" method="post">
+
+        <label for="id-dni">DNI</label>
+        <input id="id-dni" type="text" name="dni" autofocus="autofocus" />
+        <br />
+
+        <label for="id-nombre">Nombre</label>
+        <input id="id-nombre" type="text" name="nombre" />
+        <br />
+
+        <label for="idNace">País de nacimiento</label>
+        <select id="idNace" name="id-nace">
+            <option th:each=" pais: ${paises}" th:text="${pais.nombre}" th:value="${pais.id}" />
+        </select>
+
+        <label for="idVive">País residencia</label>
+        <select id="idVive" name="id-vive">
+            <option th:each=" pais: ${paises}" th:text="${pais.nombre}" th:value="${pais.id}" />
+        </select>
+
+        <fieldset>
+            <legend>Aficiones afines</legend>
+            <th:block th:each=" aficion : ${aficiones}">
+                <input th:id="|idGusto-${aficion.id}|" type="checkbox" name="idGusto[]" th:value="${aficion.id}"/>
+                <label th:for="|idGusto-${aficion.id}|" th:text="${aficion.nombre}"></label>
+            </th:block>
+        </fieldset>
+
+        <fieldset>
+            <legend>Aficiones odiadas</legend>
+            <th:block th:each=" aficion : ${aficiones}">
+                <input th:id="|idOdio-${aficion.id}|" type="checkbox" name="idOdio[]" th:value="${aficion.id}"/>
+                <label th:for="|idOdio-${aficion.id}|" th:text="${aficion.nombre}"></label>
+            </th:block>
+        </fieldset>
+
+        <input type="submit" />
+    </form>
+    <button onclick="window.location.href='/'">Cancelar</button>
+</div>

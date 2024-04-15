@@ -1,0 +1,15 @@
+<div class="container">
+  
+    <h1>Editar afición</h1>
+
+    <form action="/aficion/u" method="post">
+        <label for="id-nombre">Nombre</label>
+        <input id="id-nombre" type="text" name="nombre" autofocus="autofocus" th:value="${aficion.nombre}" />
+        <br/>
+
+        <input type="hidden" name="idAficion" th:value="${aficion.id}"/>
+
+        <input type="submit"/>
+    </form>
+    <button onclick="window.location.href='/'">Cancelar</button>
+</div>

@@ -1,0 +1,33 @@
+<div class="container">
+    <button onclick="window.location.href='/persona/c'">Nueva persona</button>
+    <h1>Lista de personas</h1>
+    <table class="table table-striped">
+        <thead>
+            <th>DNI</th>
+            <th>Nombre</th>
+            <th>País de nacimiento</th>
+            <th>País de residencia</th>
+            <th>Gustos</th>
+            <th>Odios</th>
+            <th>Editar</th>
+        </thead>
+
+        <tr th:each="persona : ${personas}">
+            <td th:text="${persona.dni}" />
+            <td th:text="${persona.nombre}" />
+            <td th:text="${persona.nace?.nombre}" />
+            <td th:text="${persona.vive?.nombre}" />
+            <td>
+                <th:block th:each=" gusto : ${persona.gustos}" th:text="|${gusto.nombre} |">
+            </td>
+            <td>
+                <th:block th:each=" odio : ${persona.odios}" th:text="|${odio.nombre} |">
+            </td>
+            <td>
+                <button th:onclick="|window.location.href='/persona/u?id=${persona.id}'|">
+                    <img src="/img/lapiz.png" height="20" width="20">
+                </button>
+            </td>
+        </tr>
+    </table>
+</div>
