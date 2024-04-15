@@ -1,18 +1,35 @@
-<div th:replace="~{_t/head}"></div>
-<div th:replace="~{_t/cabecera}"></div>
 <div class="container">
-    <h1>INICIO DE SESION</h1>
-    <form action="/inicioSesion/verificarSesion" method="post">
-        <label for="id-correo">Correo</label>
-        <input id="id-correo" type="text" name="correo" autofocus="autofocus"/>
-        <br/>
-        <label for="id-contrasenia">Contraseña</label>
-        <input id="id-contrasenia" type="password" name="contrasenia" autofocus="autofocus"/>
-        <br/>
-        <input type="submit"/>
-    </form>
-    <a class="nav-link btn btn-outline-propio1" href="/registrarse" id="registrarseLogin">Registrarse</a>
-    <br>
-    <button onclick="window.location.href='/'">Cancelar</button>
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <h1 class="text-center">INICIO DE SESION</h1>
+            <form action="/inicioSesion/verificarSesion" method="post">
+                <div class="form-group">
+                    <label for="id-correo">Correo</label>
+                    <div class="input-group"> <!-- Agrupa el input de correo y el span -->
+                        <input id="id-correo" type="text" name="correo" class="form-control" />
+                        <div class="input-group-append">
+                            <span class="input-group-text">@educa.madrid.org</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="id-contrasenia">Contraseña</label>
+                    <input id="id-contrasenia" type="password" name="contrasenia" class="form-control"/>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-4">
+                            <input class="btn btn-outline-propio1 btn-block" type="submit" value="Iniciar sesión"/>
+                        </div>
+                        <div class="col-4">
+                            <a class="nav-link btn btn-outline-propio1 btn-block" href="/inicioSesion/registrarse" id="registrarseLogin">Registrarse</a>
+                        </div>
+                        <div class="col-4">
+                            <a class="nav-link btn btn-outline-propio1 btn-block" href="/">Cancelar</a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
-<div th:replace="~{_t/end}"></div>

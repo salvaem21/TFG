@@ -1,16 +1,40 @@
-<div th:replace="~{_t/head}"></div>
-<div th:replace="~{_t/cabecera}"></div>
 <div class="container">
-    <h1>REGISTRARSE</h1>
-    <form action="/inicioSesion/verificarSesion" method="post">
-        <label for="id-correo">Correo</label>
-        <input id="id-correo" type="text" name="correo" autofocus="autofocus"/>
-        <br/>
-        <label for="id-contrasenia">Contraseña</label>
-        <input id="id-contrasenia" type="password" name="contrasenia" autofocus="autofocus"/>
-        <br/>
-        <input type="submit"/>
-    </form>
-    <button onclick="window.location.href='/'">Cancelar</button>
+    <div class="row justify-content-center"> <!-- Centra el contenido del formulario -->
+        <div class="col-md-6"> <!-- Tamaño de columna medio para pantallas medianas -->
+            <h1 class="text-center">REGISTRARSE</h1>
+            <form action="/inicioSesion/registrarse" method="post">
+                <div class="form-group"> <!-- Agrupa los elementos del formulario -->
+                    <label for="id-nombre">Nombre</label>
+                    <input id="id-nombre" type="text" name="nombre" autofocus="autofocus" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label for="id-correo">Correo</label>
+                    <div class="input-group"> <!-- Agrupa el input de correo y el span -->
+                        <input id="id-correo" type="text" name="correo" class="form-control" />
+                        <div class="input-group-append">
+                            <span class="input-group-text">@educa.madrid.org</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="id-contrasenia">Contraseña</label>
+                    <input id="id-contrasenia" type="password" name="contrasenia" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label for="id-fechaNac">Fecha de Nacimiento</label>
+                    <input id="id-fechaNac" type="date" name="fechaNac" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-6">
+                            <input class="btn btn-outline-propio1 btn-block" type="submit" value="Registrarse" />
+                        </div>
+                        <div class="col-6">
+                            <a class="nav-link btn btn-outline-propio1 btn-block" href="/">Cancelar</a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
-<div th:replace="~{_t/end}"></div>

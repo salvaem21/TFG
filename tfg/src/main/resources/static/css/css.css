@@ -1,21 +1,24 @@
-body{
+body {
     background-color: lightgoldenrodyellow;
 }
-#navegacion{
+
+#navegacion {
     background-color: lightcoral;
 }
 
-#inicioSesion{
+#inicioSesion {
     color: white;
 }
-#inicioSesion:hover{
+
+#inicioSesion:hover {
     color: black;
 }
 
-#registrarse{
+#registrarse {
     color: white;
 }
-#registrarse:hover{
+
+#registrarse:hover {
     color: black;
 }
 
@@ -29,4 +32,14 @@ body{
     background-color: lightcoral;
     border-color: lightcoral;
     color: #ffffff;
+}
+
+#correoEduca {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+#correoEduca {
+    color: #666;
+    font-style: italic;
 }
