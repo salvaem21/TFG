@@ -2,7 +2,7 @@
     <a class="navbar-brand" href="/">
         <img src="/img/reyFernando.png" alt="INICIO" style="width:50px;">
     </a>
-    <ul class="navbar-nav ml-auto">
+    <ul class="navbar-nav ml-auto" th:if="${session.usuario==null}">
         <li class="nav-item">
             <a class="nav-link btn btn-outline-light mr-2" href="/inicioSesion/inicioSesion" id="inicioSesion">Iniciar sesión</a>
         </li>
@@ -10,4 +10,6 @@
             <a class="nav-link btn btn-outline-light" href="/inicioSesion/registrarse" id="registrarse">Registrarse</a>
         </li>
     </ul>
+    <span class="text-secondary" th:if="${session.usuario!=null}" th:text="|Hola ${session.usuario.nombre} /   |"/>
+	<a class="nav-link btn btn-outline-light" th:if="${session.usuario!=null}" href="/inicioSesion/logout">LOGOUT</a>
 </nav>

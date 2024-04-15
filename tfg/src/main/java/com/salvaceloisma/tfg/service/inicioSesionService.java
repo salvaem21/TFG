@@ -1,6 +1,6 @@
 package com.salvaceloisma.tfg.service;
 
-import java.util.Date;
+import java.sql.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,7 @@ public class inicioSesionService {
         return inicioSesionRepository.findAll();
     }
 
-    public List<Usuario> findByCorreo(String correo) {
+    public Usuario findByCorreo(String correo) {
         return inicioSesionRepository.findByCorreo(correo);
     }
 
@@ -29,6 +29,18 @@ public class inicioSesionService {
 
     public Usuario findById(Long idUsuario) {
         return inicioSesionRepository.findById(idUsuario).get();
+    }
+
+    public Usuario inicioSesion(String correo, String contrasenia) throws Exception {
+        Usuario usuario = inicioSesionRepository.findByCorreo(correo);
+        if(usuario==null){
+            throw new Exception("El correo "+ correo+ " no existe");
+        }
+        if(!contrasenia.matches(usuario.getContrasenia())){
+            throw new Exception("La contraseña no es correcta");
+        }
+
+        return usuario;
     }
     
 }

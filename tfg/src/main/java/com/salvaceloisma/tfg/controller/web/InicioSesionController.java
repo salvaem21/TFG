@@ -1,8 +1,9 @@
 package com.salvaceloisma.tfg.controller.web;
 
-import java.util.Date;
 
-import org.springframework.format.annotation.DateTimeFormat;
+import java.sql.Date;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,6 +11,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.salvaceloisma.tfg.domain.Usuario;
+import com.salvaceloisma.tfg.exception.DangerException;
 import com.salvaceloisma.tfg.helper.PRG;
 import com.salvaceloisma.tfg.service.inicioSesionService;
 
@@ -19,12 +22,45 @@ import jakarta.servlet.http.HttpSession;
 @Controller
 public class InicioSesionController {
 
+    @Autowired
+    private inicioSesionService inicioSesionService;
+
     @GetMapping("/inicioSesion")
     public String inicioSesion(
             ModelMap m) {
         m.put("view", "inicioSesion/inicioSesion");
         return "_t/frame";
     }
+    @PostMapping("/inicioSesion")
+	public String inicioSesionPost(
+		@RequestParam("correo") String correo,
+		@RequestParam("contrasenia") String contrasenia,
+		HttpSession s,
+		ModelMap m
+	) throws DangerException{
+		try {
+            correo = correo + "@educa.madrid.org";
+			Usuario usuario = inicioSesionService.inicioSesion(correo, contrasenia);
+
+			s.setAttribute("usuario", usuario);
+		} 
+		catch (Exception e) {
+			PRG.error("Usuario o contraseña incorrectos");
+		}
+		
+		m.put("view", "home/home");
+		return "_t/frame";
+	}
+
+	@GetMapping("/logout")
+	public String logout(
+		HttpSession s,
+        ModelMap m
+	){
+		s.setAttribute("usuario", null);
+		s.invalidate();
+        m.put("view", "home/home");
+		return "_t/frame";	}
 
     @GetMapping("/registrarse")
     public String registrarse(
@@ -38,7 +74,7 @@ public class InicioSesionController {
             @RequestParam("nombre") String nombre,
             @RequestParam("correo") String correo,
             @RequestParam("contrasenia") String contrasenia,
-            @RequestParam("fechaNac") @DateTimeFormat(pattern = "yyyy-MM-dd") Date fechaNac, HttpSession s) throws Exception {
+            @RequestParam("fechaNac") Date fechaNac, HttpSession s) throws Exception {
 
         try {
             correo = correo + "@educa.madrid.org";

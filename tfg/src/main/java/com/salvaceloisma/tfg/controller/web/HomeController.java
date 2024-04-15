@@ -3,6 +3,10 @@ package com.salvaceloisma.tfg.controller.web;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import com.salvaceloisma.tfg.exception.DangerException;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -36,6 +40,9 @@ public class HomeController {
 		m.put("view", "/_t/info");
 		return "/_t/frame";
 	}
+
+		
+	
 
 	
 }
