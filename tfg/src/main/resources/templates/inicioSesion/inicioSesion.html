@@ -1,0 +1,18 @@
+<div th:replace="~{_t/head}"></div>
+<div th:replace="~{_t/cabecera}"></div>
+<div class="container">
+    <h1>INICIO DE SESION</h1>
+    <form action="/inicioSesion/verificarSesion" method="post">
+        <label for="id-correo">Correo</label>
+        <input id="id-correo" type="text" name="correo" autofocus="autofocus"/>
+        <br/>
+        <label for="id-contrasenia">Contraseña</label>
+        <input id="id-contrasenia" type="password" name="contrasenia" autofocus="autofocus"/>
+        <br/>
+        <input type="submit"/>
+    </form>
+    <a class="nav-link btn btn-outline-propio1" href="/registrarse" id="registrarseLogin">Registrarse</a>
+    <br>
+    <button onclick="window.location.href='/'">Cancelar</button>
+</div>
+<div th:replace="~{_t/end}"></div>
