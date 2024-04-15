@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Spring Boot App</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="container mt-3">
+
+    <nav class="navbar navbar-expand-sm bg-dark navbar-dark rounded mb-3">
+        <a class="navbar-brand" href="/">
+            <img src="/img/home-alt.png" alt="INICIO" style="width:40px;">
+        </a>
+        <input th:if="${session.usuario==null}" type="button" onclick="window.location.href='/login'" class="btn btn-primary" value="LOGIN"/>
+        <span class="text-secondary" th:if="${session.usuario!=null}" th:text="|Hola ${session.usuario.nombre} /   |"></span>
+        <input th:if="${session.usuario!=null}" type="button" onclick="window.location.href='/logout'" class="btn btn-primary" value="LOGOUT"/>
+    </nav>
+
+    <div class="btn-group" role="group" aria-label="Basic example">
+        <input type="button" onclick="window.location.href='/pais/homePais'" class="btn btn-primary" style="background-color: #3498db;" value="País"/>
+        <input type="button" onclick="window.location.href='/aficion/homeAficion'" class="btn btn-primary" style="background-color: #2ecc71;" value="Afición"/>
+        <input type="button" onclick="window.location.href='/persona/homePersona'" class="btn btn-primary" style="background-color: #e74c3c;" value="Persona"/>
+		<input type="button" onclick="window.location.href='/contador/homeContador'" class="btn btn-primary" style="background-color: #aa3fcb;" value="Contador"/>
+        <input type="button" onclick="window.location.href='/_bean/r'" class="btn btn-primary" style="background-color: #5ac6da;" value="Bean"/>
+        <input type="button" onclick="window.location.href='/departamento/r'" class="btn btn-primary" style="background-color: #87a323;" value="Departamento"/>
+        <input type="button" onclick="window.location.href='/empleado/r'" class="btn btn-primary" style="background-color: #8a0a30;" value="Empleado"/>
+        <input type="button" onclick="window.location.href='/medico/r'" class="btn btn-primary" style="background-color: #d0e60b;" value="Medico"/>
+        <input type="button" onclick="window.location.href='/especialidad/r'" class="btn btn-primary" style="background-color: #2c377c;" value="Especialidad"/>
+        <input type="button" onclick="window.location.href='/paciente/r'" class="btn btn-primary" style="background-color: #1bba30;" value="Paciente"/>
+        <input type="button" onclick="window.location.href='/'" class="btn btn-primary" style="background-color: #f39c12;" value="Home"/>
+        <!-- Agrega más botones según sea necesario -->
+    </div>
+
+    <!-- Contenido adicional de tu aplicación -->
+
+</div>
+
+</body>
+</html>
