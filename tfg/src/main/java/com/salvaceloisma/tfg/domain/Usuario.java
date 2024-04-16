@@ -1,7 +1,7 @@
 package com.salvaceloisma.tfg.domain;
 
 
-import java.util.Date;
+import java.sql.Date;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -29,6 +29,8 @@ public class Usuario {
 
     private Date fechaNac;
 
+    private String rol;
+
     // ==================
 
     public Usuario(String nombre, String correo, String contrasenia, Date fechaNac) {
@@ -36,7 +38,9 @@ public class Usuario {
         this.correo = correo;
         this.contrasenia = contrasenia;
         this.fechaNac = fechaNac;
+        this.rol = "Alumno";
     }
+
 
 
 }
