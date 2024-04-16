@@ -2,8 +2,6 @@ package com.salvaceloisma.tfg.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,17 +12,14 @@ import lombok.NoArgsConstructor;
 public class Empresa {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
     @Column(unique = true)
-    private int idEmpresa; // Corregido el nombre de la variable según la convención de nomenclatura
+    private int idEmpresa; 
     private String nombre;
     private String direccion;
-    private String email; // Corregido el nombre de la variable según la convención de nomenclatura
-    private int numeroTelefonico; // Corregido el nombre de la variable según la convención de nomenclatura
+    private String email; 
+    private int numeroTelefonico; 
 
-    // Constructor
+    
 
     public Empresa(int idEmpresa, String nombre, String direccion, String email, int numeroTelefonico) {
         this.idEmpresa = idEmpresa;
