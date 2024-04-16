@@ -13,7 +13,7 @@ import com.salvaceloisma.tfg.repository.inicioSesionRepository;
 public class inicioSesionService {
     
     @Autowired
-    private inicioSesionRepository inicioSesionRepository;
+    private static inicioSesionRepository inicioSesionRepository;
 
     public List<Usuario> findAll() {
         return inicioSesionRepository.findAll();
@@ -23,10 +23,8 @@ public class inicioSesionService {
         return inicioSesionRepository.findByCorreo(correo);
     }
 
-    public Usuario save(String nombre, String correo, String contrasenia, Date fechaNac, String rol) {
-        Usuario usuario = new Usuario(nombre, correo, contrasenia, fechaNac);
-        usuario.setRol(rol);
-        return inicioSesionRepository.save(usuario);
+    public Usuario save(String nombre, String correo, String contrasenia, Date fechaNac) {
+        return inicioSesionRepository.save(new Usuario(nombre, correo, contrasenia, fechaNac));
     }
 
     public Usuario findById(Long idUsuario) {
