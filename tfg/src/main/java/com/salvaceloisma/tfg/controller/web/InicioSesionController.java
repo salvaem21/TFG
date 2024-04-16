@@ -1,6 +1,5 @@
 package com.salvaceloisma.tfg.controller.web;
 
-
 import java.sql.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,35 +30,33 @@ public class InicioSesionController {
         m.put("view", "inicioSesion/inicioSesion");
         return "_t/frame";
     }
+
     @PostMapping("/inicioSesion")
-	public String inicioSesionPost(
-		@RequestParam("correo") String correo,
-		@RequestParam("contrasenia") String contrasenia,
-		HttpSession s,
-		ModelMap m
-	) throws DangerException{
-		try {
+    public String inicioSesionPost(
+            @RequestParam("correo") String correo,
+            @RequestParam("contrasenia") String contrasenia,
+            HttpSession s,
+            ModelMap m) throws DangerException {
+        try {
             correo = correo + "@educa.madrid.org";
-			Usuario usuario = inicioSesionService.inicioSesion(correo, contrasenia);
+            Usuario usuario = inicioSesionService.inicioSesion(correo, contrasenia);
 
-			s.setAttribute("usuario", usuario);
-		} 
-		catch (Exception e) {
-			PRG.error("Usuario o contraseña incorrectos");
-		}
-		
-		return "redirect:../";
-	}
+            s.setAttribute("usuario", usuario);
+        } catch (Exception e) {
+            PRG.error("Usuario o contraseña incorrectos");
+        }
 
-	@GetMapping("/logout")
-	public String logout(
-		HttpSession s,
-        ModelMap m
-	){
-		s.setAttribute("usuario", null);
-		s.invalidate();
-        m.put("view", "home/home");
-		return "_t/frame";	}
+        return "redirect:../";
+    }
+
+    @GetMapping("/logout")
+    public String logout(
+            HttpSession s,
+            ModelMap m) {
+        s.setAttribute("usuario", null);
+        s.invalidate();
+        return "redirect:../";
+    }
 
     @GetMapping("/crearUsuario")
     public String crearUsuario(
