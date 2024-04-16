@@ -23,7 +23,7 @@ public class EmpresaService {
     }
 
     public Empresa save(String nombre) {
-        return empresaRepository.save(new Empresa(0, nombre, nombre, nombre, 0));
+        return empresaRepository.save(new Empresa(null, nombre, nombre, nombre, 0));
     }
 
     public Empresa findById(Long idEmpresa) {

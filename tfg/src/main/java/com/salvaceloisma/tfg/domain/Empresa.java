@@ -11,9 +11,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Empresa {
 
-    @Id
-    @Column(unique = true)
-    private int idEmpresa; 
+
+
+
+@Id
+@Column(unique = true)
+private Long idEmpresa; 
+
     private String nombre;
     private String direccion;
     private String email; 
@@ -21,7 +25,7 @@ public class Empresa {
 
     
 
-    public Empresa(int idEmpresa, String nombre, String direccion, String email, int numeroTelefonico) {
+    public Empresa(Long idEmpresa, String nombre, String direccion, String email, int numeroTelefonico) {
         this.idEmpresa = idEmpresa;
         this.nombre = nombre;
         this.direccion = direccion;
