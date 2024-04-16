@@ -1,3 +1,5 @@
+package com.salvaceloisma.tfg.domain;
+
 import java.time.LocalDate;
 
 import jakarta.persistence.Column;

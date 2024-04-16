@@ -13,6 +13,7 @@ import com.salvaceloisma.tfg.helper.PRG;
 import com.salvaceloisma.tfg.service.SolicitudService;
 
 import jakarta.servlet.http.HttpSession;
+import java.time.LocalDate; // Importa LocalDate en lugar de LocalDateTime
 
 @RequestMapping("/solicitud")
 @Controller
@@ -22,30 +23,33 @@ public class SolicitudController {
     private SolicitudService solicitudService;
 
     @GetMapping("r")
-    public String r(
-            ModelMap m) {
+    public String r(ModelMap m) {
         m.put("solicitudes", solicitudService.findAll());
         m.put("view", "solicitud/r");
         return "_t/frame";
     }
 
     @GetMapping("c")
-    public String c(
-            ModelMap m,
-            HttpSession s) {
-
+    public String c(ModelMap m) {
         m.put("view", "solicitud/c");
         return "_t/frame";
     }
 
     @PostMapping("c")
     public String cPost(
-            @RequestParam("nombre") String nombre, HttpSession s) throws Exception {
+            @RequestParam("fechaInicio") LocalDate fechaInicio,
+            @RequestParam("fechaFin") LocalDate fechaFin,
+            @RequestParam("horario") String horario,
+            @RequestParam("numeroConvenio") String numeroConvenio,
+            @RequestParam("nombre") String nombre,
+            @RequestParam("estado") boolean estado,
+            @RequestParam("datosAlumno") String datosAlumno,
+            HttpSession s) throws DangerException {
  
         try {
-            solicitudService.save(nombre);
+            solicitudService.save(fechaInicio, fechaFin, horario, numeroConvenio, null, estado, datosAlumno);
         } catch (Exception e) {
-            PRG.error("El solicitud " + nombre + " ya existe", "/solicitud/c");
+            PRG.error("La solicitud " + nombre + " ya existe", "/solicitud/c");
         }
         return "redirect:/solicitud/r";
     }
@@ -62,11 +66,18 @@ public class SolicitudController {
     @PostMapping("u")
     public String updatePost(
             @RequestParam("id") Long idSolicitud,
-            @RequestParam("nombre") String nombre) throws DangerException {
+            @RequestParam("fechaInicio") LocalDate fechaInicio,
+            @RequestParam("fechaFin") LocalDate fechaFin,
+            @RequestParam("horario") String horario,
+            @RequestParam("numeroConvenio") String numeroConvenio,
+            @RequestParam("nombre") String nombre,
+            @RequestParam("estado") boolean estado,
+            @RequestParam("datosAlumno") String datosAlumno,
+            HttpSession s) throws DangerException {
         try {
-            solicitudService.update(idSolicitud, nombre);
+            solicitudService.update(idSolicitud, fechaInicio, fechaFin, horario, numeroConvenio, null, estado, datosAlumno);
         } catch (Exception e) {
-            PRG.error("El solicitud no pudo ser actualizado", "/solicitud/r");
+            PRG.error("La solicitud no pudo ser actualizada", "/solicitud/r");
         }
         return "redirect:/solicitud/r";
     }
@@ -77,7 +88,7 @@ public class SolicitudController {
         try {
             solicitudService.delete(idSolicitud);
         } catch (Exception e) {
-            PRG.error("No se puede borrar el solicitud", "/solicitud/r");
+            PRG.error("No se puede borrar la solicitud", "/solicitud/r");
         }
         return "redirect:/solicitud/r";
     }

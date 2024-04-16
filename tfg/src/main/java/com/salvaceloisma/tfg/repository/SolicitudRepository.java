@@ -9,5 +9,6 @@ import com.salvaceloisma.tfg.domain.Solicitud;
 
 @Repository
 public interface SolicitudRepository extends JpaRepository<Solicitud,Long> {
-    public List<Solicitud> findByNombre(String nombre);
+    public List<Solicitud> findByIdSolicitud(Long idSolicitud);
+
 }
