@@ -48,8 +48,7 @@ public class InicioSesionController {
 			PRG.error("Usuario o contraseña incorrectos");
 		}
 		
-		m.put("view", "home/home");
-		return "_t/frame";
+		return "redirect:../";
 	}
 
 	@GetMapping("/logout")
@@ -62,27 +61,27 @@ public class InicioSesionController {
         m.put("view", "home/home");
 		return "_t/frame";	}
 
-    @GetMapping("/registrarse")
-    public String registrarse(
+    @GetMapping("/crearUsuario")
+    public String crearUsuario(
             ModelMap m) {
-        m.put("view", "inicioSesion/registrarse");
+        m.put("view", "inicioSesion/crearUsuario");
         return "_t/frame";
     }
 
-    @PostMapping("/registrarse")
-    public String registrarsePost(
+    @PostMapping("/crearUsuario")
+    public String crearUsuarioPost(
             @RequestParam("nombre") String nombre,
             @RequestParam("correo") String correo,
             @RequestParam("contrasenia") String contrasenia,
-            @RequestParam("fechaNac") Date fechaNac, HttpSession s) throws Exception {
+            @RequestParam("fechaNac") Date fechaNac,
+            @RequestParam("rol") String rol, HttpSession s) throws Exception {
 
         try {
             correo = correo + "@educa.madrid.org";
-            inicioSesionService.save(nombre, correo, contrasenia, fechaNac);
+            inicioSesionService.save(nombre, correo, contrasenia, fechaNac, rol);
         } catch (Exception e) {
-            PRG.error("El usuario con el correo" + correo + " ya existe", "/inicioSesion/registrarse");
+            PRG.error("El usuario con el correo" + correo + " ya existe", "/inicioSesion/crearUsuario");
         }
         return "redirect:../";
     }
-
 }

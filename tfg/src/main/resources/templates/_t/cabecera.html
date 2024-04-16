@@ -4,12 +4,16 @@
     </a>
     <ul class="navbar-nav ml-auto" th:if="${session.usuario==null}">
         <li class="nav-item">
-            <a class="nav-link btn btn-outline-light mr-2" href="/inicioSesion/inicioSesion" id="inicioSesion">Iniciar sesión</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link btn btn-outline-light" href="/inicioSesion/registrarse" id="registrarse">Registrarse</a>
+            <a class="nav-link btn btn-outline-light" href="/inicioSesion/inicioSesion" id="inicioSesion">Iniciar sesión</a>
         </li>
     </ul>
-    <span class="text-secondary" th:if="${session.usuario!=null}" th:text="|Hola ${session.usuario.nombre} /   |"/>
-	<a class="nav-link btn btn-outline-light" th:if="${session.usuario!=null}" href="/inicioSesion/logout">LOGOUT</a>
+    <ul class="navbar-nav ml-auto" th:if="${session.usuario!=null}">
+        <li class="nav-item" th:if="${session.usuario.rol == 'Admin' || session.usuario.rol == 'Director'}">
+            <a class="nav-link btn btn-outline-light mr-2" th:if="${session.usuario!=null}" href="/inicioSesion/crearUsuario" id="registrarse">REGISTRAR USUARIO</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link btn btn-outline-light" href="/inicioSesion/logout" id="registrarse">LOGOUT</a>
+            <span class="text-light " th:text="|Hola ${session.usuario.nombre} / ${session.usuario.rol} |">
+        </li>
+    </ul>
 </nav>
