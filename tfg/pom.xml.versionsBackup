@@ -43,9 +43,14 @@
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<version>1.18.32</version>
+			<version>1.18.24</version>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+    <groupId>org.apache.poi</groupId>
+    <artifactId>poi</artifactId>
+    <version>5.2.5</version> <!-- O la última versión disponible -->
+</dependency>
 
 
 	</dependencies>
