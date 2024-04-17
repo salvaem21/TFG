@@ -1,6 +1,6 @@
 package com.salvaceloisma.tfg.service;
 
-import java.util.Date;
+import java.sql.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,16 +19,39 @@ public class inicioSesionService {
         return inicioSesionRepository.findAll();
     }
 
-    public List<Usuario> findByCorreo(String correo) {
+    public Usuario findByCorreo(String correo) {
         return inicioSesionRepository.findByCorreo(correo);
     }
 
-    public Usuario save(String nombre, String correo, String contrasenia, Date fechaNac) {
-        return inicioSesionRepository.save(new Usuario(nombre, correo, contrasenia, fechaNac));
+    public Usuario save(String nombre, String correo, String contrasenia, Date fechaNac, String rol) {
+        Usuario usuario = new Usuario(nombre, correo, contrasenia, fechaNac);
+        usuario.setRol(rol);
+        return inicioSesionRepository.save(usuario);
     }
 
     public Usuario findById(Long idUsuario) {
         return inicioSesionRepository.findById(idUsuario).get();
     }
+
+    public Usuario inicioSesion(String correo, String contrasenia) throws Exception {
+        Usuario usuario = inicioSesionRepository.findByCorreo(correo);
+        if(usuario==null){
+            throw new Exception("El correo "+ correo+ " no existe");
+        }
+        if(!contrasenia.matches(usuario.getContrasenia())){
+            throw new Exception("La contraseña no es correcta");
+        }
+
+        return usuario;
+    }
     
+    public Usuario cambiarContrasenia(Usuario usuario,String contraseniaActual, String contraseniaNueva) throws Exception {
+        if(contraseniaActual.equals(usuario.getContrasenia())){
+            usuario.setContrasenia(contraseniaNueva);
+            return inicioSesionRepository.save(usuario);
+        }
+        else{
+            throw new Exception("La contraseña actual no es correcta");
+        }
+    }
 }
