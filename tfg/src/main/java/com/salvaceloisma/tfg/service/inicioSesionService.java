@@ -1,6 +1,5 @@
 package com.salvaceloisma.tfg.service;
 
-import java.sql.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +22,8 @@ public class inicioSesionService {
         return inicioSesionRepository.findByCorreo(correo);
     }
 
-    public Usuario save(String nombre, String correo, String contrasenia, Date fechaNac, String rol) {
-        Usuario usuario = new Usuario(nombre, correo, contrasenia, fechaNac);
+    public Usuario save(String nombre, String correo, String contrasenia, String dni, String rol) {
+        Usuario usuario = new Usuario(nombre, correo, contrasenia, dni);
         usuario.setRol(rol);
         return inicioSesionRepository.save(usuario);
     }

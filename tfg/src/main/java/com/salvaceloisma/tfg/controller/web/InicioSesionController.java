@@ -1,7 +1,5 @@
 package com.salvaceloisma.tfg.controller.web;
 
-import java.sql.Date;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -70,14 +68,14 @@ public class InicioSesionController {
             @RequestParam("nombre") String nombre,
             @RequestParam("correo") String correo,
             @RequestParam("contrasenia") String contrasenia,
-            @RequestParam("fechaNac") Date fechaNac,
+            @RequestParam("dni") String dni,
             @RequestParam("rol") String rol, HttpSession s) throws Exception {
 
         try {
             correo = correo + "@educa.madrid.org";
-            inicioSesionService.save(nombre, correo, contrasenia, fechaNac, rol);
+            inicioSesionService.save(nombre, correo, contrasenia, dni, rol);
         } catch (Exception e) {
-            PRG.error("El usuario con el correo" + correo + " ya existe", "/inicioSesion/crearUsuario");
+            PRG.error("El usuario ya existe", "/inicioSesion/crearUsuario");
         }
         return "redirect:../";
     }
