@@ -31,12 +31,11 @@ public class Usuario {
 
     // ==================
 
-    public Usuario(String nombre, String correo, String contrasenia, String dni) {
+    public Usuario(String nombre, String correo, String contrasenia, String dni, String rol) {
         this.nombre = nombre;
         this.correo = correo;
         this.contrasenia = contrasenia;
         this.dni = dni;
-        this.rol = "Alumno";
     }
 
 

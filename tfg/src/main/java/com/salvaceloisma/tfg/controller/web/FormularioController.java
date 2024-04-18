@@ -20,6 +20,11 @@ import java.util.UUID;
 @RequestMapping("/crearDocumento")
 @Controller
 public class FormularioController {
+    @GetMapping("/enviarDocumento")
+    public String enviarDocumento(ModelMap m) {
+        m.put("view", "documento/enviarDocumento");
+        return "_t/frame";
+    }
 
     @GetMapping("/crearDocumento")
     public String crearDocumento(ModelMap m) {

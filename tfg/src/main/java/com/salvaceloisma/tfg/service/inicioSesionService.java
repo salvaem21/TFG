@@ -23,8 +23,7 @@ public class inicioSesionService {
     }
 
     public Usuario save(String nombre, String correo, String contrasenia, String dni, String rol) {
-        Usuario usuario = new Usuario(nombre, correo, contrasenia, dni);
-        usuario.setRol(rol);
+        Usuario usuario = new Usuario(nombre, correo, contrasenia, dni, rol);
         return inicioSesionRepository.save(usuario);
     }
 

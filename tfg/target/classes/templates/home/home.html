@@ -2,6 +2,7 @@
     <h1>DOCUMENTOS FCT'S</h1>
 
     <div class="row justify-content-center">
-        <a th:if="${session.usuario != null and session.usuario.rol == 'Profesor'}" class="btn btn-outline-propio1 mb-2 col-4" href="/crearDocumento/crearDocumento" id="crearDocumento">Crear Documento FCT's Alumnos</a>
+        <a th:if="${session.usuario != null and session.usuario.rol == 'Profesor'}" class="btn btn-outline-propio1 mb-2 col-4 mr-2" href="/crearDocumento/crearDocumento" id="crearDocumento">Crear Documento FCT's Alumnos</a>
+        <a th:if="${session.usuario != null and session.usuario.rol == 'Profesor'}" class="btn btn-outline-propio1 mb-2 col-4" href="/crearDocumento/enviarDocumento" id="crearDocumento">Enviar Documento A Jefatura A Revision</a>
     </div>
 </div>

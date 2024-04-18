@@ -1,0 +1,34 @@
+<style>
+
+    input[type="file"]{
+        background-color: lightcoral;
+        color: white;
+    }
+
+    input[type="file"]:active{
+        background-color: lightcoral;
+        color: white;
+    }
+    </style>
+<div class="container text-center">
+    <h1>ENVIAR DOCUMENTO A JEFATURA PARA REVISION</h1>
+    <form action="/upload" method="post" enctype="multipart/form-data">
+        <div class="input-group">
+            <input type="file" class="form-control" id="pdfFile" name="pdfFile" accept=".pdf" onchange="checkPDF()">
+            <button class="btn btn-primary" type="submit" id="uploadBtn" disabled>Subir</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    function checkPDF() {
+        const fileInput = document.getElementById('pdfFile');
+        const uploadBtn = document.getElementById('uploadBtn');
+
+        if (fileInput.files.length > 0) {
+            uploadBtn.disabled = false;
+        } else {
+            uploadBtn.disabled = true;
+        }
+    }
+</script>
