@@ -23,6 +23,9 @@ public class SolicitudService {
     public List<Solicitud> findByISolicitudes(String idSolicitud) {
         return solicitudRepository.findByIdSolicitud(idSolicitud);
     }
+    public List<Solicitud> findByNumeroConvenio(Integer numeroConvenio) {
+        return solicitudRepository.findByNumeroConvenio(numeroConvenio);
+    }
 
     public Solicitud save(Integer numeroConvenio, Usuario usuario, EstadoSolicitud estado) {
         Solicitud solicitud = new Solicitud(numeroConvenio, usuario, estado);
