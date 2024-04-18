@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import com.salvaceloisma.tfg.domain.Usuario;
 
 @Repository
-public interface inicioSesionRepository extends JpaRepository<Usuario,Long> {
+public interface InicioSesionRepository extends JpaRepository<Usuario,Long> {
     public Usuario findByCorreo(String correo);
 }
