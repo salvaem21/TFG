@@ -45,4 +45,13 @@ public class inicioSesionService {
         return usuario;
     }
     
+    public Usuario cambiarContrasenia(Usuario usuario,String contraseniaActual, String contraseniaNueva) throws Exception {
+        if(contraseniaActual.equals(usuario.getContrasenia())){
+            usuario.setContrasenia(contraseniaNueva);
+            return inicioSesionRepository.save(usuario);
+        }
+        else{
+            throw new Exception("La contraseña actual no es correcta");
+        }
+    }
 }

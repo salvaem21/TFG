@@ -81,4 +81,30 @@ public class InicioSesionController {
         }
         return "redirect:../";
     }
+
+    @GetMapping("/cambiarContrasenia")
+    public String cambiarContrasenia(
+            ModelMap m) {
+        m.put("view", "inicioSesion/cambiarContrasenia");
+        return "_t/frame";
+    }
+
+    @PostMapping("/cambiarContrasenia")
+    public String cambiarContrasenia(
+            @RequestParam("contraseniaActual") String contraseniaAntigua,
+            @RequestParam("contraseniaNueva") String contraseniaNueva,
+            HttpSession session,
+            ModelMap modelMap) throws DangerException {
+
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+
+        try {
+            inicioSesionService.cambiarContrasenia(usuario, contraseniaAntigua, contraseniaNueva);
+
+        } catch (Exception e) {
+            PRG.error("La contraseña no es valida", "/inicioSesion/cambiarContrasenia");
+        }
+
+        return "redirect:../";
+    }
 }
