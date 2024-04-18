@@ -8,12 +8,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.salvaceloisma.tfg.domain.Usuario;
+import com.salvaceloisma.tfg.enumerados.EstadoSolicitud;
 import com.salvaceloisma.tfg.exception.DangerException;
 import com.salvaceloisma.tfg.helper.PRG;
 import com.salvaceloisma.tfg.service.SolicitudService;
 
 import jakarta.servlet.http.HttpSession;
-import java.time.LocalDate; // Importa LocalDate en lugar de LocalDateTime
 
 @RequestMapping("/solicitud")
 @Controller
@@ -37,19 +38,15 @@ public class SolicitudController {
 
     @PostMapping("c")
     public String cPost(
-            @RequestParam("fechaInicio") LocalDate fechaInicio,
-            @RequestParam("fechaFin") LocalDate fechaFin,
-            @RequestParam("horario") String horario,
-            @RequestParam("numeroConvenio") String numeroConvenio,
-            @RequestParam("nombre") String nombre,
-            @RequestParam("estado") boolean estado,
-            @RequestParam("datosAlumno") String datosAlumno,
+            @RequestParam("numeroConvenio") Integer numeroConvenio,
+            @RequestParam("usuario") Usuario nombreUsuario,
+            @RequestParam("estado") EstadoSolicitud estado,
             HttpSession s) throws DangerException {
  
         try {
-            solicitudService.save(fechaInicio, fechaFin, horario, numeroConvenio, null, estado, datosAlumno);
+            solicitudService.save(numeroConvenio, nombreUsuario, estado);
         } catch (Exception e) {
-            PRG.error("La solicitud " + nombre + " ya existe", "/solicitud/c");
+            PRG.error("La solicitud " + nombreUsuario + " ya existe", "/solicitud/c");
         }
         return "redirect:/solicitud/r";
     }
@@ -65,17 +62,13 @@ public class SolicitudController {
 
     @PostMapping("u")
     public String updatePost(
-            @RequestParam("id") Long idSolicitud,
-            @RequestParam("fechaInicio") LocalDate fechaInicio,
-            @RequestParam("fechaFin") LocalDate fechaFin,
-            @RequestParam("horario") String horario,
-            @RequestParam("numeroConvenio") String numeroConvenio,
-            @RequestParam("nombre") String nombre,
-            @RequestParam("estado") boolean estado,
-            @RequestParam("datosAlumno") String datosAlumno,
+            @RequestParam("id_solicitud") Long idSolicitud,
+            @RequestParam("numeroConvenio") Integer numeroConvenio,
+            @RequestParam("usuario") Usuario nombre,
+            @RequestParam("estado") EstadoSolicitud estado,
             HttpSession s) throws DangerException {
         try {
-            solicitudService.update(idSolicitud, fechaInicio, fechaFin, horario, numeroConvenio, null, estado, datosAlumno);
+            solicitudService.update(idSolicitud, numeroConvenio, nombre, estado);
         } catch (Exception e) {
             PRG.error("La solicitud no pudo ser actualizada", "/solicitud/r");
         }

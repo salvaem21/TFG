@@ -1,12 +1,15 @@
 package com.salvaceloisma.tfg.domain;
 
-import java.time.LocalDate;
+
+import java.time.LocalDateTime;
+
+import com.salvaceloisma.tfg.enumerados.EstadoSolicitud;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.ForeignKey;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -19,37 +22,23 @@ import lombok.NoArgsConstructor;
 public class Solicitud {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_solicitud")
-    private Long idSolicitud;
-
-    @Column(name = "fecha_inicio")
-    private LocalDate fechaInicio; 
-
-    @Column(name = "fecha_fin")
-    private LocalDate fechaFin; 
-
-    private String horario;
+    private String idSolicitud;
 
     @Column(name = "numero_convenio")
-    private String numeroConvenio;
+    private Integer numeroConvenio;
 
     @ManyToOne
     @JoinColumn(name = "id_usuario", referencedColumnName = "id", foreignKey = @ForeignKey(name = "FK_solicitud_usuario"))
     private Usuario usuario;
 
-    private boolean estado;
-
-    @Column(name = "datos_alumno")
-    private String datosAlumno;
+    @Enumerated(EnumType.STRING)
+    private EstadoSolicitud estado;
     
-    public Solicitud(LocalDate fechaInicio, LocalDate fechaFin, String horario, String numeroConvenio, Usuario usuario, boolean estado, String datosAlumno) {
-        this.fechaInicio = fechaInicio;
-        this.fechaFin = fechaFin;
-        this.horario = horario;
+    public Solicitud(Integer numeroConvenio, Usuario usuario, EstadoSolicitud estado) {
+        this.idSolicitud = LocalDateTime.now().toString().replaceAll("[^0-9]", "");
         this.numeroConvenio = numeroConvenio;
         this.usuario = usuario;
         this.estado = estado;
-        this.datosAlumno = datosAlumno;
     }
 }

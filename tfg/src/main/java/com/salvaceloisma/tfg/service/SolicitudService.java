@@ -1,6 +1,5 @@
 package com.salvaceloisma.tfg.service;
 
-import java.time.LocalDate; 
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.salvaceloisma.tfg.domain.Solicitud;
 import com.salvaceloisma.tfg.domain.Usuario;
+import com.salvaceloisma.tfg.enumerados.EstadoSolicitud;
 import com.salvaceloisma.tfg.repository.SolicitudRepository;
 
 @Service
@@ -20,13 +20,12 @@ public class SolicitudService {
         return solicitudRepository.findAll();
     }
 
-    public List<Solicitud> findByISolicitudes(Long idSolicitud) {
+    public List<Solicitud> findByISolicitudes(String idSolicitud) {
         return solicitudRepository.findByIdSolicitud(idSolicitud);
     }
 
-    public Solicitud save(LocalDate fechaInicio, LocalDate fechaFin, String horario, String numeroConvenio, Usuario usuario, boolean estado, String datosAlumno) {
-        // Crear una nueva instancia de Solicitud con los parámetros proporcionados
-        Solicitud solicitud = new Solicitud(fechaInicio, fechaFin, horario, numeroConvenio, usuario, estado, datosAlumno);
+    public Solicitud save(Integer numeroConvenio, Usuario usuario, EstadoSolicitud estado) {
+        Solicitud solicitud = new Solicitud(numeroConvenio, usuario, estado);
         return solicitudRepository.save(solicitud);
     }
 
@@ -34,20 +33,18 @@ public class SolicitudService {
         return solicitudRepository.findById(idSolicitud).orElse(null); // Utiliza el método orElse(null) para manejar el caso de que no se encuentre ninguna solicitud con el ID especificado
     }
     
-    public void update(Long idSolicitud, LocalDate fechaInicio, LocalDate fechaFin, String horario, String numeroConvenio, Usuario usuario, boolean estado, String datosAlumno) {
+    public void update(Long idSolicitud, Integer numeroConvenio, Usuario usuario, EstadoSolicitud estado) {
         // Obtener la solicitud existente por su ID
         Solicitud solicitud = solicitudRepository.findById(idSolicitud).orElse(null);
         if (solicitud != null) {
             // Actualizar los atributos de la solicitud con los valores proporcionados
-            solicitud.setFechaInicio(fechaInicio);
-            solicitud.setFechaFin(fechaFin);
-            solicitud.setHorario(horario);
             solicitud.setNumeroConvenio(numeroConvenio);
             solicitud.setUsuario(usuario);
-            solicitud.setEstado(estado);
-            solicitud.setDatosAlumno(datosAlumno);
             // Guardar la solicitud actualizada en la base de datos
             solicitudRepository.save(solicitud);
+        } else {
+            // Manejar el caso de que la solicitud no se encuentre
+            throw new RuntimeException("Solicitud no encontrada con el ID: " + idSolicitud);
         }
     }
 
