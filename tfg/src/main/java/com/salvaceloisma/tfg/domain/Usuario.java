@@ -1,7 +1,5 @@
 package com.salvaceloisma.tfg.domain;
 
-
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -25,7 +23,8 @@ public class Usuario {
     private String correo;
 
     private String contrasenia;
-
+    
+    @Column(unique = true)
     private String dni;
 
     private String rol;
@@ -37,7 +36,7 @@ public class Usuario {
         this.correo = correo;
         this.contrasenia = contrasenia;
         this.dni = dni;
-        this.rol = "Profesor";
+        this.rol = "Alumno";
     }
 
 
