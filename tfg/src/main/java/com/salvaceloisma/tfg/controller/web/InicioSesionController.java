@@ -9,10 +9,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.salvaceloisma.tfg.domain.Usuario;
-import com.salvaceloisma.tfg.enumerados.RolUsuario;
 import com.salvaceloisma.tfg.exception.DangerException;
 import com.salvaceloisma.tfg.helper.PRG;
-import com.salvaceloisma.tfg.service.InicioSesionService;
+import com.salvaceloisma.tfg.service.inicioSesionService;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -21,7 +20,7 @@ import jakarta.servlet.http.HttpSession;
 public class InicioSesionController {
 
     @Autowired
-    private InicioSesionService inicioSesionService;
+    private inicioSesionService inicioSesionService;
 
     @GetMapping("/inicioSesion")
     public String inicioSesion(
@@ -72,7 +71,7 @@ public class InicioSesionController {
             @RequestParam("correo") String correo,
             @RequestParam("contrasenia") String contrasenia,
             @RequestParam("dni") String dni,
-            @RequestParam("rol") RolUsuario rol, HttpSession s) throws Exception {
+            @RequestParam("rol") String rol, HttpSession s) throws Exception {
 
         try {
             correo = correo + "@educa.madrid.org";

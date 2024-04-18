@@ -1,15 +1,15 @@
 <div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
+    <div class="row justify-content-center"> <!-- Centra el contenido del formulario -->
+        <div class="col-md-6"> <!-- Tamaño de columna medio para pantallas medianas -->
             <h1 class="text-center">CREAR USUARIO</h1>
             <form action="/inicioSesion/crearUsuario" method="post">
-                <div class="form-group">
+                <div class="form-group"> <!-- Agrupa los elementos del formulario -->
                     <label for="id-nombre">Nombre</label>
                     <input id="id-nombre" type="text" name="nombre" autofocus="autofocus" class="form-control" />
                 </div>
                 <div class="form-group">
                     <label for="id-correo">Correo</label>
-                    <div class="input-group">
+                    <div class="input-group"> <!-- Agrupa el input de correo y el span -->
                         <input id="id-correo" type="text" name="correo" class="form-control" />
                         <div class="input-group-append">
                             <span class="input-group-text">@educa.madrid.org</span>
@@ -25,11 +25,12 @@
                     <input id="id-fechaNac" type="date" name="fechaNac" class="form-control" />
                 </div>
                 <div class="form-group">
-                    <select name="rol" class="form-control">
-                        <option value="PROFESOR">Profesor</option>
-                        <option value="JEFE">Jefatura</option>
-                        <option value="DIRECTOR">Director</option>
-                        <option value="ADMIN">Admin</option>
+                    <select name="rol">
+                        <option value="Alumno">Alumno</option>
+                        <option value="Profesor">Profesor</option>
+                        <option value="Jefatura">Jefatura</option>
+                        <option value="Director">Director</option>
+                        <option value="Admin">Admin</option>
                     </select>
                 </div>
                 <div class="form-group">
