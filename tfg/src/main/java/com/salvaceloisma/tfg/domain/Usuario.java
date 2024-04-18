@@ -1,6 +1,6 @@
 package com.salvaceloisma.tfg.domain;
 
-
+import com.salvaceloisma.tfg.enumerados.RolUsuario;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -28,18 +28,15 @@ public class Usuario {
 
     private String dni;
 
-    private String rol;
+    private RolUsuario rol;
 
     // ==================
 
-    public Usuario(String nombre, String correo, String contrasenia, String dni) {
+    public Usuario(String nombre, String correo, String contrasenia, String dni, RolUsuario rol) {
         this.nombre = nombre;
         this.correo = correo;
         this.contrasenia = contrasenia;
         this.dni = dni;
-        this.rol = "Profesor";
+        this.rol = rol;
     }
-
-
-
 }
