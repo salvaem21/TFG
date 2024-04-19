@@ -4,8 +4,6 @@ import com.salvaceloisma.tfg.enumerados.RolUsuario;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -29,8 +27,7 @@ public class Usuario {
     private String contrasenia;
 
     private String dni;
-    
-    @Enumerated(EnumType.STRING)
+
     private RolUsuario rol;
 
     // ==================
