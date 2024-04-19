@@ -13,14 +13,19 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.salvaceloisma.tfg.exception.DangerException;
 import com.salvaceloisma.tfg.exception.InfoException;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalTime;
 import java.util.UUID;
 
+
 @RequestMapping("/crearDocumento")
 @Controller
 public class FormularioController {
+
+    
     @GetMapping("/enviarDocumento")
     public String enviarDocumento(ModelMap m) {
         m.put("view", "documento/enviarDocumento");
@@ -34,7 +39,7 @@ public class FormularioController {
     }
 
     @PostMapping("/crearDocumento")
-    public String crearDocumento(HttpServletResponse response, @RequestParam String numeroConvenio,@RequestParam String nombreEmpresa,@RequestParam String tutorEmpresa,
+    public String crearDocumento(HttpServletResponse response, HttpSession session, @RequestParam String numeroConvenio,@RequestParam String nombreEmpresa,@RequestParam String tutorEmpresa,
     @RequestParam String cifEmpresa, @RequestParam String direccionPracticas, @RequestParam String localidadPracticas, @RequestParam String codigoPostalPracticas, 
     @RequestParam String apellidosAlumno, @RequestParam String nombreAlumno, @RequestParam String nifAlumno, @RequestParam String cicloFormativoAlumno, 
     @RequestParam String tutorAlumno, @RequestParam String nifTutorAlumno, @RequestParam String fechaDeNacimientoAlumno, @RequestParam String horasTotales, 
@@ -94,7 +99,7 @@ public class FormularioController {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
+           
             response.setContentType("application/pdf");
             response.setHeader("Content-Disposition", "attachment; filename=" + fileName);
 

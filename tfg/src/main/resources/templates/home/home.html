@@ -9,7 +9,6 @@
         <a th:if="${session.usuario != null and session.usuario.rol == 'Profesor'}" class="btn btn-outline-propio1 mb-2 col-4 mr-2" href="/crearDocumento/enviarDireccion" id="crearDocumento">Documentos Pendientes De Enviar A Direccion</a>
         <a th:if="${session.usuario != null and session.usuario.rol == 'Profesor'}" class="btn btn-outline-propio1 mb-2 col-4" href="/crearDocumento/notificarEmpresa" id="crearDocumento">Documentos Pendientes De Notificar A Empresa</a>
         
-        
         <a th:if="${session.usuario != null and session.usuario.rol == 'Jefatura'}" class="btn btn-outline-propio1 mb-2 col-4 mr-2" href="/crearDocumento/revisarDocumento" id="crearDocumento">Documentos Pendientes De Revisar Por Jefatura</a>
         <a th:if="${session.usuario != null and session.usuario.rol == 'Jefatura'}" class="btn btn-outline-propio1 mb-2 col-4 mr-2" href="/crearDocumento/firmarDocumentoJefatura" id="crearDocumento">Documentos Pendientes De Firmar Por Jefatura</a>
         
