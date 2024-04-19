@@ -6,13 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.salvaceloisma.tfg.domain.Usuario;
-import com.salvaceloisma.tfg.repository.inicioSesionRepository;
+import com.salvaceloisma.tfg.repository.InicioSesionRepository;
 
 @Service
-public class inicioSesionService {
+public class InicioSesionService {
     
     @Autowired
-    private inicioSesionRepository inicioSesionRepository;
+    private InicioSesionRepository inicioSesionRepository;
 
     public List<Usuario> findAll() {
         return inicioSesionRepository.findAll();
