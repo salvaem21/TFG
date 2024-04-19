@@ -2,6 +2,13 @@
     <h1>DOCUMENTOS FCT'S</h1>
 
     <div class="row justify-content-center">
+        <a th:if="${session.usuario != null and session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).PROFESOR}" class="btn btn-outline-propio1 mb-2 col-4" href="/crearDocumento/crearDocumento" id="crearDocumento">Crear Documento FCT's Alumnos</a>
+    </div>
+</div>
+<!-- <div class="container text-center">
+    <h1>DOCUMENTOS FCT'S</h1>
+
+    <div class="row justify-content-center">
         <a th:if="${session.usuario != null and session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).PROFESOR}" class="btn btn-outline-propio1 mb-2 col-4 mr-2" href="/crearDocumento/crearDocumento" id="crearDocumento">Crear Documento FCT's Alumnos</a>
         <a th:if="${session.usuario != null and session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).PROFESOR}" class="btn btn-outline-propio1 mb-2 col-4" href="/crearDocumento/enviarDocumento" id="crearDocumento">Enviar Documento A Jefatura A Revision</a>
         <a th:if="${session.usuario != null and session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).PROFESOR}" class="btn btn-outline-propio1 mb-2 col-4 mr-2" href="/crearDocumento/corregirDocumento" id="crearDocumento">Documentos Pendientes De Corregir Por Profesor</a>
@@ -18,4 +25,4 @@
         <a th:if="${session.usuario != null and session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).DIRECTOR}" class="btn btn-outline-propio1 mb-2 col-4 mr-2" href="/crearDocumento/firmarDocumentoDireccion" id="crearDocumento">Documentos Pendientes De Firmar Por Direccion</a>
 
     </div>
-</div>
+</div> -->
