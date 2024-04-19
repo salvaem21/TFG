@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
 import com.salvaceloisma.tfg.exception.DangerException;
 import com.salvaceloisma.tfg.exception.InfoException;
 import jakarta.servlet.http.HttpServletResponse;
@@ -43,18 +44,13 @@ public class FormularioController {
     @RequestParam LocalTime martesInicio2, @RequestParam LocalTime juevesInicio2, @RequestParam LocalTime viernesInicio2, @RequestParam LocalTime lunesFin2, @RequestParam LocalTime martesFin2, 
     @RequestParam LocalTime miercolesFin2, @RequestParam LocalTime juevesFin2, @RequestParam LocalTime viernesFin2, @RequestParam String horasDia) throws DangerException, InfoException {
         try {
-            // Rellenar los campos del formulario
-            // ...
 
-            // Generate a unique file name
             String fileName = UUID.randomUUID().toString() + ".pdf";
 
-            // Save the filled PDF document to a file
             try (PDDocument documento = PDDocument.load(new File("PDF/PlantillaPDF.pdf"))) {
                 PDDocumentCatalog docCatalog = documento.getDocumentCatalog();
                 PDAcroForm acroForm = docCatalog.getAcroForm();
 
-                // Rellenar los campos del formulario
                 acroForm.getField("NumeroConvenio").setValue(numeroConvenio);
                 acroForm.getField("NombreEmpresa").setValue(nombreEmpresa);
                 acroForm.getField("TutorEmpresa").setValue(tutorEmpresa);
@@ -94,17 +90,14 @@ public class FormularioController {
                 acroForm.getField("2ViernesFin").setValue(viernesFin2.toString());
                 acroForm.getField("HorasDia").setValue(horasDia);
 
-                // Save the filled PDF document to a file
                 documento.save(new File("PDF/" + fileName));
             } catch (IOException e) {
                 e.printStackTrace();
             }
 
-            // Set the response headers
             response.setContentType("application/pdf");
             response.setHeader("Content-Disposition", "attachment; filename=" + fileName);
 
-            // Redirigir al usuario a la página principal
             return "redirect:/";
         } catch (Exception e) {
             e.printStackTrace();
