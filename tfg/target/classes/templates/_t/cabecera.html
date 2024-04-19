@@ -10,6 +10,7 @@
     </ul>
     <ul class="navbar-nav ml-auto" th:if="${session.usuario!=null}">
 <<<<<<< HEAD
+<<<<<<< HEAD
         <li class="nav-item mt-2" th:if="${session.usuario.rol != 'Alumno'}">
             <i class="fa-solid fa-bell fa-2xl mr-2" style="color: #fafad2;"></i>
         </li>
@@ -18,6 +19,16 @@
                 href="/inicioSesion/crearUsuario" id="registrarse">REGISTRAR USUARIO</a>
         </li>
         <li class="nav-item" th:if="${session.usuario.rol == 'Profesor' || session.usuario.rol == 'Alumno'}">
+=======
+        <li class="nav-item mt-2" th:if="${session.usuario.rol != 'ALUMNO'}">
+            <i class="fa-solid fa-bell fa-2xl mr-2" style="color: #fafad2;"></i>
+        </li>
+        <li class="nav-item" th:if="${session.usuario.rol === 'ADMIN' || session.usuario.rol === 'DIRECTOR'}">
+            <a class="nav-link btn btn-outline-light mr-2" th:if="${session.usuario!=null}"
+                href="/inicioSesion/crearUsuario" id="registrarse">REGISTRAR USUARIO</a>
+        </li>
+        <li class="nav-item" th:if="${session.usuario.rol === 'PROFESOR' || session.usuario.rol === 'ALUMNO'}">
+>>>>>>> parent of 571c71d (c)
 =======
         <li class="nav-item mt-2" th:if="${session.usuario.rol != 'ALUMNO'}">
             <i class="fa-solid fa-bell fa-2xl mr-2" style="color: #fafad2;"></i>
