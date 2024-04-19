@@ -1,0 +1,15 @@
+com\salvaceloisma\tfg\PlantillaTFGApplication.class
+com\salvaceloisma\tfg\exception\InfoException.class
+com\salvaceloisma\tfg\controller\web\InicioSesionController.class
+com\salvaceloisma\tfg\repository\_BeanRepository.class
+com\salvaceloisma\tfg\controller\web\HomeController.class
+com\salvaceloisma\tfg\controller\web\_BeanController.class
+com\salvaceloisma\tfg\domain\_Bean.class
+com\salvaceloisma\tfg\exception\DangerException.class
+com\salvaceloisma\tfg\exception\GlobalExceptionHandler.class
+com\salvaceloisma\tfg\controller\web\FormularioController.class
+com\salvaceloisma\tfg\service\inicioSesionService.class
+com\salvaceloisma\tfg\helper\PRG.class
+com\salvaceloisma\tfg\repository\inicioSesionRepository.class
+com\salvaceloisma\tfg\domain\Usuario.class
+com\salvaceloisma\tfg\service\_BeanService.class
