@@ -1,11 +1,7 @@
 package com.salvaceloisma.tfg.domain;
 
-import com.salvaceloisma.tfg.enumerados.RolUsuario;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -31,12 +27,11 @@ public class Usuario {
     @Column(unique = true)
     private String dni;
 
-    @Enumerated(EnumType.STRING)
-    private RolUsuario rol;
+    private String rol;
 
     // ==================
 
-    public Usuario(String nombre, String correo, String contrasenia, String dni, RolUsuario rol) {
+    public Usuario(String nombre, String correo, String contrasenia, String dni, String rol) {
         this.nombre = nombre;
         this.correo = correo;
         this.contrasenia = contrasenia;

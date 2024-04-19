@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.salvaceloisma.tfg.domain.Usuario;
-import com.salvaceloisma.tfg.enumerados.RolUsuario;
 import com.salvaceloisma.tfg.repository.InicioSesionRepository;
 
 @Service
@@ -23,7 +22,7 @@ public class InicioSesionService {
         return inicioSesionRepository.findByCorreo(correo);
     }
 
-    public Usuario save(String nombre, String correo, String contrasenia, String dni, RolUsuario rol) {
+    public Usuario save(String nombre, String correo, String contrasenia, String dni, String rol) {
         Usuario usuario = new Usuario(nombre, correo, contrasenia, dni, rol);
         return inicioSesionRepository.save(usuario);
     }
