@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.salvaceloisma.tfg.domain.Usuario;
 import com.salvaceloisma.tfg.exception.DangerException;
 import com.salvaceloisma.tfg.helper.PRG;
-import com.salvaceloisma.tfg.service.inicioSesionService;
+import com.salvaceloisma.tfg.service.InicioSesionService;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -20,7 +20,7 @@ import jakarta.servlet.http.HttpSession;
 public class InicioSesionController {
 
     @Autowired
-    private inicioSesionService inicioSesionService;
+    private InicioSesionService inicioSesionService;
 
     @GetMapping("/inicioSesion")
     public String inicioSesion(
