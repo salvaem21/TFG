@@ -36,6 +36,7 @@ public class Usuario {
         this.correo = correo;
         this.contrasenia = contrasenia;
         this.dni = dni;
+        this.rol = rol;
     }
 
 
