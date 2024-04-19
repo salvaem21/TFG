@@ -1,7 +1,5 @@
 package com.salvaceloisma.tfg.controller.web;
 
-import java.sql.Date;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -11,9 +9,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.salvaceloisma.tfg.domain.Usuario;
+import com.salvaceloisma.tfg.enumerados.RolUsuario;
 import com.salvaceloisma.tfg.exception.DangerException;
 import com.salvaceloisma.tfg.helper.PRG;
-import com.salvaceloisma.tfg.service.inicioSesionService;
+import com.salvaceloisma.tfg.service.InicioSesionService;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -22,7 +21,7 @@ import jakarta.servlet.http.HttpSession;
 public class InicioSesionController {
 
     @Autowired
-    private inicioSesionService inicioSesionService;
+    private InicioSesionService inicioSesionService;
 
     @GetMapping("/inicioSesion")
     public String inicioSesion(
@@ -70,14 +69,14 @@ public class InicioSesionController {
             @RequestParam("nombre") String nombre,
             @RequestParam("correo") String correo,
             @RequestParam("contrasenia") String contrasenia,
-            @RequestParam("fechaNac") Date fechaNac,
-            @RequestParam("rol") String rol, HttpSession s) throws Exception {
+            @RequestParam("dni") String dni,
+            @RequestParam("rol") RolUsuario rol, HttpSession s) throws Exception {
 
         try {
             correo = correo + "@educa.madrid.org";
-            inicioSesionService.save(nombre, correo, contrasenia, fechaNac, rol);
+            inicioSesionService.save(nombre, correo, contrasenia, dni, rol);
         } catch (Exception e) {
-            PRG.error("El usuario con el correo" + correo + " ya existe", "/inicioSesion/crearUsuario");
+            PRG.error("El usuario ya existe", "/inicioSesion/crearUsuario");
         }
         return "redirect:../";
     }

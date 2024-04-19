@@ -1,10 +1,11 @@
 package com.salvaceloisma.tfg.domain;
 
-
-import java.sql.Date;
+import com.salvaceloisma.tfg.enumerados.RolUsuario;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -27,20 +28,18 @@ public class Usuario {
 
     private String contrasenia;
 
-    private Date fechaNac;
-
-    private String rol;
+    private String dni;
+    
+    @Enumerated(EnumType.STRING)
+    private RolUsuario rol;
 
     // ==================
 
-    public Usuario(String nombre, String correo, String contrasenia, Date fechaNac) {
+    public Usuario(String nombre, String correo, String contrasenia, String dni, RolUsuario rol) {
         this.nombre = nombre;
         this.correo = correo;
         this.contrasenia = contrasenia;
-        this.fechaNac = fechaNac;
-        this.rol = "Alumno";
+        this.dni = dni;
+        this.rol = rol;
     }
-
-
-
 }
