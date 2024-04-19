@@ -23,7 +23,11 @@ public class InicioSesionService {
         return inicioSesionRepository.findByCorreo(correo);
     }
 
+<<<<<<< HEAD
     public Usuario save(String nombre, String correo, String contrasenia, String dni, RolUsuario rol) {
+=======
+    public Usuario save(String nombre, String correo, String contrasenia, String dni, String rol) {
+>>>>>>> c1bcad3745940f0d10c15c5b35f69aca177221b0
         Usuario usuario = new Usuario(nombre, correo, contrasenia, dni, rol);
         return inicioSesionRepository.save(usuario);
     }
