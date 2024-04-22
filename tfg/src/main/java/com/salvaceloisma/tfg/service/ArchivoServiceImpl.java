@@ -12,6 +12,8 @@ import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import java.io.File;
 
@@ -19,8 +21,11 @@ import java.io.File;
 @Service
 public class ArchivoServiceImpl implements ArchivoService {
 
-@Value("${archivo.directorio}")
-private String directorioDeArchivos;
+    @Value("${archivo.directorio.carga}")
+    private String directorioDeArchivosCarga;
+
+    @Value("${archivo.directorio.descarga}")
+    private String directorioDeArchivosDescarga;
 
 
     @PostConstruct
@@ -28,13 +33,13 @@ private String directorioDeArchivos;
         try {
             // Verificar si se trata de un sistema operativo Windows para ajustar la ruta
             if (System.getProperty("os.name").toLowerCase().contains("windows")) {
-                directorioDeArchivos = directorioDeArchivos.replace("/", "\\");
+                directorioDeArchivosCarga = directorioDeArchivosCarga.replace("/", "\\");
             }
             // Agregar un separador de directorios al final de la ruta base
-            if (!directorioDeArchivos.endsWith(File.separator)) {
-                directorioDeArchivos += File.separator;
+            if (!directorioDeArchivosCarga.endsWith(File.separator)) {
+                directorioDeArchivosCarga += File.separator;
             }
-            Files.createDirectories(Paths.get(directorioDeArchivos));
+            Files.createDirectories(Paths.get(directorioDeArchivosCarga));
         } catch (IOException e) {
             throw new RuntimeException("No se pudo crear el directorio para almacenar archivos.");
         }
@@ -46,7 +51,7 @@ private String directorioDeArchivos;
         String nombreArchivo = StringUtils.cleanPath(archivo.getOriginalFilename());
         String uuid = UUID.randomUUID().toString();
         String nombreArchivoConUuid = uuid + "-" + nombreArchivo;
-        Path rutaArchivo = Paths.get(directorioDeArchivos + nombreArchivoConUuid);
+        Path rutaArchivo = Paths.get(directorioDeArchivosCarga + nombreArchivoConUuid);
         
         Files.copy(archivo.getInputStream(), rutaArchivo);
     }
@@ -54,9 +59,9 @@ private String directorioDeArchivos;
     @Override
     public Resource descargarArchivo(String nombre) {
         try {
-            Path rutaArchivo = Paths.get(directorioDeArchivos).resolve(nombre).toAbsolutePath();
+            Path rutaArchivo = Paths.get(directorioDeArchivosDescarga).resolve(nombre).toAbsolutePath();
             Resource recurso = new UrlResource(rutaArchivo.toUri());
-
+    
             if (recurso.exists() && recurso.isReadable()) {
                 return recurso;
             } else {
@@ -66,4 +71,32 @@ private String directorioDeArchivos;
             throw new RuntimeException("Error al leer el archivo.", e);
         }
     }
+    
+
+
+    @Override
+    public List<String> listarArchivosEnCarpeta(String rutaCarpeta) {
+        File carpeta = new File(rutaCarpeta);
+        List<String> archivos = new ArrayList<>();
+        if (carpeta.isDirectory()) {
+            File[] archivosEnCarpeta = carpeta.listFiles();
+            if (archivosEnCarpeta != null) {
+                for (File archivo : archivosEnCarpeta) {
+                    archivos.add(archivo.getName());
+                }
+            }
+        }
+        return archivos;
+    }
+    
+    @Override
+    public void guardarArchivoEnDirectorio(MultipartFile archivo, String directorio) throws IOException {
+        String nombreArchivo = StringUtils.cleanPath(archivo.getOriginalFilename());
+        String uuid = UUID.randomUUID().toString();
+        String nombreArchivoConUuid = uuid + "-" + nombreArchivo;
+        Path rutaArchivo = Paths.get(directorio + nombreArchivoConUuid);
+        
+        Files.copy(archivo.getInputStream(), rutaArchivo);
+    }
+
 }
