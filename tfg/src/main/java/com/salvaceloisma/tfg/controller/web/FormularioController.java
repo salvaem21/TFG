@@ -3,18 +3,23 @@ package com.salvaceloisma.tfg.controller.web;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.salvaceloisma.tfg.domain.Usuario;
 import com.salvaceloisma.tfg.exception.DangerException;
 import com.salvaceloisma.tfg.exception.InfoException;
+import com.salvaceloisma.tfg.helper.PRG;
+import com.salvaceloisma.tfg.service.EmailService;
+
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalTime;
@@ -25,6 +30,8 @@ import java.util.UUID;
 @Controller
 public class FormularioController {
 
+    @Autowired
+    private EmailService emailService;
     
     @GetMapping("/enviarDocumento")
     public String enviarDocumento(ModelMap m) {
@@ -32,6 +39,19 @@ public class FormularioController {
         return "_t/frame";
     }
 
+    @PostMapping("/enviarDocumento")
+    public String enviarDocumentoPost(@RequestParam("pdfFile") MultipartFile file, ModelMap m, HttpSession session) throws DangerException {
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+        String nombre = usuario.getNombre();
+        try {
+            emailService.enviarEmailConArchivo("salva.em21@gmail.com", "Envio de datos de " + nombre, "Estos son los datos del alumno", file);
+        } catch (Exception e) {
+            PRG.error("El correo no puedo enviarse correctamente.");
+        }
+        return "redirect:../";
+
+    }
+    
     @GetMapping("/crearDocumento")
     public String crearDocumento(ModelMap m) {
         m.put("view", "documento/crearDocumento");
