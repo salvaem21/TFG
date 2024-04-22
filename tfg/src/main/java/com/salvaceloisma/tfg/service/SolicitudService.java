@@ -32,11 +32,11 @@ public class SolicitudService {
         return solicitudRepository.save(solicitud);
     }
 
-    public Solicitud findById(Long idSolicitud) {
+    public Solicitud findById(String idSolicitud) {
         return solicitudRepository.findById(idSolicitud).orElse(null); // Utiliza el método orElse(null) para manejar el caso de que no se encuentre ninguna solicitud con el ID especificado
     }
     
-    public void update(Long idSolicitud, Integer numeroConvenio, Usuario usuario, EstadoSolicitud estado) {
+    public void update(String idSolicitud, Integer numeroConvenio, Usuario usuario, EstadoSolicitud estado) {
         // Obtener la solicitud existente por su ID
         Solicitud solicitud = solicitudRepository.findById(idSolicitud).orElse(null);
         if (solicitud != null) {
@@ -51,7 +51,7 @@ public class SolicitudService {
         }
     }
 
-    public void delete(Long idSolicitud) {
+    public void delete(String idSolicitud) {
         solicitudRepository.deleteById(idSolicitud); // Utiliza el método deleteById para eliminar una solicitud por su ID
     }
 }

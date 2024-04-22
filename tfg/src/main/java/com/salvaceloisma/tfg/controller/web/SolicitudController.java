@@ -53,7 +53,7 @@ public class SolicitudController {
 
     @GetMapping("u")
     public String update(
-            @RequestParam("id") Long idSolicitud,
+            @RequestParam("id") String idSolicitud,
             ModelMap m) {
         m.put("solicitud", solicitudService.findById(idSolicitud));
         m.put("view", "solicitud/u");
@@ -62,7 +62,7 @@ public class SolicitudController {
 
     @PostMapping("u")
     public String updatePost(
-            @RequestParam("id_solicitud") Long idSolicitud,
+            @RequestParam("id_solicitud") String idSolicitud,
             @RequestParam("numeroConvenio") Integer numeroConvenio,
             @RequestParam("usuario") Usuario nombre,
             @RequestParam("estado") EstadoSolicitud estado,
@@ -77,7 +77,7 @@ public class SolicitudController {
 
     @PostMapping("d")
     public String delete(
-            @RequestParam("id") Long idSolicitud) throws DangerException {
+            @RequestParam("id") String idSolicitud) throws DangerException {
         try {
             solicitudService.delete(idSolicitud);
         } catch (Exception e) {
