@@ -1,15 +1,15 @@
 <div class="container">
-    <div class="row justify-content-center"> <!-- Centra el contenido del formulario -->
-        <div class="col-md-6"> <!-- Tamaño de columna medio para pantallas medianas -->
+    <div class="row justify-content-center">
+        <div class="col-md-6">
             <h1 class="text-center">CREAR USUARIO</h1>
             <form action="/inicioSesion/crearUsuario" method="post">
-                <div class="form-group"> <!-- Agrupa los elementos del formulario -->
+                <div class="form-group">
                     <label for="id-nombre">Nombre</label>
                     <input id="id-nombre" type="text" name="nombre" autofocus="autofocus" class="form-control" />
                 </div>
                 <div class="form-group">
                     <label for="id-correo">Correo</label>
-                    <div class="input-group"> <!-- Agrupa el input de correo y el span -->
+                    <div class="input-group">
                         <input id="id-correo" type="text" name="correo" class="form-control" />
                         <div class="input-group-append">
                             <span class="input-group-text">@educa.madrid.org</span>
@@ -26,10 +26,10 @@
                 </div>
                 <div class="form-group">
                     <select name="rol">
-                        <option value="Alumno">Alumno</option>
-                        <option value="Profesor">Profesor</option>
-                        <option value="Jefatura">Jefatura</option>
-                        <option value="Director">Director</option>
+                        <option value="ALUMNO">Alumno</option>
+                        <option value="PROFESOR">Profesor</option>
+                        <option value="JEFATURA">Jefatura</option>
+                        <option value="DIRECTOR">Director</option>
                     </select>
                 </div>
                 <div class="form-group">
