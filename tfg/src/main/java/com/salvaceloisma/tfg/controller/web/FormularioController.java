@@ -44,7 +44,7 @@ public class FormularioController {
         Usuario usuario = (Usuario) session.getAttribute("usuario");
         String nombre = usuario.getNombre();
         try {
-            emailService.enviarEmailConArchivo("salva.em21@gmail.com", "Envio de datos de " + nombre, "Estos son los datos del alumno", file);
+            emailService.enviarEmailConArchivo("celoaizaga@gmail.com", "Envio de datos de " + nombre, "Estos son los datos del alumno", file);
         } catch (Exception e) {
             PRG.error("El correo no puedo enviarse correctamente.");
         }

@@ -31,4 +31,16 @@ public class EmailService {
 
         mailSender.send(message);
     }
+
+    public void enviarEmail(String receptor, String cabecera, String texto)
+            throws MessagingException, IOException {
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true);
+
+        helper.setTo(receptor);
+        helper.setSubject(cabecera);
+        helper.setText(texto);
+
+        mailSender.send(message);
+    }
 }
