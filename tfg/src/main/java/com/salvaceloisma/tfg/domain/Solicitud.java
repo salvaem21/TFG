@@ -32,6 +32,10 @@ public class Solicitud {
     @JoinColumn(name = "id_usuario", referencedColumnName = "id", foreignKey = @ForeignKey(name = "FK_solicitud_usuario"))
     private Usuario usuario;
 
+    
+//    @Column(name = "ruta_pdf")
+//    private String rutaPDF;
+
     @Enumerated(EnumType.STRING)
     private EstadoSolicitud estado;
     
