@@ -32,7 +32,7 @@ public class ArchivoServiceImpl implements ArchivoService {
         } catch (IOException e) {
             throw new RuntimeException("No se pudo crear el directorio para almacenar archivos.", e);
         }
-    }
+    } //TENEMOS QUE CONTEMPLAR SI ES NECESARIO CREAR UNA PARA DESCARGAR AUNQUE EN TEORIA NADIE PODRIA TOCARLA AL USAR UN DESPLEGABLE
 
     @Override
     public void guardarArchivo(MultipartFile archivo) throws IOException {
