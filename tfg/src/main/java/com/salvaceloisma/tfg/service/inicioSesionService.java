@@ -32,6 +32,10 @@ public class InicioSesionService {
         return inicioSesionRepository.findById(idUsuario).get();
     }
 
+    public List<Usuario> obtenerUsuariosPorRol(RolUsuario rol) {
+        return inicioSesionRepository.findByRol(rol);
+    }
+
     public Usuario inicioSesion(String correo, String contrasenia) throws Exception {
         Usuario usuario = inicioSesionRepository.findByCorreo(correo);
         if(usuario == null) {

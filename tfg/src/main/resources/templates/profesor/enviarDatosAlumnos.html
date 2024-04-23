@@ -1,0 +1,172 @@
+<div class="container">
+    <h2 class="text-center mb-4">Formulario de Creación de Documento</h2>
+    <form action="/enviarDatos/enviarDatosAJefatura" method="post">
+        <!-- Información de la empresa -->
+        <div class="mb-4 pb-2 border-bottom">
+            <h3 class="text-center">Datos de la Empresa</h3>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="numeroConvenio">Número de Convenio:</label>
+                        <input type="text" class="form-control" id="numeroConvenio" name="numeroConvenio" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="nombreEmpresa">Nombre de la Empresa:</label>
+                        <input type="text" class="form-control" id="nombreEmpresa" name="nombreEmpresa" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="tutorEmpresa">Tutor de la Empresa:</label>
+                        <input type="text" class="form-control" id="tutorEmpresa" name="tutorEmpresa" required>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="cifEmpresa">CIF de la Empresa:</label>
+                        <input type="text" class="form-control" id="cifEmpresa" name="cifEmpresa" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="direccionPracticas">Dirección de las Prácticas:</label>
+                        <input type="text" class="form-control" id="direccionPracticas" name="direccionPracticas" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="localidadPracticas">Localidad de las Prácticas:</label>
+                        <input type="text" class="form-control" id="localidadPracticas" name="localidadPracticas" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="codigoPostalPracticas">Código Postal de las Prácticas:</label>
+                        <input type="text" class="form-control" id="codigoPostalPracticas" name="codigoPostalPracticas" required>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Información del alumno -->
+        <div class="mb-4 pb-2 border-bottom">
+            <h3 class="text-center">Datos del Alumno</h3>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="apellidosAlumno">Apellidos del Alumno:</label>
+                        <input type="text" class="form-control" id="apellidosAlumno" name="apellidosAlumno" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="nombreAlumno">Nombre del Alumno:</label>
+                        <input type="text" class="form-control" id="nombreAlumno" name="nombreAlumno" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="nifAlumno">NIF del Alumno:</label>
+                        <input type="text" class="form-control" id="nifAlumno" name="nifAlumno" required>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="cicloFormativoAlumno">Ciclo Formativo del Alumno:</label>
+                        <input type="text" class="form-control" id="cicloFormativoAlumno" name="cicloFormativoAlumno" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="tutorAlumno">Tutor del Alumno:</label>
+                        <input type="text" class="form-control" id="tutorAlumno" name="tutorAlumno" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="nifTutorAlumno">NIF del Tutor del Alumno:</label>
+                        <input type="text" class="form-control" id="nifTutorAlumno" name="nifTutorAlumno" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="fechaDeNacimientoAlumno">Fecha de Nacimiento del Alumno:</label>
+                        <input type="date" class="form-control" id="fechaDeNacimientoAlumno" name="fechaDeNacimientoAlumno" required>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Otros campos -->
+        <div class="row">
+            <div class="col-md-5">
+                <div class="form-group">
+                    <label for="horasTotales">Horas Totales:</label>
+                    <input type="text" class="form-control" id="horasTotales" name="horasTotales" required>
+                </div>
+                <div class="form-group">
+                    <label for="fechaInicio">Fecha de Inicio:</label>
+                    <input type="date" class="form-control" id="fechaInicio" name="fechaInicio" required>
+                </div>
+                <div class="form-group">
+                    <label for="fechaFin">Fecha de Fin:</label>
+                    <input type="date" class="form-control" id="fechaFin" name="fechaFin" required>
+                </div>
+                <div class="form-group">
+                    <label for="horasDia">Horas por Día:</label>
+                    <input type="text" class="form-control" id="horasDia" name="horasDia" required>
+                </div>
+            </div>
+            <div class="col-md-7">
+                <div class="form-group">
+                    <label for="fechaHorarios">Fechas y Horarios:</label>
+                    <table class="table table-responsive">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th colspan="2">Primer horario</th>
+                                <th colspan="2">Segundo horario</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td></td>
+                                <td>Inicio</td>
+                                <td>Fin</td>
+                                <td>Inicio</td>
+                                <td>Fin</td>
+                            </tr>
+                            <tr>
+                                <td>Lunes</td>
+                                <td><input type="time" class="form-control" name="lunesInicio1" required></td>
+                                <td><input type="time" class="form-control" name="lunesFin1" required></td>
+                                <td><input type="time" class="form-control" name="lunesInicio2" required></td>
+                                <td><input type="time" class="form-control" name="lunesFin2" required></td>
+                            </tr>
+                            <tr>
+                                <td>Martes</td>
+                                <td><input type="time" class="form-control" name="martesInicio1" required></td>
+                                <td><input type="time" class="form-control" name="martesFin1" required></td>
+                                <td><input type="time" class="form-control" name="martesInicio2" required></td>
+                                <td><input type="time" class="form-control" name="martesFin2" required></td>
+                            </tr>
+                            <tr>
+                                <td>Miércoles</td>
+                                <td><input type="time" class="form-control" name="miercolesInicio1" required></td>
+                                <td><input type="time" class="form-control" name="miercolesFin1" required></td>
+                                <td><input type="time" class="form-control" name="miercolesInicio2" required></td>
+                                <td><input type="time" class="form-control" name="miercolesFin2" required></td>
+                            </tr>
+                            <tr>
+                                <td>Jueves</td>
+                                <td><input type="time" class="form-control" name="juevesInicio1" required></td>
+                                <td><input type="time" class="form-control" name="juevesFin1" required></td>
+                                <td><input type="time" class="form-control" name="juevesInicio2" required></td>
+                                <td><input type="time" class="form-control" name="juevesFin2" required></td>
+                            </tr>
+                            <tr>
+                                <td>Viernes</td>
+                                <td><input type="time" class="form-control" name="viernesInicio1" required></td>
+                                <td><input type="time" class="form-control" name="viernesFin1" required></td>
+                                <td><input type="time" class="form-control" name="viernesInicio2" required></td>
+                                <td><input type="time" class="form-control" name="viernesFin2" required></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="mb-4 pb-2 border-bottom">
+            <h3 class="text-center">Seleccionar Responsable de Jefatura</h3>
+            <div class="form-group">
+                <label for="selectJefatura">Responsable de Jefatura:</label>
+                <select name="rolUsuario" class="form-control text-center ">
+                    <option th:each="usuario : ${usuariosJefatura}" th:value="${usuario.id}" th:text="${usuario.nombre + ' (' + usuario.correo + ')'}"></option>
+                </select>                
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary mt-3">Enviar Datos FCTs</button>
+    </form>
+</div>
