@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+	
+<head>
+	<link rel="stylesheet" href="/css/bootstrap.min.css">
+	<link rel="stylesheet" href="/css/css.css">
+	<script src="/js/jquery.slim.min.js"></script>
+	<script src="/js/bootstrap.bundle.min.js"></script>
+	<script src="https://kit.fontawesome.com/18fce3401d.js" crossorigin="anonymous"></script>
+	<title>FCT's</title>
+</head>
+
+<body>
+<nav class="container-fluid navbar navbar-expand-sm navbar-dark" id="navegacion">
+    <a class="navbar-brand" href="/">
+        <img src="/img/reyFernando.png" alt="INICIO" style="width:50px;">
+    </a>
+    <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+            <a class="nav-link btn btn-outline-light" href="/inicioSesion/inicioSesion" id="inicioSesion">Iniciar sesión</a>
+        </li>
+    </ul>
+    
+</nav>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Subir y Descargar Archivos</title>
+</head>
+<body>
+    <h2>Subir Archivo</h2>
+    <form id="uploadForm" action="/documento/subir" method="post" enctype="multipart/form-data">
+        <input type="file" name="archivo" id="archivoInput">
+        <button type="submit">Subir Archivo</button>
+    </form>
+
+    <hr>
+
+    <h2>Descargar Archivo</h2>
+    <form id="downloadForm" action="/documento/" method="get">
+        <input type="text" name="nombre" placeholder="Nombre del Archivo a Descargar">
+        <button type="submit">Descargar Archivo</button>
+    </form>
+
+    <div id="archivoDescargado"></div>
+
+    <script>
+        document.getElementById('uploadForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            var formData = new FormData(this);
+            
+            fetch("/documento/subir", {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.text())
+            .then(message => alert(message))
+            .catch(error => console.error('Error:', error));
+        });
+
+        document.getElementById('downloadForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            var nombreArchivo = document.querySelector('input[name="nombre"]').value;
+
+            fetch("/documento/" + nombreArchivo)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Archivo no encontrado');
+                }
+                return response.blob();
+            })
+            .then(blob => {
+                var url = window.URL.createObjectURL(blob);
+                var a = document.createElement('a');
+                a.href = url;
+                a.download = nombreArchivo;
+                document.getElementById('archivoDescargado').appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    </script>
+</body>
+</html>
+
+
+</body>
+
+</html>
