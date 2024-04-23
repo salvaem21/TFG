@@ -32,7 +32,7 @@ public class InicioSesionService {
         return inicioSesionRepository.findById(idUsuario).get();
     }
 
-    public List<Usuario> obtenerUsuariosPorRol(String rol) {
+    public List<Usuario> obtenerUsuariosPorRol(RolUsuario rol) {
         return inicioSesionRepository.findByRol(rol);
     }
 
