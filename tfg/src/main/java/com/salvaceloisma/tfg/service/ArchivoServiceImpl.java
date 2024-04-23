@@ -28,11 +28,21 @@ public class ArchivoServiceImpl implements ArchivoService {
     @PostConstruct
     public void init() {
         try {
-            Files.createDirectories(Paths.get(directorioDeArchivosCarga));
+            // Crear el directorio de carga si no existe
+            Path directorioCarga = Paths.get(directorioDeArchivosCarga);
+            if (!Files.exists(directorioCarga)) {
+                Files.createDirectories(directorioCarga);
+            }
+            
+            // Crear el directorio de descarga si no existe
+            Path directorioDescarga = Paths.get(directorioDeArchivosDescarga);
+            if (!Files.exists(directorioDescarga)) {
+                Files.createDirectories(directorioDescarga);
+            }
         } catch (IOException e) {
             throw new RuntimeException("No se pudo crear el directorio para almacenar archivos.", e);
         }
-    } //TENEMOS QUE CONTEMPLAR SI ES NECESARIO CREAR UNA PARA DESCARGAR AUNQUE EN TEORIA NADIE PODRIA TOCARLA AL USAR UN DESPLEGABLE
+    } //Tenemos que contemplar si es necesario crear una para descargar aunque en teoria nadie podria tocarla al usar un desplegable
 
     @Override
     public void guardarArchivo(MultipartFile archivo) throws IOException {
