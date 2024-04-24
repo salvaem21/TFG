@@ -1,26 +1,29 @@
 <div class="container">
+  <div class="row justify-content-center">
     <h2>Descargar Archivo</h2>
     <select id="archivoSelect"></select>
     <button onclick="descargarArchivo()">Descargar Archivo</button>
-
+  
     <script>
-        function descargarArchivo() {
-            const nombreArchivo = document.getElementById('archivoSelect').value;
-            window.location.href = `/descargar-archivo/${nombreArchivo}`;
-        }
-        fetch('/descargar-archivo/archivos-disponibles') 
-        .then(response => response.json())
-        .then(archivos => {
-            const select = document.getElementById('archivoSelect');
-            archivos.forEach(archivo => {
-                const option = document.createElement('option');
-                option.value = archivo;
-                option.textContent = archivo;
-                select.appendChild(option);
-            });
+      function descargarArchivo() {
+        const nombreArchivo = document.getElementById("archivoSelect").value;
+        window.location.href = `/descargar-archivo/${nombreArchivo}`;
+      }
+      fetch("/descargar-archivo/archivos-disponibles")
+        .then((response) => response.json())
+        .then((archivos) => {
+          const select = document.getElementById("archivoSelect");
+          archivos.forEach((archivo) => {
+            const option = document.createElement("option");
+            option.value = archivo;
+            option.textContent = archivo;
+            select.appendChild(option);
+          });
         })
-        .catch(error => console.error('Error al obtener la lista de archivos:', error));
+        .catch((error) =>
+          console.error("Error al obtener la lista de archivos:", error)
+        );
     </script>
-
+    
+  </div>
 </div>
-
