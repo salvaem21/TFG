@@ -2,17 +2,18 @@
     <h1>DOCUMENTOS FCT'S</h1>
 
     <div class="row justify-content-center">
+
+    <!------------------------            PROFESOR                    ------------------------------>
         <a th:if="${session.usuario != null and session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).PROFESOR}" class="btn btn-outline-propio1 mb-2 col-4 mr-2" href="/enviarDatos/enviarDatosAJefatura" id="crearDocumento">Enviar Formulario A Jefatura A Revision</a>
         <a th:if="${session.usuario != null and session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).PROFESOR}" class="btn btn-outline-propio1 mb-2 col-4 mr-2" href="/crearDocumento/corregirDocumento" id="crearDocumento">Documentos Pendientes De Corregir Por Profesor</a>
-        <a th:if="${session.usuario != null and session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).PROFESOR}" class="btn btn-outline-propio1 mb-2 col-4 mr-2" href="/crearDocumento/enviarDireccion" id="crearDocumento">Documentos Pendientes De Enviar A Direccion</a>
-        <a th:if="${session.usuario != null and session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).PROFESOR}" class="btn btn-outline-propio1 mb-2 col-4" href="/crearDocumento/notificarEmpresa" id="crearDocumento">Documentos Pendientes De Notificar A Empresa</a>
+        <a th:if="${session.usuario != null and session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).PROFESOR}" class="btn btn-outline-propio1 mb-2 col-4 mr-2" href="/crearDocumento/enviarDireccion" id="crearDocumento">Documentos Pendientes De Notificar A Empresa/Enviar A Direccion</a>
         
         
+    <!------------------------            JEFATURA                    ------------------------------> 
         <a th:if="${session.usuario != null and session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).JEFATURA}" class="btn btn-outline-propio1 mb-2 col-4 mr-2" href="/crearDocumento/revisarDocumento" id="crearDocumento">Documentos Pendientes De Revisar Por Jefatura</a>
         <a th:if="${session.usuario != null and session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).JEFATURA}" class="btn btn-outline-propio1 mb-2 col-4 mr-2" href="/crearDocumento/firmarDocumentoJefatura" id="crearDocumento">Documentos Pendientes De Firmar Por Jefatura</a>
         
-        <a th:if="${session.usuario != null and (session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).PROFESOR or session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).JEFATURA)}" class="btn btn-outline-propio1 mb-2 col-4" href="/crearDocumento/consultas" id="crearDocumento">Consultar (Anular)</a>
-
+    <!------------------------            DIRECCIÓN                    ------------------------------>
         <a th:if="${session.usuario != null and session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).DIRECTOR}" class="btn btn-outline-propio1 mb-2 col-4 mr-2" href="/crearDocumento/firmarDocumentoDireccion" id="crearDocumento">Documentos Pendientes De Firmar Por Direccion</a>
 
     </div>
