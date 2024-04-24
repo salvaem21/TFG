@@ -1,6 +1,18 @@
 <div class="container">
     <h2 class="text-center mb-4">Formulario de Creación de Documento</h2>
     <form action="/enviarDatos/enviarDatosAJefatura" method="post" id="formularioAlumnos">
+        <!-- Campo del tutor del alumno -->
+        <div class="mb-4 pb-2 border-bottom">
+            <h3 class="text-center">Tutor-Alumnado</h3>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="tutorAlumno">Tutor del Alumno:</label>
+                    <input type="text" class="form-control" id="tutorAlumno" name="tutorAlumno" required>
+                </div>
+                <div class="form-group">
+                    <label for="nifTutorAlumno">NIF del Tutor del Alumno:</label>
+                    <input type="text" class="form-control" id="nifTutorAlumno" name="nifTutorAlumno" required>
+        </div>
         <!-- Información de la empresa -->
         <div class="mb-4 pb-2 border-bottom">
             <h3 class="text-center">Datos de la Empresa</h3>
@@ -65,14 +77,6 @@
                         <div class="form-group">
                             <label for="cicloFormativoAlumno">Ciclo Formativo del Alumno:</label>
                             <input type="text" class="form-control" id="cicloFormativoAlumno" name="cicloFormativoAlumno" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="tutorAlumno">Tutor del Alumno:</label>
-                            <input type="text" class="form-control" id="tutorAlumno" name="tutorAlumno" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="nifTutorAlumno">NIF del Tutor del Alumno:</label>
-                            <input type="text" class="form-control" id="nifTutorAlumno" name="nifTutorAlumno" required>
                         </div>
                         <div class="form-group">
                             <label for="fechaDeNacimientoAlumno">Fecha de Nacimiento del Alumno:</label>
