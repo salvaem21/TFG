@@ -10,11 +10,14 @@
         
         
     <!------------------------            JEFATURA                    ------------------------------> 
-        <a th:if="${session.usuario != null and session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).JEFATURA}" class="btn btn-outline-propio1 mb-2 col-4 mr-2" href="/crearDocumento/revisarDocumento" id="crearDocumento">Documentos Pendientes De Revisar Por Jefatura</a>
-        <a th:if="${session.usuario != null and session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).JEFATURA}" class="btn btn-outline-propio1 mb-2 col-4 mr-2" href="/crearDocumento/firmarDocumentoJefatura" id="crearDocumento">Documentos Pendientes De Firmar Por Jefatura</a>
-        
+        <a th:if="${session.usuario != null and session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).JEFATURA}" class="btn btn-outline-propio1 mb-2 col-4 mr-2" href="/crearDocumento/revisarDocumento" id="crearDocumento">Envio de Solicitud FCT (profesorado)</a>
+        <a th:if="${session.usuario != null and session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).JEFATURA}" class="btn btn-outline-propio1 mb-2 col-4 mr-2" href="/crearDocumento/firmarDocumentoJefatura" id="crearDocumento">Documentos Pendientes De Firmar Por Jefatura a Direccion</a>
+        <a th:if="${session.usuario != null and session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).PROFESOR}" class="btn btn-outline-propio1 mb-2 col-4 mr-2" href="/crearDocumento/revisarDocumento" id="crearDocumento">Envio de Solicitud FCT (DIRECCIÓN)</a>
+
     <!------------------------            DIRECCIÓN                    ------------------------------>
-        <a th:if="${session.usuario != null and session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).DIRECTOR}" class="btn btn-outline-propio1 mb-2 col-4 mr-2" href="/crearDocumento/firmarDocumentoDireccion" id="crearDocumento">Documentos Pendientes De Firmar Por Direccion</a>
+        <a th:if="${session.usuario != null and session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).DIRECTOR}" class="btn btn-outline-propio1 mb-2 col-4 mr-2" href="/crearDocumento/firmarDocumentoDireccion" id="crearDocumento">Documentos Pendientes De Firmar (profesorado)</a>
+        <a th:if="${session.usuario != null and session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).DIRECTOR}" class="btn btn-outline-propio1 mb-2 col-4 mr-2" href="/crearDocumento/revisarDocumento" id="crearDocumento">Envio de Solicitud FCT (Jefatura)</a>
+        <a th:if="${session.usuario != null and session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).DIRECTOR}" class="btn btn-outline-propio1 mb-2 col-4 mr-2" href="/crearDocumento/revisarDocumento" id="crearDocumento">Descargar Finalización de Solicitud</a>
 
     </div>
 </div>
