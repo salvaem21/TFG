@@ -8,6 +8,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -23,10 +24,14 @@ public class DescargarArchivoController {
     @Value("${archivo.directorio.descarga}")
     private String directorioDeArchivosDescarga;
 
-    @GetMapping("/")
-    public String mostrarFormularioDescargarArchivo() {
-        return "documento/descargarArchivo";
+    @GetMapping("descargarArchivo")
+    public String descargarArchivo(
+            ModelMap m) {
+        m.put("view", "documento/descargarArchivo");
+        return "_t/frame";
     }
+
+
 
     @GetMapping("/archivos-disponibles")
     @ResponseBody
