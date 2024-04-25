@@ -1,14 +1,11 @@
-<div class="container">
+<div class="subirArchivo">
   <div class="row justify-content-center">
-    <h2>Subir Archivo</h2>
-    <form
-      id="uploadForm"
-      action="/subir-archivo/subir"
-      method="post"
-      enctype="multipart/form-data"
-    >
-      <input type="file" name="archivo" id="archivoInput" />
-      <button type="submit">Subir Archivo</button>
-    </form>
+    <div class="col-md-6">
+      <h2>Subir Archivo</h2>
+      <form id="uploadForm" action="/documento/subirArchivo" method="post" enctype="multipart/form-data">
+        <input type="file" name="archivo" id="archivoInput" class="form-control-file">
+        <button type="submit" class="btn btn-primary">Subir Archivo</button>
+      </form>
+    </div>
   </div>
 </div>

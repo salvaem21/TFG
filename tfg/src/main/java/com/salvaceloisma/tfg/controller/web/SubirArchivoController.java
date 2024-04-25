@@ -5,24 +5,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
 @Controller
-@RequestMapping("/subir-archivo")
+@RequestMapping("/documento")
 public class SubirArchivoController {
 
     @Autowired
     private ArchivoService archivoService;
 
-    @GetMapping("/")
-    public String mostrarFormularioSubirArchivo() {
-        return "documento/subirArchivo";
+    @GetMapping("/subirArchivo")
+    public String subirrArchivo(
+            ModelMap m) {
+        m.put("view", "documento/subirArchivo");
+        return "_t/frame";
     }
 
-    @PostMapping("/subir")
+    @PostMapping("/subirArchivo")
     public ResponseEntity<String> subirArchivo(@RequestParam("archivo") MultipartFile archivo) {
         try {
             archivoService.guardarArchivo(archivo);

@@ -43,3 +43,35 @@ body {
     color: #666;
     font-style: italic;
 }
+
+/* Estilo personalizado para centrar verticalmente el card */
+.card {
+    margin-top: 150px; /* Espacio superior para mostrar el card en la página */
+}
+
+/* Estilo personalizado para centrar horizontalmente el card-body */
+.centrar {
+    display: flex;
+    justify-content: center;
+}
+/* Subir archivo */
+.subirArchivo {
+    margin-top: 50px;
+  }
+  h2 {
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  form {
+    max-width: 400px;
+    margin: auto;
+  }
+  input[type="file"] {
+    display: block;
+    width: 100%;
+    margin-bottom: 20px;
+  }
+  button[type="submit"] {
+    display: block;
+    width: 100%;
+  }

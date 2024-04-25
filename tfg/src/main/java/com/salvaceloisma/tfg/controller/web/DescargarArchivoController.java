@@ -24,7 +24,7 @@ public class DescargarArchivoController {
     @Value("${archivo.directorio.descarga}")
     private String directorioDeArchivosDescarga;
 
-    @GetMapping("descargarArchivo")
+    @GetMapping("/descargarArchivo")
     public String descargarArchivo(
             ModelMap m) {
         m.put("view", "documento/descargarArchivo");
