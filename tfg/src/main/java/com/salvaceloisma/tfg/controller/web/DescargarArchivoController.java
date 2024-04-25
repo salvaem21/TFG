@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.util.List;
 
 @Controller
-@RequestMapping("/descargar-archivo")
+@RequestMapping("/documento")
 public class DescargarArchivoController {
 
     @Autowired

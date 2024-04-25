@@ -26,9 +26,9 @@
 <script>
     function descargarArchivo() {
         const nombreArchivo = document.getElementById("archivoSelect").value;
-        window.location.href = `/descargar-archivo/${nombreArchivo}`;
+        window.location.href = `/documento/${nombreArchivo}`;
     }
-    fetch("/descargar-archivo/archivos-disponibles")
+    fetch("/documento/archivos-disponibles")
         .then((response) => response.json())
         .then((archivos) => {
             const select = document.getElementById("archivoSelect");
