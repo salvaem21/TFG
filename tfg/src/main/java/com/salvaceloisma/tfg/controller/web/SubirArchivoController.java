@@ -1,14 +1,14 @@
 package com.salvaceloisma.tfg.controller.web;
 
+import com.salvaceloisma.tfg.exception.DangerException;
+import com.salvaceloisma.tfg.exception.InfoException;
+import com.salvaceloisma.tfg.helper.PRG;
 import com.salvaceloisma.tfg.service.ArchivoService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
 
 @Controller
@@ -26,12 +26,14 @@ public class SubirArchivoController {
     }
 
     @PostMapping("/subirArchivo")
-    public ResponseEntity<String> subirArchivo(@RequestParam("archivo") MultipartFile archivo) {
+    public String  subirArchivo(@RequestParam("archivo") MultipartFile archivo) throws InfoException, DangerException {
         try {
             archivoService.guardarArchivo(archivo);
-            return ResponseEntity.ok().body("Archivo subido correctamente.");
+            PRG.info("Archivo subido correctamente.","/home/home");
         } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al subir el archivo.");
+            PRG.error("Error al subir el archivo.","/documento/subirArchivo");
+            
         }
+        return "redirect: ../";
     }
 }

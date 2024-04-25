@@ -55,7 +55,7 @@
         <!-- Información del alumno -->
         <div id="contenedorAlumnos">
             <!-- Los campos de datos del primer alumno se dejan aquí inicialmente -->
-            <div class="mb-4 pb-2 border-bottom datos-alumno">
+            <div class="mb-4 pb-2 datos-alumno">
                 <h3 class="text-center">Datos del Alumno</h3>
                 <!-- Campos de datos del primer alumno -->
                 <div class="row">
@@ -88,13 +88,101 @@
         </div>
 
         <!-- Botón para agregar más alumnos -->
-        <div class="text-center mb-3">
+        <div class="text-center pb-2 mb-4 border-bottom">
             <button type="button" class="btn btn-secondary" id="agregarAlumno">Agregar otro alumno</button>
         </div>
 
+                <!-- Fechas y Horarios -->
+                <div class="mb-4 pb-2">
+                    <h3 class="text-center">Fechas y Horarios</h3>
+
+                    <div class="row border-bottom">
+                        <div class="col-md-3 border-right" >
+                            <!-- Campos de fechas y horarios -->
+                            <div class="form-group">
+                                <label for="horasTotales">Horas Totales:</label>
+                                <input type="text" class="form-control" id="horasTotales" name="horasTotales" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="fechaInicio">Fecha de Inicio:</label>
+                                <input type="date" class="form-control" id="fechaInicio" name="fechaInicio" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="fechaFin">Fecha de Fin:</label>
+                                <input type="date" class="form-control" id="fechaFin" name="fechaFin" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="horasDia">Horas por Día:</label>
+                                <input type="text" class="form-control" id="horasDia" name="horasDia" required>
+                            </div>    
+                        </div>
+                        <div class="col-md-8">
+                            <!-- Tabla de horarios -->
+                            <div class="form-group">
+                                <!-- <label for="fechaHorarios">Fechas y Horarios:</label> -->
+                                <table class="table table-responsive">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th colspan="2">Primer horario</th>
+                                            <th colspan="2">Segundo horario</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td></td>
+                                            <td>Inicio</td>
+                                            <td>Fin</td>
+                                            <td>Inicio</td>
+                                            <td>Fin</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Lunes</td>
+                                            <td><input type="time" class="form-control" name="lunesInicio1" required></td>
+                                            <td><input type="time" class="form-control" name="lunesFin1" required></td>
+                                            <td><input type="time" class="form-control" name="lunesInicio2" required></td>
+                                            <td><input type="time" class="form-control" name="lunesFin2" required></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Martes</td>
+                                            <td><input type="time" class="form-control" name="martesInicio1" required></td>
+                                            <td><input type="time" class="form-control" name="martesFin1" required></td>
+                                            <td><input type="time" class="form-control" name="martesInicio2" required></td>
+                                            <td><input type="time" class="form-control" name="martesFin2" required></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Miércoles</td>
+                                            <td><input type="time" class="form-control" name="miercolesInicio1" required></td>
+                                            <td><input type="time" class="form-control" name="miercolesFin1" required></td>
+                                            <td><input type="time" class="form-control" name="miercolesInicio2" required></td>
+                                            <td><input type="time" class="form-control" name="miercolesFin2" required></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Jueves</td>
+                                            <td><input type="time" class="form-control" name="juevesInicio1" required></td>
+                                            <td><input type="time" class="form-control" name="juevesFin1" required></td>
+                                            <td><input type="time" class="form-control" name="juevesInicio2" required></td>
+                                            <td><input type="time" class="form-control" name="juevesFin2" required></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Viernes</td>
+                                            <td><input type="time" class="form-control" name="viernesInicio1" required></td>
+                                            <td><input type="time" class="form-control" name="viernesFin1" required></td>
+                                            <td><input type="time" class="form-control" name="viernesInicio2" required></td>
+                                            <td><input type="time" class="form-control" name="viernesFin2" required></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
         <!-- Otros campos -->
+        <!-- <h3 class="text-center border-bottom">Fechas y Horarios</h3>
         <div class="row">
             <div class="col-md-5">
+
                 <div class="form-group">
                     <label for="horasTotales">Horas Totales:</label>
                     <input type="text" class="form-control" id="horasTotales" name="horasTotales" required>
@@ -110,12 +198,14 @@
                 <div class="form-group">
                     <label for="horasDia">Horas por Día:</label>
                     <input type="text" class="form-control" id="horasDia" name="horasDia" required>
-                </div>
+                </div>    
             </div>
             <div class="col-md-7">
-                <div class="form-group">
-                    <label for="fechaHorarios">Fechas y Horarios:</label>
-                    <table class="table table-responsive">
+                <div class="form-group"> -->
+
+                    <!-- <label for="fechaHorarios">Fechas y Horarios:</label> -->
+
+                    <!-- <table class="table table-responsive">
                         <thead>
                             <tr>
                                 <th></th>
@@ -170,7 +260,7 @@
                     </table>
                 </div>
             </div>
-        </div>
+        </div> -->
         <div class="mb-4 pb-2 border-bottom">
             <h3 class="text-center">Seleccionar Responsable de Jefatura</h3>
             <div class="form-group">
