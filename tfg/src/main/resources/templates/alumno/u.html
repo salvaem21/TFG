@@ -3,7 +3,7 @@
     <h1>Editar alumno</h1>
 
     <form action="/alumno/u" method="post">
-        <label for="id-dni">DNI: </label>
+        <label for="id-dni" th:value="${pais.dni}">DNI: </label>
         <input id="id-dni" type="text" name="dni" autofocus="autofocus"/><br>
         <label for="id-nombre">Nombre: </label>
         <input id="id-nombre" type="text" name="nombre"/><br>
@@ -12,6 +12,7 @@
         <label for="id-fechaNacimiento">Fecha de nacimiento: </label>
         <input id="id-fechaNacimiento" type="date" name="fechaNacimiento"/><br>
         <br/>
+        <input type="hidden" name="idAlumno" th:value="${alumno.id}"/>
 
         <input type="submit" value="Añadir"/>
         <button onclick="window.location.href='/'">Cancelar</button>
