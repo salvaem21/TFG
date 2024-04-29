@@ -1,9 +1,12 @@
 <div class="container">
     <button onclick="window.location.href='/alumno/c'">Nuevo alumno</button>
-    <h1>Lista de alumnoes</h1>
+    <h1>Lista de alumnos</h1>
     <table class="table table-striped">
         <thead>
             <th>Nombre</th>
+            <th>Apellidos</th>
+            <th>Dni</th>
+            <th>Fecha de nacimiento</th>
             <th>Editar</th>
             <th>Borrar</th>
         </thead>
@@ -11,6 +14,9 @@
         <tr th:each="alumno : ${alumnos}">
             
             <td th:text="${alumno.nombre}" />
+            <td th:text="${alumno.apellido}" />
+            <td th:text="${alumno.dni}" />
+            <td th:text="${alumno.fechaNacimiento}" />
 
             <td>
                 <button th:onclick="|window.location.href='/alumno/u?id=${alumno.id}'|">

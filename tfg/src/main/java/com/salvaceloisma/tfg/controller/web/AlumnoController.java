@@ -65,10 +65,13 @@ public class AlumnoController {
 
     @PostMapping("u")
     public String updatePost(
-            @RequestParam("id") Long idAlumno,
-            @RequestParam("nombre") String nombre) throws DangerException {
+        @RequestParam("idAlumno") Long idAlumno,
+        @RequestParam("dni") String dni,
+        @RequestParam("nombre") String nombre,
+        @RequestParam("apellido") String apellido,
+        @RequestParam("fechaNacimiento") LocalDate fechaNacimiento,HttpSession s) throws DangerException {
         try {
-            alumnoService.update(idAlumno, nombre);
+            alumnoService.update(idAlumno,dni, nombre, apellido, fechaNacimiento);
         } catch (Exception e) {
             PRG.error("El alumno no pudo ser actualizado", "/alumno/r");
         }
