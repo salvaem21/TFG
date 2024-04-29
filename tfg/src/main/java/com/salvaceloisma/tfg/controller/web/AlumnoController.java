@@ -1,6 +1,6 @@
 package com.salvaceloisma.tfg.controller.web;
 
-import java.time.LocalDate;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.salvaceloisma.tfg.domain.Solicitud;
 import com.salvaceloisma.tfg.exception.DangerException;
 import com.salvaceloisma.tfg.helper.PRG;
 import com.salvaceloisma.tfg.service.AlumnoService;
@@ -45,9 +46,9 @@ public class AlumnoController {
             @RequestParam("dni") String dni,
             @RequestParam("nombre") String nombre,
             @RequestParam("apellido") String apellido,
-            @RequestParam("fechaNacimiento") LocalDate fechaNacimiento, HttpSession s) throws Exception {
+            @RequestParam("idSolicitud") Solicitud solicitud, HttpSession s) throws Exception {
         try {
-            alumnoService.save(dni, nombre, apellido, fechaNacimiento);
+            alumnoService.save(dni, nombre, apellido, solicitud);
         } catch (Exception e) {
             PRG.error("El alumno ya existe", "/alumno/c");
         }
@@ -69,9 +70,9 @@ public class AlumnoController {
         @RequestParam("dni") String dni,
         @RequestParam("nombre") String nombre,
         @RequestParam("apellido") String apellido,
-        @RequestParam("fechaNacimiento") LocalDate fechaNacimiento,HttpSession s) throws DangerException {
+        @RequestParam("idSolicitud") Solicitud solicitud,HttpSession s) throws DangerException {
         try {
-            alumnoService.update(idAlumno,dni, nombre, apellido, fechaNacimiento);
+            alumnoService.update(idAlumno,dni, nombre, apellido, solicitud);
         } catch (Exception e) {
             PRG.error("El alumno no pudo ser actualizado", "/alumno/r");
         }

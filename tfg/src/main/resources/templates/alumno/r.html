@@ -6,7 +6,7 @@
             <th>Nombre</th>
             <th>Apellidos</th>
             <th>Dni</th>
-            <th>Fecha de nacimiento</th>
+            <th>Id Solicitud:</th>
             <th>Editar</th>
             <th>Borrar</th>
         </thead>
@@ -16,7 +16,7 @@
             <td th:text="${alumno.nombre}" />
             <td th:text="${alumno.apellido}" />
             <td th:text="${alumno.dni}" />
-            <td th:text="${alumno.fechaNacimiento}" />
+            <td th:text="${alumno.idSolicitud}" />
 
             <td>
                 <button th:onclick="|window.location.href='/alumno/u?id=${alumno.id}'|">

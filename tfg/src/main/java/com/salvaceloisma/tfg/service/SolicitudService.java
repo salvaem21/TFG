@@ -1,5 +1,6 @@
 package com.salvaceloisma.tfg.service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,8 +28,8 @@ public class SolicitudService {
         return solicitudRepository.findByNumeroConvenio(numeroConvenio);
     }
 
-    public Solicitud save(Integer numeroConvenio, Usuario usuario, EstadoSolicitud estado) {
-        Solicitud solicitud = new Solicitud(numeroConvenio, usuario, estado);
+    public Solicitud save(String idSolicitud, Integer numeroConvenio,String empresa, String cif, String tutorEmpresa, String direccion, String localidad, String cp, String cicloFormativo, Usuario usuario, LocalDate fechaInicio, LocalDate fechaFin, int horasDia, int horasTotales, String horario, String observaciones,EstadoSolicitud estado) {
+        Solicitud solicitud = new Solicitud(idSolicitud, numeroConvenio, empresa, cif, tutorEmpresa, direccion, localidad, cp, cicloFormativo, usuario, fechaInicio, fechaFin, horasDia, horasTotales, horario, observaciones, estado);
         return solicitudRepository.save(solicitud);
     }
 
@@ -36,7 +37,7 @@ public class SolicitudService {
         return solicitudRepository.findById(idSolicitud).orElse(null); // Utiliza el método orElse(null) para manejar el caso de que no se encuentre ninguna solicitud con el ID especificado
     }
     
-    public void update(String idSolicitud, Integer numeroConvenio, Usuario usuario, EstadoSolicitud estado) {
+    public void update(String idSolicitud, Integer numeroConvenio,String empresa, String cif, String tutorEmpresa, String direccion, String localidad, String cp, String cicloFormativo, Usuario usuario, LocalDate fechaInicio, LocalDate fechaFin, int horasDia, int horasTotales, String horario, String observaciones,EstadoSolicitud estado) {
         // Obtener la solicitud existente por su ID
         Solicitud solicitud = solicitudRepository.findById(idSolicitud).orElse(null);
         if (solicitud != null) {

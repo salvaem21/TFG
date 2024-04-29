@@ -67,14 +67,14 @@ public class InicioSesionController {
     @PostMapping("/crearUsuario")
     public String crearUsuarioPost(
             @RequestParam("nombre") String nombre,
+            @RequestParam("apellido") String apellido,
             @RequestParam("correo") String correo,
             @RequestParam("contrasenia") String contrasenia,
-            @RequestParam("dni") String dni,
             @RequestParam("rol") RolUsuario rol, HttpSession s) throws Exception {
 
         try {
             correo = correo + "@educa.madrid.org";
-            inicioSesionService.save(nombre, correo, contrasenia, dni, rol);
+            inicioSesionService.save(nombre, apellido, correo, contrasenia, rol);
         } catch (Exception e) {
             PRG.error("El usuario ya existe", "/inicioSesion/crearUsuario");
         }

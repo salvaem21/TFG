@@ -1,5 +1,7 @@
 package com.salvaceloisma.tfg.controller.web;
 
+import java.time.LocalDate;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -38,15 +40,29 @@ public class SolicitudController {
 
     @PostMapping("c")
     public String cPost(
+            @RequestParam("idSolicitud") String idSolicitud,
             @RequestParam("numeroConvenio") Integer numeroConvenio,
-            @RequestParam("usuario") Usuario nombreUsuario,
+            @RequestParam("empresa") String empresa, 
+            @RequestParam("cif") String cif, 
+            @RequestParam("tutorEmpresa") String tutorEmpresa, 
+            @RequestParam("direccion") String direccion, 
+            @RequestParam("localidad") String localidad, 
+            @RequestParam("cp") String cp, 
+            @RequestParam("cicloFormativo") String cicloFormativo, 
+            @RequestParam("usuario") Usuario usuario, 
+            @RequestParam("fechaInicio") LocalDate fechaInicio, 
+            @RequestParam("fechaFin") LocalDate fechaFin, 
+            @RequestParam("horasDia") int horasDia, 
+            @RequestParam("horasTotales") int horasTotales, 
+            @RequestParam("horario") String horario, 
+            @RequestParam("observaciones") String observaciones,
             @RequestParam("estado") EstadoSolicitud estado,
             HttpSession s) throws DangerException {
  
         try {
-            solicitudService.save(numeroConvenio, nombreUsuario, estado);
+            solicitudService.save(idSolicitud, numeroConvenio, empresa, cif, tutorEmpresa, direccion, localidad, cp, cicloFormativo, usuario, fechaInicio, fechaFin, horasDia, horasTotales, horario, observaciones, estado);
         } catch (Exception e) {
-            PRG.error("La solicitud " + nombreUsuario + " ya existe", "/solicitud/c");
+            PRG.error("La solicitud " + idSolicitud + " ya existe", "/solicitud/c");
         }
         return "redirect:/solicitud/r";
     }
@@ -62,15 +78,28 @@ public class SolicitudController {
 
     @PostMapping("u")
     public String updatePost(
-            @RequestParam("id_solicitud") String idSolicitud,
+        @RequestParam("idSolicitud") String idSolicitud,
             @RequestParam("numeroConvenio") Integer numeroConvenio,
-            @RequestParam("usuario") Usuario nombre,
+            @RequestParam("empresa") String empresa, 
+            @RequestParam("cif") String cif, 
+            @RequestParam("tutorEmpresa") String tutorEmpresa, 
+            @RequestParam("direccion") String direccion, 
+            @RequestParam("localidad") String localidad, 
+            @RequestParam("cp") String cp, 
+            @RequestParam("cicloFormativo") String cicloFormativo, 
+            @RequestParam("usuario") Usuario usuario, 
+            @RequestParam("fechaInicio") LocalDate fechaInicio, 
+            @RequestParam("fechaFin") LocalDate fechaFin, 
+            @RequestParam("horasDia") int horasDia, 
+            @RequestParam("horasTotales") int horasTotales, 
+            @RequestParam("horario") String horario, 
+            @RequestParam("observaciones") String observaciones,
             @RequestParam("estado") EstadoSolicitud estado,
             HttpSession s) throws DangerException {
         try {
-            solicitudService.update(idSolicitud, numeroConvenio, nombre, estado);
+            solicitudService.update(idSolicitud, numeroConvenio, empresa, cif, tutorEmpresa, direccion, localidad, cp, cicloFormativo, usuario, fechaInicio, fechaFin, horasDia, horasTotales, horario, observaciones, estado);
         } catch (Exception e) {
-            PRG.error("La solicitud no pudo ser actualizada", "/solicitud/r");
+            PRG.error("La solicitud " + idSolicitud + " ya existe", "/solicitud/r");
         }
         return "redirect:/solicitud/r";
     }
