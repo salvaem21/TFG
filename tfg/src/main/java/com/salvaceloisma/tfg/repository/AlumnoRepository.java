@@ -5,9 +5,9 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.salvaceloisma.tfg.domain._Bean;
+import com.salvaceloisma.tfg.domain.Alumno;
 
 @Repository
-public interface _BeanRepository extends JpaRepository<_Bean,Long> {
-    public List<_Bean> findByNombre(String nombre);
+public interface AlumnoRepository extends JpaRepository<Alumno,Long> {
+    public List<Alumno> findByDni(String dni);
 }

@@ -7,3 +7,4 @@ public enum EstadoSolicitud {
     PENDIENTE_FIRMA_JEFATURA,
     FINALIZADO_DIRECCION
 }
+

@@ -13,12 +13,14 @@ import com.salvaceloisma.tfg.enumerados.RolUsuario;
 import com.salvaceloisma.tfg.exception.DangerException;
 import com.salvaceloisma.tfg.exception.InfoException;
 import com.salvaceloisma.tfg.helper.PRG;
+import com.salvaceloisma.tfg.service.AlumnoService;
 import com.salvaceloisma.tfg.service.EmailService;
 import com.salvaceloisma.tfg.service.InicioSesionService;
 
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -32,6 +34,9 @@ public class EnviarDatosController {
     @Autowired
     private InicioSesionService inicioSesionService;
 
+    @Autowired
+    private AlumnoService alumnoService;
+
     @GetMapping("/enviarDatosAJefatura")
     public String crearDocumento(ModelMap m) {
         List<Usuario> usuariosJefatura = inicioSesionService.obtenerUsuariosPorRol(RolUsuario.JEFATURA);
@@ -42,13 +47,13 @@ public class EnviarDatosController {
 
     @PostMapping("/enviarDatosAJefatura")
     public String crearDocumento(HttpServletResponse response, HttpSession session, @RequestParam String numeroConvenio,
+            @RequestParam String tutorAlumno, @RequestParam String nifTutorAlumno,
             @RequestParam String nombreEmpresa, @RequestParam String tutorEmpresa,
             @RequestParam String cifEmpresa, @RequestParam String direccionPracticas,
             @RequestParam String localidadPracticas, @RequestParam String codigoPostalPracticas,
-            @RequestParam String apellidosAlumno, @RequestParam String nombreAlumno, @RequestParam String nifAlumno,
+            @RequestParam String[] apellidosAlumno, @RequestParam String[] nombreAlumno, @RequestParam String[] nifAlumno,
             @RequestParam String cicloFormativoAlumno,
-            @RequestParam String tutorAlumno, @RequestParam String nifTutorAlumno,
-            @RequestParam String fechaDeNacimientoAlumno, @RequestParam String horasTotales,
+            @RequestParam String[] fechaDeNacimientoAlumno, @RequestParam String horasTotales,
             @RequestParam String fechaInicio, @RequestParam String fechaFin, @RequestParam LocalTime lunesInicio1,
             @RequestParam LocalTime martesInicio1, @RequestParam LocalTime lunesFin1,
             @RequestParam LocalTime martesFin1, @RequestParam LocalTime miercolesInicio1,
@@ -63,43 +68,54 @@ public class EnviarDatosController {
             @RequestParam LocalTime viernesFin2, @RequestParam String horasDia,
             @RequestParam("rolUsuario") Long usuarioEnvio, ModelMap m)
             throws DangerException, InfoException {
-
+    
         Usuario usuario = (Usuario) session.getAttribute("usuario");
         String nombre = usuario.getNombre();
-
+    
         String correo = inicioSesionService.findById(usuarioEnvio).getCorreo();
-
-        String datos = "Numero Convenio: " + numeroConvenio;
-        datos += "\nNombre empresa: " + nombreEmpresa;
-        datos += "\nTutor empresa: " + tutorEmpresa;
-        datos += "\nCIF empresa: " + cifEmpresa;
-        datos += "\nDirección prácticas: " + direccionPracticas;
-        datos += "\nLocalidad prácticas: " + localidadPracticas;
-        datos += "\nCódigo postal prácticas: " + codigoPostalPracticas;
-        datos += "\nApellidos alumno: " + apellidosAlumno;
-        datos += "\nNombre alumno: " + nombreAlumno;
-        datos += "\nNIF alumno: " + nifAlumno;
-        datos += "\nCiclo formativo alumno: " + cicloFormativoAlumno;
-        datos += "\nTutor alumno: " + tutorAlumno;
-        datos += "\nNIF tutor alumno: " + nifTutorAlumno;
-        datos += "\nFecha de nacimiento alumno: " + fechaDeNacimientoAlumno;
-        datos += "\nHoras totales: " + horasTotales;
-        datos += "\nFecha de inicio: " + fechaInicio;
-        datos += "\nFecha de fin: " + fechaFin;
-        datos += "\nLunes: " + lunesInicio1 + "-" + lunesFin1 + "\t" + lunesInicio2 + "-" + lunesFin2;
-        datos += "\nMartes: " + martesInicio1 + "-" + martesFin1 + "\t" + martesInicio2 + "-" + martesFin2;
-        datos += "\nMiercoles: " + miercolesInicio1 + "-" + miercolesFin1 + "\t" + miercolesInicio2 + "-"
-                + miercolesFin2;
-        datos += "\nJueves: " + juevesInicio1 + "-" + juevesFin1 + "\t" + juevesInicio2 + "-" + juevesFin2;
-        datos += "\nViernes: " + viernesInicio1 + "-" + viernesFin1 + "\t" + viernesInicio2 + "-" + viernesFin2;
-        datos += "\nHoras por día: " + horasDia;
-
+    
+        StringBuilder datos = new StringBuilder();
+    
+        // Construir el mensaje para cada alumno
+        for (int i = 0; i < apellidosAlumno.length; i++) {
+            datos.append("Alumno ").append(i + 1).append(":\n");
+            datos.append("Apellidos alumno: ").append(apellidosAlumno[i]).append("\n");
+            datos.append("Nombre alumno: ").append(nombreAlumno[i]).append("\n");
+            datos.append("NIF alumno: ").append(nifAlumno[i]).append("\n");
+            datos.append("Ciclo formativo: ").append(cicloFormativoAlumno).append("\n");
+            datos.append("Fecha de nacimiento alumno: ").append(fechaDeNacimientoAlumno[i]).append("\n");
+            datos.append("\n");
+            try{
+            alumnoService.save(nifAlumno[i], nombreAlumno[i], apellidosAlumno[i], LocalDate.parse(fechaDeNacimientoAlumno[i]));
+            }
+            catch(Exception e) {
+                PRG.error("El NIF de ese alumno ya esta en uso");
+            }
+        }
+    
+        // Agregar los datos comunes al final
+        datos.append("Datos comunes:\n");
+        datos.append("Tutor alumno: ").append(tutorAlumno).append("\n");
+        datos.append("NIF tutor alumno: ").append(nifTutorAlumno).append("\n");
+        datos.append("Numero Convenio: ").append(numeroConvenio).append("\n");
+        datos.append("Nombre empresa: ").append(nombreEmpresa).append("\n");
+        datos.append("Tutor empresa: ").append(tutorEmpresa).append("\n");
+        datos.append("CIF empresa: ").append(cifEmpresa).append("\n");
+        datos.append("Dirección prácticas: ").append(direccionPracticas).append("\n");
+        datos.append("Localidad prácticas: ").append(localidadPracticas).append("\n");
+        datos.append("Código postal prácticas: ").append(codigoPostalPracticas).append("\n");
+        datos.append("Horas totales: ").append(horasTotales).append("\n");
+        datos.append("Fecha de inicio: ").append(fechaInicio).append("\n");
+        datos.append("Fecha de fin: ").append(fechaFin).append("\n");
+        datos.append("Horas por día: ").append(horasDia).append("\n");
+    
         try {
-            emailService.enviarEmail(correo, "Envio de datos de " + nombre, "Estos son los datos del alumno:\n" + datos);
+            emailService.enviarEmail(correo, "Envio de datos de " + nombre, "Estos son los datos:\n" + datos.toString());
         } catch (Exception e) {
             PRG.error("El correo no puedo enviarse correctamente.");
         }
         
         return "redirect:../";
     }
+    
 }

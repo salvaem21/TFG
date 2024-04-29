@@ -27,6 +27,7 @@ body {
     border-color: black;
     background-color: lightgoldenrodyellow;
 }
+
 .btn-outline-propio1:hover {
     background-color: lightcoral;
     border-color: lightcoral;
@@ -42,3 +43,24 @@ body {
     color: #666;
     font-style: italic;
 }
+
+
+
+/* Subir archivo  Bajar archivo */
+.documento {
+    margin-top: 50px;
+  }
+.documento h2 {
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+.documento input[type="file"] {
+    display: block;
+    width: 100%;
+    margin-bottom: 20px;
+  }
+.documento button[type="submit"] {
+    display: block;
+    width: 100%;
+  }

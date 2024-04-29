@@ -38,22 +38,21 @@ public class InicioSesionService {
 
     public Usuario inicioSesion(String correo, String contrasenia) throws Exception {
         Usuario usuario = inicioSesionRepository.findByCorreo(correo);
-        if(usuario==null){
-            throw new Exception("El correo "+ correo+ " no existe");
+        if(usuario == null) {
+            throw new Exception("El correo " + correo + " no existe");
         }
-        if(!contrasenia.matches(usuario.getContrasenia())){
+        if(!contrasenia.equals(usuario.getContrasenia())) {
             throw new Exception("La contraseña no es correcta");
         }
 
         return usuario;
     }
     
-    public Usuario cambiarContrasenia(Usuario usuario,String contraseniaActual, String contraseniaNueva) throws Exception {
-        if(contraseniaActual.equals(usuario.getContrasenia())){
+    public Usuario cambiarContrasenia(Usuario usuario, String contraseniaActual, String contraseniaNueva) throws Exception {
+        if(contraseniaActual.equals(usuario.getContrasenia())) {
             usuario.setContrasenia(contraseniaNueva);
             return inicioSesionRepository.save(usuario);
-        }
-        else{
+        } else {
             throw new Exception("La contraseña actual no es correcta");
         }
     }

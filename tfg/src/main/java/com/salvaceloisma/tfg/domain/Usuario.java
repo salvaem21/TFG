@@ -27,10 +27,9 @@ public class Usuario {
     private String correo;
 
     private String contrasenia;
-    
-    @Column(unique = true)
-    private String dni;
 
+    private String dni;
+    
     @Enumerated(EnumType.STRING)
     private RolUsuario rol;
 
@@ -43,7 +42,4 @@ public class Usuario {
         this.dni = dni;
         this.rol = rol;
     }
-
-
-
 }
