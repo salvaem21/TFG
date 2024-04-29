@@ -39,8 +39,7 @@ public class EnviarDatosController {
 
     @GetMapping("/enviarDatosAJefatura")
     public String crearDocumento(ModelMap m) {
-        List<Usuario> usuariosJefatura = inicioSesionService.obtenerUsuariosPorRol(RolUsuario.JEFATURA);
-        m.put("usuariosJefatura", usuariosJefatura);
+        m.put("usuariosJefatura", inicioSesionService.obtenerUsuariosPorRol(RolUsuario.JEFATURA));
         m.put("view", "profesor/enviarDatosAlumnos");
         return "_t/frame";
     }
