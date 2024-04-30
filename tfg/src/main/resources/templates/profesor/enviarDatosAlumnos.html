@@ -23,6 +23,7 @@
                 </div>
             </div>
         </div>
+        
         <!-- Información de la empresa -->
         <div class="mb-4 pb-2 border-bottom">
             <h3 class="text-center">Datos de la Empresa</h3>
@@ -138,7 +139,6 @@
                 <div class="col-md-7">
                     <!-- Tabla de horarios -->
                     <div class="form-group">
-                        <!-- <label for="fechaHorarios">Fechas y Horarios:</label> -->
                         <table class="table table-responsive">
                             <thead>
                                 <tr>
@@ -199,90 +199,6 @@
             </div>
         </div>
 
-        <!-- Otros campos -->
-        <!-- <h3 class="text-center border-bottom">Fechas y Horarios</h3>
-        <div class="row">
-            <div class="col-md-5">
-
-                <div class="form-group">
-                    <label for="horasTotales">Horas Totales:</label>
-                    <input type="text" class="form-control" id="horasTotales" name="horasTotales" required>
-                </div>
-                <div class="form-group">
-                    <label for="fechaInicio">Fecha de Inicio:</label>
-                    <input type="date" class="form-control" id="fechaInicio" name="fechaInicio" required>
-                </div>
-                <div class="form-group">
-                    <label for="fechaFin">Fecha de Fin:</label>
-                    <input type="date" class="form-control" id="fechaFin" name="fechaFin" required>
-                </div>
-                <div class="form-group">
-                    <label for="horasDia">Horas por Día:</label>
-                    <input type="text" class="form-control" id="horasDia" name="horasDia" required>
-                </div>    
-            </div>
-            <div class="col-md-7">
-                <div class="form-group"> -->
-
-        <!-- <label for="fechaHorarios">Fechas y Horarios:</label> -->
-
-        <!-- <table class="table table-responsive">
-                        <thead>
-                            <tr>
-                                <th></th>
-                                <th colspan="2">Primer horario</th>
-                                <th colspan="2">Segundo horario</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td></td>
-                                <td>Inicio</td>
-                                <td>Fin</td>
-                                <td>Inicio</td>
-                                <td>Fin</td>
-                            </tr>
-                            <tr>
-                                <td>Lunes</td>
-                                <td><input type="time" class="form-control" name="lunesInicio1" required></td>
-                                <td><input type="time" class="form-control" name="lunesFin1" required></td>
-                                <td><input type="time" class="form-control" name="lunesInicio2" required></td>
-                                <td><input type="time" class="form-control" name="lunesFin2" required></td>
-                            </tr>
-                            <tr>
-                                <td>Martes</td>
-                                <td><input type="time" class="form-control" name="martesInicio1" required></td>
-                                <td><input type="time" class="form-control" name="martesFin1" required></td>
-                                <td><input type="time" class="form-control" name="martesInicio2" required></td>
-                                <td><input type="time" class="form-control" name="martesFin2" required></td>
-                            </tr>
-                            <tr>
-                                <td>Miércoles</td>
-                                <td><input type="time" class="form-control" name="miercolesInicio1" required></td>
-                                <td><input type="time" class="form-control" name="miercolesFin1" required></td>
-                                <td><input type="time" class="form-control" name="miercolesInicio2" required></td>
-                                <td><input type="time" class="form-control" name="miercolesFin2" required></td>
-                            </tr>
-                            <tr>
-                                <td>Jueves</td>
-                                <td><input type="time" class="form-control" name="juevesInicio1" required></td>
-                                <td><input type="time" class="form-control" name="juevesFin1" required></td>
-                                <td><input type="time" class="form-control" name="juevesInicio2" required></td>
-                                <td><input type="time" class="form-control" name="juevesFin2" required></td>
-                            </tr>
-                            <tr>
-                                <td>Viernes</td>
-                                <td><input type="time" class="form-control" name="viernesInicio1" required></td>
-                                <td><input type="time" class="form-control" name="viernesFin1" required></td>
-                                <td><input type="time" class="form-control" name="viernesInicio2" required></td>
-                                <td><input type="time" class="form-control" name="viernesFin2" required></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div> -->
-
         <button type="submit" class="btn btn-primary mt-3">Enviar Datos FCTs</button>
     </form>
 </div>
@@ -290,6 +206,64 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function () {
+        // Función para calcular la letra del DNI
+        function calcularLetraDNI(numero) {
+            var letras = 'TRWAGMYFPDXBNJZSQVHLCKET';
+            return letras.charAt(numero % 23);
+        }
+
+        // Validar el DNI introducido
+        function validarDNI(dniInput) {
+            var dni = dniInput.val();
+            // Expresión regular para validar el formato del DNI
+            var dniRegex = /^\d{8}[a-zA-Z]$/;
+            if (!dniRegex.test(dni)) {
+                dniInput.css('border-color', 'red');
+                return false;
+            }
+
+            var numerosDNI = dni.substring(0, 8);
+            var letraDNI = dni.substring(8).toUpperCase();
+
+            // Calcular la letra correcta del DNI
+            var letraCorrecta = calcularLetraDNI(parseInt(numerosDNI, 10));
+
+            // Comprobar si la letra introducida coincide con la letra calculada
+            if (letraDNI !== letraCorrecta) {
+                dniInput.css('border-color', 'red');
+                return false;
+            }
+
+            // Si el DNI es válido, eliminar el resaltado rojo
+            dniInput.css('border-color', '');
+
+            return true;
+        }
+
+        // Validar el DNI cuando se envíe el formulario
+        $("#formularioAlumnos").submit(function (event) {
+            var dniTutor = $("#nifTutorAlumno");
+            var dniAlumno = $("#nifAlumno");
+            var tutorValido = validarDNI(dniTutor);
+            var alumnoValido = validarDNI(dniAlumno);
+
+            // Si tanto el NIF del Tutor como del Alumno son inválidos
+            if (!tutorValido && !alumnoValido) {
+                alert("El NIF del Tutor y del Alumno introducidos no son válidos.");
+                event.preventDefault(); // Evitar que se envíe el formulario si ambos NIF no son válidos
+            }
+            // Si solo el NIF del Tutor es inválido
+            else if (!tutorValido) {
+                alert("El NIF del Tutor introducido no es válido.");
+                event.preventDefault(); // Evitar que se envíe el formulario si el NIF del Tutor no es válido
+            }
+            // Si solo el NIF del Alumno es inválido
+            else if (!alumnoValido) {
+                alert("El NIF del Alumno introducido no es válido.");
+                event.preventDefault(); // Evitar que se envíe el formulario si el NIF del Alumno no es válido
+            }
+        });
+
         // Manejador de clic en el botón para agregar otro alumno
         $("#agregarAlumno").click(function () {
             // Clonar el último conjunto de campos de datos del alumno y agregarlo al formulario
