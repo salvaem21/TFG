@@ -12,6 +12,7 @@ import com.salvaceloisma.tfg.domain.Usuario;
 import com.salvaceloisma.tfg.enumerados.RolUsuario;
 import com.salvaceloisma.tfg.exception.DangerException;
 import com.salvaceloisma.tfg.helper.PRG;
+import com.salvaceloisma.tfg.service.AlumnoService;
 import com.salvaceloisma.tfg.service.InicioSesionService;
 
 import jakarta.servlet.http.HttpSession;
@@ -22,6 +23,9 @@ public class InicioSesionController {
 
     @Autowired
     private InicioSesionService inicioSesionService;
+
+    @Autowired
+    private AlumnoService alumnoService;
 
     @GetMapping("/inicioSesion")
     public String inicioSesion(
@@ -79,6 +83,14 @@ public class InicioSesionController {
             PRG.error("El usuario ya existe", "/inicioSesion/crearUsuario");
         }
         return "redirect:../";
+    }
+
+    @GetMapping("/gestionarAlumnos")
+    public String gestionarAlumnos(
+            ModelMap m) {
+        m.put("alumnos", alumnoService.findAll());
+        m.put("view", "alumno/r");
+        return "_t/frame";
     }
 
     @GetMapping("/cambiarContrasenia")
