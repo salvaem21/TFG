@@ -22,7 +22,6 @@ import jakarta.servlet.http.HttpSession;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.List;
 
 @RequestMapping("/enviarDatos")
 @Controller
