@@ -13,14 +13,15 @@ import com.salvaceloisma.tfg.enumerados.RolUsuario;
 import com.salvaceloisma.tfg.exception.DangerException;
 import com.salvaceloisma.tfg.exception.InfoException;
 import com.salvaceloisma.tfg.helper.PRG;
+import com.salvaceloisma.tfg.service.AlumnoService;
 import com.salvaceloisma.tfg.service.EmailService;
 import com.salvaceloisma.tfg.service.InicioSesionService;
 
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.List;
 
 @RequestMapping("/enviarDatos")
 @Controller
@@ -32,10 +33,12 @@ public class EnviarDatosController {
     @Autowired
     private InicioSesionService inicioSesionService;
 
+    @Autowired
+    private AlumnoService alumnoService;
+
     @GetMapping("/enviarDatosAJefatura")
     public String crearDocumento(ModelMap m) {
-        List<Usuario> usuariosJefatura = inicioSesionService.obtenerUsuariosPorRol(RolUsuario.JEFATURA);
-        m.put("usuariosJefatura", usuariosJefatura);
+        m.put("usuariosJefatura", inicioSesionService.obtenerUsuariosPorRol(RolUsuario.JEFATURA));
         m.put("view", "profesor/enviarDatosAlumnos");
         return "_t/frame";
     }
@@ -47,7 +50,7 @@ public class EnviarDatosController {
             @RequestParam String cifEmpresa, @RequestParam String direccionPracticas,
             @RequestParam String localidadPracticas, @RequestParam String codigoPostalPracticas,
             @RequestParam String[] apellidosAlumno, @RequestParam String[] nombreAlumno, @RequestParam String[] nifAlumno,
-            @RequestParam String[] cicloFormativoAlumno,
+            @RequestParam String cicloFormativoAlumno,
             @RequestParam String[] fechaDeNacimientoAlumno, @RequestParam String horasTotales,
             @RequestParam String fechaInicio, @RequestParam String fechaFin, @RequestParam LocalTime lunesInicio1,
             @RequestParam LocalTime martesInicio1, @RequestParam LocalTime lunesFin1,
@@ -77,9 +80,15 @@ public class EnviarDatosController {
             datos.append("Apellidos alumno: ").append(apellidosAlumno[i]).append("\n");
             datos.append("Nombre alumno: ").append(nombreAlumno[i]).append("\n");
             datos.append("NIF alumno: ").append(nifAlumno[i]).append("\n");
-            datos.append("Ciclo formativo alumno: ").append(cicloFormativoAlumno[i]).append("\n");
+            datos.append("Ciclo formativo: ").append(cicloFormativoAlumno).append("\n");
             datos.append("Fecha de nacimiento alumno: ").append(fechaDeNacimientoAlumno[i]).append("\n");
             datos.append("\n");
+            try{
+            alumnoService.save(nifAlumno[i], nombreAlumno[i], apellidosAlumno[i], LocalDate.parse(fechaDeNacimientoAlumno[i]));
+            }
+            catch(Exception e) {
+                PRG.error("El NIF de ese alumno ya esta en uso");
+            }
         }
     
         // Agregar los datos comunes al final
