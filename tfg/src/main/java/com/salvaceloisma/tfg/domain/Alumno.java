@@ -3,6 +3,8 @@ package com.salvaceloisma.tfg.domain;
 
 
 
+import java.time.LocalDate;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -26,16 +28,17 @@ public class Alumno {
     private String dni;
     private String nombre;
     private String apellido;
+    private LocalDate fechaNacimiento;
     
     @ManyToOne
     @JoinColumn(name = "id_solicitud")
     private Solicitud solicitud;
 
-    public Alumno(String dni, String nombre, String apellido, Solicitud solicitud) {
+    public Alumno(String dni, String nombre, String apellido, LocalDate fechaNacimiento) {
         this.dni =dni;
         this.nombre = nombre;
         this.apellido = apellido;
-        this.solicitud = solicitud;
+        this.fechaNacimiento = fechaNacimiento;
     }
 }
 

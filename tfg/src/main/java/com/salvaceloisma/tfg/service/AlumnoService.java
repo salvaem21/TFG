@@ -1,12 +1,12 @@
 package com.salvaceloisma.tfg.service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.salvaceloisma.tfg.domain.Alumno;
-import com.salvaceloisma.tfg.domain.Solicitud;
 import com.salvaceloisma.tfg.repository.AlumnoRepository;
 
 @Service
@@ -23,19 +23,19 @@ public class AlumnoService {
         return alumnoRepository.findByDni(dni);
     }
 
-    public Alumno save(String dni,String nombre, String apellido,Solicitud solicitud) {
-        return alumnoRepository.save(new Alumno(dni, nombre, apellido, solicitud));
+    public Alumno save(String dni,String nombre, String apellido, LocalDate fechaNacimiento) {
+        return alumnoRepository.save(new Alumno(dni, nombre, apellido, fechaNacimiento));
     }
 
     public Alumno findById(Long idAlumno) {
         return alumnoRepository.findById(idAlumno).get();
     }
-    public void update(Long idAlumno,String dni,String nombre, String apellido,Solicitud solicitud) {
+    public void update(Long idAlumno,String dni,String nombre, String apellido, LocalDate fechaNacimiento) {
         Alumno alumno = alumnoRepository.findById(idAlumno).get();
         alumno.setDni(dni);
         alumno.setNombre(nombre);
         alumno.setApellido(apellido);
-        alumno.setSolicitud(solicitud);
+        alumno.setFechaNacimiento(fechaNacimiento);
         alumnoRepository.save(alumno);
     }
 
