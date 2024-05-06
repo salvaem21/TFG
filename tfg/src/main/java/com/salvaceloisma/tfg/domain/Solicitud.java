@@ -8,12 +8,10 @@ import java.util.List;
 
 import com.salvaceloisma.tfg.enumerados.EstadoSolicitud;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.ForeignKey;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
@@ -38,7 +36,7 @@ public class Solicitud {
     @JoinColumn(name = "id_usuario", referencedColumnName = "id", foreignKey = @ForeignKey(name = "FK_solicitud_usuario"))
     private Usuario usuario;
     
-    @OneToMany(mappedBy = "idSolicitud", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "solicitud")
     private List<Alumno> alumnos;
 
     @Column(name = "empresa")
@@ -88,7 +86,7 @@ public class Solicitud {
     @Enumerated(EnumType.STRING)
     private EstadoSolicitud estado;
     
-    public Solicitud(String idSolicitud, Integer numeroConvenio,String empresa, String cif, String tutorEmpresa, String direccion, String localidad, String cp, String cicloFormativo, Usuario usuario, LocalDate fechaInicio, LocalDate fechaFin, int horasDia, int horasTotales, String horario, String observaciones,EstadoSolicitud estado) {
+    public Solicitud(Integer numeroConvenio,String empresa, String cif, String tutorEmpresa, String direccion, String localidad, String cp, String cicloFormativo, Usuario usuario, LocalDate fechaInicio, LocalDate fechaFin, int horasDia, int horasTotales, String horario, String observaciones,EstadoSolicitud estado) {
         this.idSolicitud = LocalDateTime.now().toString().replaceAll("[^0-9]", "");
         this.numeroConvenio = numeroConvenio;
         this.usuario = usuario;

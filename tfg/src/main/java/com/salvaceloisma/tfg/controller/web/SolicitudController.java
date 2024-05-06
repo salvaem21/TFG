@@ -40,7 +40,6 @@ public class SolicitudController {
 
 @PostMapping("c")
 public String cPost(
-        @RequestParam("idSolicitud") String idSolicitud,
         @RequestParam("numeroConvenio") Integer numeroConvenio,
         @RequestParam("empresa") String empresa,
         @RequestParam("cif") String cif,
@@ -60,7 +59,7 @@ public String cPost(
         HttpSession s) throws DangerException {
 
     try {
-        solicitudService.save(idSolicitud, numeroConvenio, empresa, cif, tutorEmpresa, direccion, localidad, cp, cicloFormativo, usuario, fechaInicio, fechaFin, horasDia, horasTotales, horario, observaciones, estado);
+        solicitudService.save(numeroConvenio, empresa, cif, tutorEmpresa, direccion, localidad, cp, cicloFormativo, usuario, fechaInicio, fechaFin, horasDia, horasTotales, horario, observaciones, estado);
     } catch (Exception e) {
         PRG.error("La solicitud con número de convenio " + numeroConvenio + " ya existe", "/solicitud/c");
     }

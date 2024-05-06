@@ -29,18 +29,18 @@ public class SolicitudService {
         return solicitudRepository.findByNumeroConvenio(numeroConvenio);
     }
 
-    public Solicitud save(String idSolicitud, Integer numeroConvenio,String empresa, String cif, String tutorEmpresa, String direccion, String localidad, String cp, String cicloFormativo, Usuario usuario, LocalDate fechaInicio, LocalDate fechaFin, int horasDia, int horasTotales, String horario, String observaciones,EstadoSolicitud estado) {
-        Solicitud solicitud = new Solicitud(idSolicitud, numeroConvenio, empresa, cif, tutorEmpresa, direccion, localidad, cp, cicloFormativo, usuario, fechaInicio, fechaFin, horasDia, horasTotales, horario, observaciones, estado);
+    public Solicitud save(Integer numeroConvenio,String empresa, String cif, String tutorEmpresa, String direccion, String localidad, String cp, String cicloFormativo, Usuario usuario, LocalDate fechaInicio, LocalDate fechaFin, int horasDia, int horasTotales, String horario, String observaciones,EstadoSolicitud estado) {
+        Solicitud solicitud = new Solicitud(numeroConvenio, empresa, cif, tutorEmpresa, direccion, localidad, cp, cicloFormativo, usuario, fechaInicio, fechaFin, horasDia, horasTotales, horario, observaciones, estado);
         return solicitudRepository.save(solicitud);
     }
 
         // Método para guardar una nueva solicitud con control de Roll
-        public Solicitud save(String idSolicitud, Integer numeroConvenio, String empresa, String cif, String tutorEmpresa, String direccion, String localidad, String cp, String cicloFormativo, Usuario usuario, LocalDate fechaInicio, LocalDate fechaFin, int horasDia, int horasTotales, String horario, String observaciones, EstadoSolicitud estado, Usuario usuarioSolicitante) throws Exception {
+        public Solicitud save(Integer numeroConvenio, String empresa, String cif, String tutorEmpresa, String direccion, String localidad, String cp, String cicloFormativo, Usuario usuario, LocalDate fechaInicio, LocalDate fechaFin, int horasDia, int horasTotales, String horario, String observaciones, EstadoSolicitud estado, Usuario usuarioSolicitante) throws Exception {
             // Verificar si el usuario solicitante tiene el rol de profesor
             if (usuarioSolicitante.getRol() != RolUsuario.PROFESOR) {
                 throw new Exception("Solo los profesores pueden crear solicitudes");
             }
-            Solicitud solicitud = new Solicitud(idSolicitud, numeroConvenio, empresa, cif, tutorEmpresa, direccion, localidad, cp, cicloFormativo, usuario, fechaInicio, fechaFin, horasDia, horasTotales, horario, observaciones, estado);
+            Solicitud solicitud = new Solicitud(numeroConvenio, empresa, cif, tutorEmpresa, direccion, localidad, cp, cicloFormativo, usuario, fechaInicio, fechaFin, horasDia, horasTotales, horario, observaciones, estado);
             return solicitudRepository.save(solicitud);
         }
 
@@ -55,7 +55,21 @@ public class SolicitudService {
         if (solicitud != null) {
             // Actualizar los atributos de la solicitud con los valores proporcionados
             solicitud.setNumeroConvenio(numeroConvenio);
+            solicitud.setEmpresa(tutorEmpresa);
+            solicitud.setCif(cif);
+            solicitud.setTutorEmpresa(tutorEmpresa);
+            solicitud.setDireccion(direccion);
+            solicitud.setLocalidad(localidad);
+            solicitud.setCp(cp);
+            solicitud.setCicloFormativo(cicloFormativo);
             solicitud.setUsuario(usuario);
+            solicitud.setFechaInicio(fechaInicio);
+            solicitud.setFechaFin(fechaFin);
+            solicitud.setHorasDia(horasDia);
+            solicitud.setHorasTotales(horasTotales);
+            solicitud.setHorario(horario);
+            solicitud.setObservaciones(observaciones);
+            solicitud.setEstado(estado);
             // Guardar la solicitud actualizada en la base de datos
             solicitudRepository.save(solicitud);
         } else {
@@ -76,7 +90,21 @@ public class SolicitudService {
                 if (solicitud != null) {
                     // Actualizar los atributos de la solicitud con los valores proporcionados
                     solicitud.setNumeroConvenio(numeroConvenio);
+                    solicitud.setEmpresa(tutorEmpresa);
+                    solicitud.setCif(cif);
+                    solicitud.setTutorEmpresa(tutorEmpresa);
+                    solicitud.setDireccion(direccion);
+                    solicitud.setLocalidad(localidad);
+                    solicitud.setCp(cp);
+                    solicitud.setCicloFormativo(cicloFormativo);
                     solicitud.setUsuario(usuario);
+                    solicitud.setFechaInicio(fechaInicio);
+                    solicitud.setFechaFin(fechaFin);
+                    solicitud.setHorasDia(horasDia);
+                    solicitud.setHorasTotales(horasTotales);
+                    solicitud.setHorario(horario);
+                    solicitud.setObservaciones(observaciones);
+                    solicitud.setEstado(estado);
                     // Guardar la solicitud actualizada en la base de datos
                     solicitudRepository.save(solicitud);
                 } else {

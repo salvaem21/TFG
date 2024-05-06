@@ -113,6 +113,7 @@ public class EnviarDatosController {
         Usuario remitente = (Usuario) session.getAttribute("usuario");
         Usuario destinatario = inicioSesionService.findById(usuarioEnvio);
         try {
+            //solicitudService.save(idSolicitud, numeroConvenio, nombreEmpresa, cifEmpresa, tutorEmpresa, direccionPracticas, localidadPracticas, codigoPostalPracticas, cicloFormativoAlumno, usuario, fechaInicio, fechaFin, horasDia, horasTotales, horario, observaciones, estado);
             inicioSesionService.enviarMensaje(remitente, destinatario, datos.toString());
             emailService.enviarEmail(correo, "Envio de datos de " + nombre, "Estos son los datos:\n" + datos.toString());
         } catch (Exception e) {
