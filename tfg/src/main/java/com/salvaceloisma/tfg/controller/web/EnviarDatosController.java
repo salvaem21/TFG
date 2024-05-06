@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.salvaceloisma.tfg.domain.Mensaje;
 import com.salvaceloisma.tfg.domain.Usuario;
+import com.salvaceloisma.tfg.enumerados.EstadoSolicitud;
 import com.salvaceloisma.tfg.enumerados.RolUsuario;
 import com.salvaceloisma.tfg.exception.DangerException;
 import com.salvaceloisma.tfg.exception.InfoException;
@@ -74,6 +75,21 @@ public class EnviarDatosController {
         String nombre = usuario.getNombre();
     
         String correo = inicioSesionService.findById(usuarioEnvio).getCorreo();
+
+        StringBuilder horarioBuilder = new StringBuilder();
+        horarioBuilder.append("Lunes: ").append(lunesInicio1).append(" - ").append(lunesFin1).append("\n")
+            .append("Martes: ").append(martesInicio1).append(" - ").append(martesFin1).append("\n")
+            .append("Miércoles: ").append(miercolesInicio1).append(" - ").append(miercolesFin1).append("\n")
+            .append("Jueves: ").append(juevesInicio1).append(" - ").append(juevesFin1).append("\n")
+            .append("Viernes: ").append(viernesInicio1).append(" - ").append(viernesFin1).append("\n")
+            .append("Segundo horario: \n")
+            .append("Lunes: ").append(lunesInicio2).append(" - ").append(lunesFin2).append("\n")
+            .append("Martes: ").append(martesInicio2).append(" - ").append(martesFin2).append("\n")
+            .append("Miércoles: ").append(miercolesInicio2).append(" - ").append(miercolesFin2).append("\n")
+            .append("Jueves: ").append(juevesInicio2).append(" - ").append(juevesFin2).append("\n")
+            .append("Viernes: ").append(viernesInicio2).append(" - ").append(viernesFin2);
+        String horario = horarioBuilder.toString();
+        
     
         StringBuilder datos = new StringBuilder();
     
@@ -112,8 +128,11 @@ public class EnviarDatosController {
     
         Usuario remitente = (Usuario) session.getAttribute("usuario");
         Usuario destinatario = inicioSesionService.findById(usuarioEnvio);
+            // Establecer el estado por defecto a PENDIENTE_JEFATURA
+        EstadoSolicitud estado = EstadoSolicitud.PENDIENTE_JEFATURA;
+        String observaciones ="";
         try {
-            //solicitudService.save(idSolicitud, numeroConvenio, nombreEmpresa, cifEmpresa, tutorEmpresa, direccionPracticas, localidadPracticas, codigoPostalPracticas, cicloFormativoAlumno, usuario, fechaInicio, fechaFin, horasDia, horasTotales, horario, observaciones, estado);
+            solicitudService.save(numeroConvenio, nombreEmpresa, cifEmpresa, tutorEmpresa, direccionPracticas, localidadPracticas, codigoPostalPracticas, cicloFormativoAlumno, usuario, fechaInicio, fechaFin, horasDia, horasTotales, horario, observaciones, estado);
             inicioSesionService.enviarMensaje(remitente, destinatario, datos.toString());
             emailService.enviarEmail(correo, "Envio de datos de " + nombre, "Estos son los datos:\n" + datos.toString());
         } catch (Exception e) {

@@ -77,8 +77,6 @@ public class Solicitud {
 
     @Column(name = "observaciones")
     private String observaciones;
-
-
     
 //    @Column(name = "ruta_pdf")
 //    private String rutaPDF;
@@ -86,11 +84,10 @@ public class Solicitud {
     @Enumerated(EnumType.STRING)
     private EstadoSolicitud estado;
     
-    public Solicitud(Integer numeroConvenio,String empresa, String cif, String tutorEmpresa, String direccion, String localidad, String cp, String cicloFormativo, Usuario usuario, LocalDate fechaInicio, LocalDate fechaFin, int horasDia, int horasTotales, String horario, String observaciones,EstadoSolicitud estado) {
+    public Solicitud(Integer numeroConvenio,String empresa, String cif, String tutorEmpresa, String direccion, String localidad, String cp, String cicloFormativo,
+     Usuario usuario, LocalDate fechaInicio, LocalDate fechaFin, int horasDia, int horasTotales, String horario, String observaciones,EstadoSolicitud estado) {
         this.idSolicitud = LocalDateTime.now().toString().replaceAll("[^0-9]", "");
         this.numeroConvenio = numeroConvenio;
-        this.usuario = usuario;
-        this.estado = estado;
         this.empresa = empresa;
         this.cif = cif;
         this.tutorEmpresa = tutorEmpresa;
@@ -98,12 +95,14 @@ public class Solicitud {
         this.localidad = localidad;
         this.cp = cp;
         this.cicloFormativo = cicloFormativo;
+        this.usuario = usuario;
         this.fechaInicio = fechaInicio;
         this.fechaFin = fechaFin;
         this.horasDia = horasDia;
         this.horasTotales = horasTotales;
         this.horario = horario;
         this.observaciones = observaciones;
+        this.estado = estado;
         this.alumnos = new ArrayList<>(); // Inicializar la lista de alumnos
     }
 }
