@@ -2,12 +2,14 @@ package com.salvaceloisma.tfg.controller.web;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.salvaceloisma.tfg.domain.Mensaje;
 import com.salvaceloisma.tfg.domain.Usuario;
 import com.salvaceloisma.tfg.enumerados.RolUsuario;
 import com.salvaceloisma.tfg.exception.DangerException;
@@ -22,6 +24,7 @@ import jakarta.servlet.http.HttpSession;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 @RequestMapping("/enviarDatos")
 @Controller
@@ -107,13 +110,24 @@ public class EnviarDatosController {
         datos.append("Fecha de fin: ").append(fechaFin).append("\n");
         datos.append("Horas por día: ").append(horasDia).append("\n");
     
+        Usuario remitente = (Usuario) session.getAttribute("usuario");
+        Usuario destinatario = inicioSesionService.findById(usuarioEnvio);
         try {
-            emailService.enviarEmail(correo, "Envio de datos de " + nombre, "Estos son los datos:\n" + datos.toString());
+            inicioSesionService.enviarMensaje(remitente, destinatario, datos.toString());
+            emailService.enviarEmail(correo, nombre + "ha enviado unos datos.", "Datos pendientes de ser revisados por Jefatura.");
         } catch (Exception e) {
-            PRG.error("El correo no puedo enviarse correctamente.");
+            PRG.error("Los datos no pudieron enviarse correctamente.");
         }
         
         return "redirect:../";
     }
     
+    @GetMapping("/recibirDatosJefatura")
+    public String recibirMensajes(Model model, HttpSession session, ModelMap m) {
+        Usuario destinatario = (Usuario) session.getAttribute("usuario");
+        List<Mensaje> mensajes = inicioSesionService.recibirMensajes(destinatario);
+        model.addAttribute("mensajes", mensajes);
+        m.put("view", "jefatura/recibirDatosJefatura");
+        return "_t/frame";
+    }
 }
