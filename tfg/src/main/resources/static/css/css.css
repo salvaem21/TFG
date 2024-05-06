@@ -6,11 +6,19 @@ body {
     background-color: lightcoral;
 }
 
-#cabecera {
+#inicioSesion {
     color: white;
 }
 
-#cabecera:hover {
+#inicioSesion:hover {
+    color: black;
+}
+
+#registrarse {
+    color: white;
+}
+
+#registrarse:hover {
     color: black;
 }
 
