@@ -114,7 +114,7 @@ public class EnviarDatosController {
         Usuario destinatario = inicioSesionService.findById(usuarioEnvio);
         try {
             inicioSesionService.enviarMensaje(remitente, destinatario, datos.toString());
-            emailService.enviarEmail(correo, nombre + "ha enviado unos datos.", "Datos pendientes de ser revisados por Jefatura.");
+            emailService.enviarEmail(correo, "Datos pendientes de ser revisados por Jefatura.", nombre + " ha enviado unos datos.");
         } catch (Exception e) {
             PRG.error("Los datos no pudieron enviarse correctamente.");
         }
