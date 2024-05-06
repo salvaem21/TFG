@@ -5,15 +5,32 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.salvaceloisma.tfg.domain.Mensaje;
 import com.salvaceloisma.tfg.domain.Usuario;
 import com.salvaceloisma.tfg.enumerados.RolUsuario;
 import com.salvaceloisma.tfg.repository.InicioSesionRepository;
+import com.salvaceloisma.tfg.repository.MensajeRepository;
 
 @Service
 public class InicioSesionService {
     
     @Autowired
     private InicioSesionRepository inicioSesionRepository;
+
+    @Autowired
+    private MensajeRepository mensajeRepository;
+
+    public void enviarMensaje(Usuario remitente, Usuario destinatario, String contenido) {
+        Mensaje mensaje = new Mensaje();
+        mensaje.setRemitente(remitente);
+        mensaje.setDestinatario(destinatario);
+        mensaje.setContenido(contenido);
+        mensajeRepository.save(mensaje);
+    }
+
+    public List<Mensaje> recibirMensajes(Usuario destinatario) {
+        return mensajeRepository.findByDestinatario(destinatario);
+    }
 
     public List<Usuario> findAll() {
         return inicioSesionRepository.findAll();

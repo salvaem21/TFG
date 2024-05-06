@@ -23,14 +23,14 @@ public class AlumnoService {
         return alumnoRepository.findByDni(dni);
     }
 
-    public Alumno save(String dni,String nombre, String apellido, LocalDate fechaNacimiento) {
+    public Alumno save(String dni,String nombre, String apellido,LocalDate fechaNacimiento) {
         return alumnoRepository.save(new Alumno(dni, nombre, apellido, fechaNacimiento));
     }
 
     public Alumno findById(Long idAlumno) {
         return alumnoRepository.findById(idAlumno).get();
     }
-    public void update(Long idAlumno,String dni,String nombre, String apellido, LocalDate fechaNacimiento) {
+    public void update(Long idAlumno,String dni,String nombre, String apellido,LocalDate fechaNacimiento) {
         Alumno alumno = alumnoRepository.findById(idAlumno).get();
         alumno.setDni(dni);
         alumno.setNombre(nombre);

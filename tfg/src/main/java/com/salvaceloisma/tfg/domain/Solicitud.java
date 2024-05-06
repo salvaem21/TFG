@@ -80,6 +80,10 @@ public class Solicitud {
     @Column(name = "observaciones")
     private String observaciones;
 
+    
+//    @Column(name = "ruta_pdf")
+//    private String rutaPDF;
+
     @Enumerated(EnumType.STRING)
     private EstadoSolicitud estado;
     

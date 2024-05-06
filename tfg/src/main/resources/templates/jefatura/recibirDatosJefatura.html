@@ -1,0 +1,9 @@
+<h2>Mensajes Recibidos</h2>
+<ul>
+    <!-- Itera sobre los mensajes recibidos y muéstralos -->
+    <li th:each="mensaje : ${mensajes}">
+        <strong>De:</strong> <span th:text="${mensaje.remitente.nombre}"></span>
+        <br>
+        <strong>Contenido:</strong> <span th:text="${mensaje.contenido}"></span>
+    </li>
+</ul>
