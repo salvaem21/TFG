@@ -9,10 +9,7 @@
         
     <!------------------------            JEFATURA                    ------------------------------> 
         <a th:if="${session.usuario != null and session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).JEFATURA}" class="btn btn-outline-propio1 mb-2 col-4 mr-2" href="/documento/subirArchivo">Envio de Solicitud FCT (profesorado)</a>
-<<<<<<< HEAD
-=======
         <a th:if="${session.usuario != null and session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).JEFATURA}" class="btn btn-outline-propio1 mb-2 col-4 mr-2" href="/enviarDatos/recibirDatosJefatura">Revision de Datos de Alumnos</a>
->>>>>>> salva
         <a th:if="${session.usuario != null and session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).JEFATURA}" class="btn btn-outline-propio1 mb-2 col-4 mr-2" href="/documento/descargarArchivo">Documentos Pendientes De Firmar Por Jefatura a Direccion</a>
         <a th:if="${session.usuario != null and session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).JEFATURA}" class="btn btn-outline-propio1 mb-2 col-4 mr-2" href="/documento/subirArchivo">Envio de Solicitud FCT (DIRECCIÓN)</a>
 

@@ -38,7 +38,7 @@ public class Solicitud {
     @JoinColumn(name = "id_usuario", referencedColumnName = "id", foreignKey = @ForeignKey(name = "FK_solicitud_usuario"))
     private Usuario usuario;
     
-    @OneToMany(mappedBy = "solicitud", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "idSolicitud", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Alumno> alumnos;
 
     @Column(name = "empresa")
@@ -79,6 +79,7 @@ public class Solicitud {
 
     @Column(name = "observaciones")
     private String observaciones;
+
 
     
 //    @Column(name = "ruta_pdf")
