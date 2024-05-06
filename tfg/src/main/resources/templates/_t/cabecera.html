@@ -15,14 +15,24 @@
             <a class="nav-link btn btn-outline-light mr-2" th:if="${session.usuario!=null}" href="/inicioSesion/crearUsuario" id="registrarse">REGISTRAR USUARIO</a>
         </li>
         <li class="nav-item" th:if="${session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).ADMIN || session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).DIRECTOR}">
-            <a class="nav-link btn btn-outline-light mr-2" th:if="${session.usuario!=null}" href="/inicioSesion/gestionarAlumnos" id="registrarse">GESTIONAR ALUMNOS</a>
+            <a class="nav-link btn btn-outline-light mr-2" th:if="${session.usuario!=null}" href="/inicioSesion/gestionarAlumnos" id="gestionarAlumnos">GESTIONAR ALUMNOS</a>
         </li>
         <li class="nav-item" th:if="${session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).PROFESOR || session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).ALUMNO}">
-            <a class="nav-link btn btn-outline-light mr-2" th:if="${session.usuario!=null}" href="/inicioSesion/cambiarContrasenia" id="registrarse">CAMBIAR CONTRASEÑA</a>
+            <a class="nav-link btn btn-outline-light mr-2" th:if="${session.usuario!=null}" href="/inicioSesion/cambiarContrasenia" id="cambiarContrasenia">CAMBIAR CONTRASEÑA</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link btn btn-outline-light" href="/inicioSesion/logout" id="registrarse">LOGOUT</a>
+            <a class="nav-link btn btn-outline-light" href="/inicioSesion/logout" id="logout">LOGOUT</a>
             <span class="text-light" th:text="|Hola ${session.usuario.nombre} / ${session.usuario.rol} |"></span>
         </li>
+
+
+
+        <li class="nav-item">
+            <a class="nav-link btn btn-outline-light" href="/mensajes/enviarMensaje">Enviar Mensaje</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link btn btn-outline-light" href="/mensajes/recibir">Recibir Mensajes</a>
+        </li>
+        
     </ul>
 </nav>
