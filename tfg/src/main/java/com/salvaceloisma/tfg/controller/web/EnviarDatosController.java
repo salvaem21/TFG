@@ -19,6 +19,7 @@ import com.salvaceloisma.tfg.helper.PRG;
 import com.salvaceloisma.tfg.service.AlumnoService;
 import com.salvaceloisma.tfg.service.EmailService;
 import com.salvaceloisma.tfg.service.InicioSesionService;
+import com.salvaceloisma.tfg.service.SolicitudService;
 
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -40,6 +41,9 @@ public class EnviarDatosController {
     @Autowired
     private AlumnoService alumnoService;
 
+    @Autowired
+    private SolicitudService solicitudService;
+
     @GetMapping("/enviarDatosAJefatura")
     public String crearDocumento(ModelMap m) {
         m.put("usuariosJefatura", inicioSesionService.obtenerUsuariosPorRol(RolUsuario.JEFATURA));
@@ -48,15 +52,15 @@ public class EnviarDatosController {
     }
 
     @PostMapping("/enviarDatosAJefatura")
-    public String crearDocumento(HttpServletResponse response, HttpSession session, @RequestParam String numeroConvenio,
+    public String crearDocumento(HttpServletResponse response, HttpSession session, @RequestParam Integer numeroConvenio,
             @RequestParam String tutorAlumno, @RequestParam String nifTutorAlumno,
             @RequestParam String nombreEmpresa, @RequestParam String tutorEmpresa,
             @RequestParam String cifEmpresa, @RequestParam String direccionPracticas,
             @RequestParam String localidadPracticas, @RequestParam String codigoPostalPracticas,
             @RequestParam String[] apellidosAlumno, @RequestParam String[] nombreAlumno, @RequestParam String[] nifAlumno,
             @RequestParam String cicloFormativoAlumno,
-            @RequestParam String[] fechaDeNacimientoAlumno, @RequestParam String horasTotales,
-            @RequestParam String fechaInicio, @RequestParam String fechaFin, @RequestParam LocalTime lunesInicio1,
+            @RequestParam String[] fechaDeNacimientoAlumno, @RequestParam Integer horasTotales,
+            @RequestParam LocalDate fechaInicio, @RequestParam LocalDate fechaFin, @RequestParam LocalTime lunesInicio1,
             @RequestParam LocalTime martesInicio1, @RequestParam LocalTime lunesFin1,
             @RequestParam LocalTime martesFin1, @RequestParam LocalTime miercolesInicio1,
             @RequestParam LocalTime juevesInicio1, @RequestParam LocalTime viernesInicio1,
@@ -67,7 +71,7 @@ public class EnviarDatosController {
             @RequestParam LocalTime viernesInicio2, @RequestParam LocalTime lunesFin2,
             @RequestParam LocalTime martesFin2,
             @RequestParam LocalTime miercolesFin2, @RequestParam LocalTime juevesFin2,
-            @RequestParam LocalTime viernesFin2, @RequestParam String horasDia,
+            @RequestParam LocalTime viernesFin2, @RequestParam Integer horasDia,
             @RequestParam("rolUsuario") Long usuarioEnvio, ModelMap m)
             throws DangerException, InfoException {
     
@@ -129,7 +133,7 @@ public class EnviarDatosController {
         Usuario remitente = (Usuario) session.getAttribute("usuario");
         Usuario destinatario = inicioSesionService.findById(usuarioEnvio);
             // Establecer el estado por defecto a PENDIENTE_JEFATURA
-        EstadoSolicitud estado = EstadoSolicitud.PENDIENTE_JEFATURA;
+        EstadoSolicitud estado = EstadoSolicitud.PENDIENTE_FIRMA_JEFATURA;
         String observaciones ="";
         try {
             solicitudService.save(numeroConvenio, nombreEmpresa, cifEmpresa, tutorEmpresa, direccionPracticas, localidadPracticas, codigoPostalPracticas, cicloFormativoAlumno, usuario, fechaInicio, fechaFin, horasDia, horasTotales, horario, observaciones, estado);
