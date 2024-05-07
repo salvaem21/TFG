@@ -41,7 +41,7 @@ $(document).ready(function () {
         validarDNI($(this));
     });
 
-    // Validar el formulario antes de enviarlo
+    // Validar el DNI cuando se envíe el formulario
     $("#formularioAlumnos").submit(function (event) {
         var tutorValido = validarDNI($("#nifTutorAlumno"));
         var alumnoValido = validarDNI($("#nifAlumno"));
@@ -106,73 +106,36 @@ $(document).ready(function () {
         $(this).closest(".datos-alumno").remove();
     });
 
-    // Manejador de clic en el botón "Enviar Datos FCTs"
-    $("#boton").click(function (event) {
-        const calcularHorasTrabajadas = (inicio1, fin1, inicio2, fin2) => {
-            const horaInicio1 = parseInt(inicio1.split(":")[0]);
-            const minutoInicio1 = parseInt(inicio1.split(":")[1]);
-            const horaFin1 = parseInt(fin1.split(":")[0]);
-            const minutoFin1 = parseInt(fin1.split(":")[1]);
-            const horaInicio2 = parseInt(inicio2.split(":")[0]);
-            const minutoInicio2 = parseInt(inicio2.split(":")[1]);
-            const horaFin2 = parseInt(fin2.split(":")[0]);
-            const minutoFin2 = parseInt(fin2.split(":")[1]);
+    // Manejador de clic en el botón "Copiar horas del lunes"
+    $("#copiarHoras").click(function () {
+        // Obtener las horas introducidas para el lunes
+        const horasLunesInicio1 = document.getElementsByName("lunesInicio1")[0].value;
+        const horasLunesFin1 = document.getElementsByName("lunesFin1")[0].value;
+        const horasLunesInicio2 = document.getElementsByName("lunesInicio2")[0].value;
+        const horasLunesFin2 = document.getElementsByName("lunesFin2")[0].value;
 
-            // Calcular las horas del primer tramo
-            const horasTramo1 = horaFin1 - horaInicio1 + (minutoFin1 - minutoInicio1) / 60;
+        // Copiar las horas del lunes a los otros días de la semana
+        document.getElementsByName("martesInicio1")[0].value = horasLunesInicio1;
+        document.getElementsByName("martesFin1")[0].value = horasLunesFin1;
+        document.getElementsByName("martesInicio2")[0].value = horasLunesInicio2;
+        document.getElementsByName("martesFin2")[0].value = horasLunesFin2;
 
-            // Calcular las horas del segundo tramo
-            const horasTramo2 = horaFin2 - horaInicio2 + (minutoFin2 - minutoInicio2) / 60;
+        document.getElementsByName("miercolesInicio1")[0].value = horasLunesInicio1;
+        document.getElementsByName("miercolesFin1")[0].value = horasLunesFin1;
+        document.getElementsByName("miercolesInicio2")[0].value = horasLunesInicio2;
+        document.getElementsByName("miercolesFin2")[0].value = horasLunesFin2;
 
-            return horasTramo1 + horasTramo2;
-        };
+        document.getElementsByName("juevesInicio1")[0].value = horasLunesInicio1;
+        document.getElementsByName("juevesFin1")[0].value = horasLunesFin1;
+        document.getElementsByName("juevesInicio2")[0].value = horasLunesInicio2;
+        document.getElementsByName("juevesFin2")[0].value = horasLunesFin2;
 
-        const horasLunes = calcularHorasTrabajadas(
-            document.getElementsByName("lunesInicio1")[0].value,
-            document.getElementsByName("lunesFin1")[0].value,
-            document.getElementsByName("lunesInicio2")[0].value,
-            document.getElementsByName("lunesFin2")[0].value
-        );
+        document.getElementsByName("viernesInicio1")[0].value = horasLunesInicio1;
+        document.getElementsByName("viernesFin1")[0].value = horasLunesFin1;
+        document.getElementsByName("viernesInicio2")[0].value = horasLunesInicio2;
+        document.getElementsByName("viernesFin2")[0].value = horasLunesFin2;
 
-        const horasMartes = calcularHorasTrabajadas(
-            document.getElementsByName("martesInicio1")[0].value,
-            document.getElementsByName("martesFin1")[0].value,
-            document.getElementsByName("martesInicio2")[0].value,
-            document.getElementsByName("martesFin2")[0].value
-        );
-
-        const horasMiercoles = calcularHorasTrabajadas(
-            document.getElementsByName("miercolesInicio1")[0].value,
-            document.getElementsByName("miercolesFin1")[0].value,
-            document.getElementsByName("miercolesInicio2")[0].value,
-            document.getElementsByName("miercolesFin2")[0].value
-        );
-
-        const horasJueves = calcularHorasTrabajadas(
-            document.getElementsByName("juevesInicio1")[0].value,
-            document.getElementsByName("juevesFin1")[0].value,
-            document.getElementsByName("juevesInicio2")[0].value,
-            document.getElementsByName("juevesFin2")[0].value
-        );
-
-        const horasViernes = calcularHorasTrabajadas(
-            document.getElementsByName("viernesInicio1")[0].value,
-            document.getElementsByName("viernesFin1")[0].value,
-            document.getElementsByName("viernesInicio2")[0].value,
-            document.getElementsByName("viernesFin2")[0].value
-        );
-
-        const horasDia = document.getElementById("horasDia").value;
-        const horasSemanalesSupuestas = horasDia * 5;
-        const horasTotalesSemanales = horasLunes + horasMartes + horasMiercoles + horasJueves + horasViernes;
-
-        if (horasTotalesSemanales <= horasSemanalesSupuestas) {
-            alert("Las horas están bien");
-            return true;
-        } else {
-            alert("Está explotado");
-            event.preventDefault(); // Cancelar el envío del formulario
-            return false;
-        }
+        // Opcional: mostrar un mensaje o realizar alguna acción adicional
+        alert("Horas del lunes copiadas a todos los días de la semana.");
     });
 });
