@@ -22,7 +22,7 @@ public class SolicitudService {
         return solicitudRepository.findAll();
     }
 
-    public List<Solicitud> findByISolicitudes(String idSolicitud) {
+    public List<Solicitud> findByIdSolicitudes(String idSolicitud) {
         return solicitudRepository.findByIdSolicitud(idSolicitud);
     }
     public List<Solicitud> findByNumeroConvenio(Integer numeroConvenio) {
