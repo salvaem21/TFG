@@ -47,7 +47,7 @@ public class AlumnoController {
             @RequestParam("apellido") String apellido,
             @RequestParam("fechaNacimiento") LocalDate fechaNacimiento, HttpSession s) throws Exception {
         try {
-            alumnoService.save(dni, nombre, apellido, fechaNacimiento);
+            alumnoService.save(dni, nombre, apellido, fechaNacimiento, null);
         } catch (Exception e) {
             PRG.error("El alumno ya existe", "/alumno/c");
         }
