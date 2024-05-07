@@ -154,6 +154,7 @@
                                     <td>Fin</td>
                                     <td>Inicio</td>
                                     <td>Fin</td>
+                                    <td></td>
                                 </tr>
                                 <tr>
                                     <td>Lunes</td>
@@ -192,6 +193,9 @@
                                     <td><input type="time" class="form-control" name="viernesInicio2" required></td>
                                     <td><input type="time" class="form-control" name="viernesFin2" required></td>
                                 </tr>
+                                <tr>
+                                    <td colspan="5"><button type="button" class="btn btn-outline-propio1 mt-3 w-100 " id="copiarHoras">Copiar horas del lunes</button></td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -199,80 +203,6 @@
             </div>
         </div>
 
-        <button type="submit" class="btn btn-primary mt-3" id="boton">Enviar Datos FCTs</button>
+        <button type="submit" class="btn btn-outline-propio1 mt-3 w-100 " id="boton">Enviar Datos FCTs</button>
     </form>
 </div>
-
-<script>
-    const boton = document.getElementById("boton");
-
-boton.addEventListener("click", function (event) {
-    const calcularHorasTrabajadas = (inicio1, fin1, inicio2, fin2) => {
-        const horaInicio1 = parseInt(inicio1.split(":")[0]);
-        const minutoInicio1 = parseInt(inicio1.split(":")[1]);
-        const horaFin1 = parseInt(fin1.split(":")[0]);
-        const minutoFin1 = parseInt(fin1.split(":")[1]);
-        const horaInicio2 = parseInt(inicio2.split(":")[0]);
-        const minutoInicio2 = parseInt(inicio2.split(":")[1]);
-        const horaFin2 = parseInt(fin2.split(":")[0]);
-        const minutoFin2 = parseInt(fin2.split(":")[1]);
-
-        // Calcular las horas del primer tramo
-        const horasTramo1 = horaFin1 - horaInicio1 + (minutoFin1 - minutoInicio1) / 60;
-
-        // Calcular las horas del segundo tramo
-        const horasTramo2 = horaFin2 - horaInicio2 + (minutoFin2 - minutoInicio2) / 60;
-
-        return horasTramo1 + horasTramo2;
-    };
-
-    const horasLunes = calcularHorasTrabajadas(
-        document.getElementsByName("lunesInicio1")[0].value,
-        document.getElementsByName("lunesFin1")[0].value,
-        document.getElementsByName("lunesInicio2")[0].value,
-        document.getElementsByName("lunesFin2")[0].value
-    );
-
-    const horasMartes = calcularHorasTrabajadas(
-        document.getElementsByName("martesInicio1")[0].value,
-        document.getElementsByName("martesFin1")[0].value,
-        document.getElementsByName("martesInicio2")[0].value,
-        document.getElementsByName("martesFin2")[0].value
-    );
-
-    const horasMiercoles = calcularHorasTrabajadas(
-        document.getElementsByName("miercolesInicio1")[0].value,
-        document.getElementsByName("miercolesFin1")[0].value,
-        document.getElementsByName("miercolesInicio2")[0].value,
-        document.getElementsByName("miercolesFin2")[0].value
-    );
-
-    const horasJueves = calcularHorasTrabajadas(
-        document.getElementsByName("juevesInicio1")[0].value,
-        document.getElementsByName("juevesFin1")[0].value,
-        document.getElementsByName("juevesInicio2")[0].value,
-        document.getElementsByName("juevesFin2")[0].value
-    );
-
-    const horasViernes = calcularHorasTrabajadas(
-        document.getElementsByName("viernesInicio1")[0].value,
-        document.getElementsByName("viernesFin1")[0].value,
-        document.getElementsByName("viernesInicio2")[0].value,
-        document.getElementsByName("viernesFin2")[0].value
-    );
-
-    const horasDia = document.getElementById("horasDia").value;
-    const horasSemanalesSupuestas = horasDia * 5;
-    const horasTotalesSemanales = horasLunes + horasMartes + horasMiercoles + horasJueves + horasViernes;
-
-    if (horasTotalesSemanales <= horasSemanalesSupuestas) {
-        alert("Las horas están bien");
-        return true;
-    } else {
-        alert("Está explotado");
-        event.preventDefault(); // Cancelar el envío del formulario
-        return false;
-    }
-});
-
-</script>
