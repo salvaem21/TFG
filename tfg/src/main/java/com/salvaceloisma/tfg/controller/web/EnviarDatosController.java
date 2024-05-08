@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.salvaceloisma.tfg.domain.Mensaje;
+import com.salvaceloisma.tfg.domain.Solicitud;
 import com.salvaceloisma.tfg.domain.Usuario;
+import com.salvaceloisma.tfg.enumerados.EstadoSolicitud;
 import com.salvaceloisma.tfg.enumerados.RolUsuario;
 import com.salvaceloisma.tfg.exception.DangerException;
 import com.salvaceloisma.tfg.exception.InfoException;
@@ -18,6 +20,7 @@ import com.salvaceloisma.tfg.helper.PRG;
 import com.salvaceloisma.tfg.service.AlumnoService;
 import com.salvaceloisma.tfg.service.EmailService;
 import com.salvaceloisma.tfg.service.InicioSesionService;
+import com.salvaceloisma.tfg.service.SolicitudService;
 
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -39,6 +42,9 @@ public class EnviarDatosController {
     @Autowired
     private AlumnoService alumnoService;
 
+    @Autowired
+    private SolicitudService solicitudService;
+
     @GetMapping("/enviarDatosAJefatura")
     public String crearDocumento(ModelMap m) {
         m.put("usuariosJefatura", inicioSesionService.obtenerUsuariosPorRol(RolUsuario.JEFATURA));
@@ -47,15 +53,17 @@ public class EnviarDatosController {
     }
 
     @PostMapping("/enviarDatosAJefatura")
-    public String crearDocumento(HttpServletResponse response, HttpSession session, @RequestParam String numeroConvenio,
+    public String crearDocumento(HttpServletResponse response, HttpSession session,
+            @RequestParam Integer numeroConvenio,
             @RequestParam String tutorAlumno, @RequestParam String nifTutorAlumno,
             @RequestParam String nombreEmpresa, @RequestParam String tutorEmpresa,
             @RequestParam String cifEmpresa, @RequestParam String direccionPracticas,
             @RequestParam String localidadPracticas, @RequestParam String codigoPostalPracticas,
-            @RequestParam String[] apellidosAlumno, @RequestParam String[] nombreAlumno, @RequestParam String[] nifAlumno,
+            @RequestParam String[] apellidosAlumno, @RequestParam String[] nombreAlumno,
+            @RequestParam String[] nifAlumno,
             @RequestParam String cicloFormativoAlumno,
-            @RequestParam String[] fechaDeNacimientoAlumno, @RequestParam String horasTotales,
-            @RequestParam String fechaInicio, @RequestParam String fechaFin, @RequestParam LocalTime lunesInicio1,
+            @RequestParam String[] fechaDeNacimientoAlumno, @RequestParam Integer horasTotales,
+            @RequestParam LocalDate fechaInicio, @RequestParam LocalDate fechaFin, @RequestParam LocalTime lunesInicio1,
             @RequestParam LocalTime martesInicio1, @RequestParam LocalTime lunesFin1,
             @RequestParam LocalTime martesFin1, @RequestParam LocalTime miercolesInicio1,
             @RequestParam LocalTime juevesInicio1, @RequestParam LocalTime viernesInicio1,
@@ -66,34 +74,31 @@ public class EnviarDatosController {
             @RequestParam LocalTime viernesInicio2, @RequestParam LocalTime lunesFin2,
             @RequestParam LocalTime martesFin2,
             @RequestParam LocalTime miercolesFin2, @RequestParam LocalTime juevesFin2,
-            @RequestParam LocalTime viernesFin2, @RequestParam String horasDia,
+            @RequestParam LocalTime viernesFin2, @RequestParam Integer horasDia,
             @RequestParam("rolUsuario") Long usuarioEnvio, ModelMap m)
             throws DangerException, InfoException {
-    
+
         Usuario usuario = (Usuario) session.getAttribute("usuario");
         String nombre = usuario.getNombre();
-    
+
         String correo = inicioSesionService.findById(usuarioEnvio).getCorreo();
-    
+
+        StringBuilder horarioBuilder = new StringBuilder();
+        horarioBuilder.append("Lunes: ").append(lunesInicio1).append(" - ").append(lunesFin1).append("\n")
+                .append("Martes: ").append(martesInicio1).append(" - ").append(martesFin1).append("\n")
+                .append("Miércoles: ").append(miercolesInicio1).append(" - ").append(miercolesFin1).append("\n")
+                .append("Jueves: ").append(juevesInicio1).append(" - ").append(juevesFin1).append("\n")
+                .append("Viernes: ").append(viernesInicio1).append(" - ").append(viernesFin1).append("\n")
+                .append("Segundo horario: \n")
+                .append("Lunes: ").append(lunesInicio2).append(" - ").append(lunesFin2).append("\n")
+                .append("Martes: ").append(martesInicio2).append(" - ").append(martesFin2).append("\n")
+                .append("Miércoles: ").append(miercolesInicio2).append(" - ").append(miercolesFin2).append("\n")
+                .append("Jueves: ").append(juevesInicio2).append(" - ").append(juevesFin2).append("\n")
+                .append("Viernes: ").append(viernesInicio2).append(" - ").append(viernesFin2);
+        String horario = horarioBuilder.toString();
+
         StringBuilder datos = new StringBuilder();
-    
-        // Construir el mensaje para cada alumno
-        for (int i = 0; i < apellidosAlumno.length; i++) {
-            datos.append("Alumno ").append(i + 1).append(":\n");
-            datos.append("Apellidos alumno: ").append(apellidosAlumno[i]).append("\n");
-            datos.append("Nombre alumno: ").append(nombreAlumno[i]).append("\n");
-            datos.append("NIF alumno: ").append(nifAlumno[i]).append("\n");
-            datos.append("Ciclo formativo: ").append(cicloFormativoAlumno).append("\n");
-            datos.append("Fecha de nacimiento alumno: ").append(fechaDeNacimientoAlumno[i]).append("\n");
-            datos.append("\n");
-            try{
-            alumnoService.save(nifAlumno[i], nombreAlumno[i], apellidosAlumno[i], LocalDate.parse(fechaDeNacimientoAlumno[i]));
-            }
-            catch(Exception e) {
-                PRG.error("El NIF de ese alumno ya esta en uso");
-            }
-        }
-    
+
         // Agregar los datos comunes al final
         datos.append("Datos comunes:\n");
         datos.append("Tutor alumno: ").append(tutorAlumno).append("\n");
@@ -109,19 +114,47 @@ public class EnviarDatosController {
         datos.append("Fecha de inicio: ").append(fechaInicio).append("\n");
         datos.append("Fecha de fin: ").append(fechaFin).append("\n");
         datos.append("Horas por día: ").append(horasDia).append("\n");
-    
+
         Usuario remitente = (Usuario) session.getAttribute("usuario");
         Usuario destinatario = inicioSesionService.findById(usuarioEnvio);
+        // Establecer el estado por defecto a PENDIENTE_JEFATURA
+        EstadoSolicitud estado = EstadoSolicitud.PENDIENTE_FIRMA_JEFATURA;
+        String observaciones = "";
+        String idSolicitud = "";
+
         try {
+            Solicitud solicitud = solicitudService.save(numeroConvenio, nombreEmpresa, cifEmpresa, tutorEmpresa,
+                    direccionPracticas, localidadPracticas, codigoPostalPracticas, cicloFormativoAlumno, usuario,
+                    fechaInicio, fechaFin, horasDia, horasTotales, horario, observaciones, estado);
+            idSolicitud = solicitud.getIdSolicitud();
+            
+
+            // Construir el mensaje para cada alumno
+            for (int i = 0; i < apellidosAlumno.length; i++) {
+                datos.append("Alumno ").append(i + 1).append(":\n");
+                datos.append("Apellidos alumno: ").append(apellidosAlumno[i]).append("\n");
+                datos.append("Nombre alumno: ").append(nombreAlumno[i]).append("\n");
+                datos.append("NIF alumno: ").append(nifAlumno[i]).append("\n");
+                datos.append("Ciclo formativo: ").append(cicloFormativoAlumno).append("\n");
+                datos.append("Fecha de nacimiento alumno: ").append(fechaDeNacimientoAlumno[i]).append("\n");
+                datos.append("\n");
+                try {
+                    alumnoService.save(nifAlumno[i], nombreAlumno[i], apellidosAlumno[i],
+                            LocalDate.parse(fechaDeNacimientoAlumno[i]), idSolicitud);
+                } catch (Exception e) {
+                    PRG.error("El NIF de ese alumno ya esta en uso");
+                }
+            }
             inicioSesionService.enviarMensaje(remitente, destinatario, datos.toString());
-            emailService.enviarEmail(correo, nombre + "ha enviado unos datos.", "Datos pendientes de ser revisados por Jefatura.");
+            emailService.enviarEmail(correo, "Datos pendientes de ser revisados por Jefatura.",
+                    nombre + " ha enviado unos datos.");
         } catch (Exception e) {
             PRG.error("Los datos no pudieron enviarse correctamente.");
         }
-        
+
         return "redirect:../";
     }
-    
+
     @GetMapping("/recibirDatosJefatura")
     public String recibirMensajes(Model model, HttpSession session, ModelMap m) {
         Usuario destinatario = (Usuario) session.getAttribute("usuario");

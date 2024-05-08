@@ -40,8 +40,8 @@ public class InicioSesionService {
         return inicioSesionRepository.findByCorreo(correo);
     }
 
-    public Usuario save(String nombre, String correo, String contrasenia, String dni, RolUsuario rol) {
-        Usuario usuario = new Usuario(nombre, correo, contrasenia, dni, rol);
+    public Usuario save(String nombre, String apellido, String correo, String contrasenia,  RolUsuario rol) {
+        Usuario usuario = new Usuario(nombre, apellido,correo, contrasenia, rol);
         return inicioSesionRepository.save(usuario);
     }
 

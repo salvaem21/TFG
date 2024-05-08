@@ -8,6 +8,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -27,8 +28,9 @@ public class Alumno {
     private String apellido;
     private LocalDate fechaNacimiento;
 
-    @ManyToOne(optional = true)
-    private Solicitud idSolicitud;
+    @ManyToOne
+    @JoinColumn(name = "idSolicitud") // Nombre de la columna FK en la tabla de alumnos
+    private Solicitud solicitud;
 
 
     // ==================
