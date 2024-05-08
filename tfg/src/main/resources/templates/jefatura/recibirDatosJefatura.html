@@ -4,6 +4,6 @@
     <li th:each="mensaje : ${mensajes}">
         <strong>De:</strong> <span th:text="${mensaje.remitente.nombre}"></span>
         <br>
-        <strong>Contenido:</strong> <span th:text="${mensaje.contenido}"></span>
+        <strong>Contenido:</strong> <span th:text="${mensaje.contenido}"> <br></span>
     </li>
 </ul>
