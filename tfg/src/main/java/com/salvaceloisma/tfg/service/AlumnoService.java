@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.salvaceloisma.tfg.domain.Alumno;
+import com.salvaceloisma.tfg.domain.Solicitud;
 import com.salvaceloisma.tfg.repository.AlumnoRepository;
 
 @Service
@@ -14,6 +15,9 @@ public class AlumnoService {
     
     @Autowired
     private AlumnoRepository alumnoRepository;
+
+    @Autowired
+    private SolicitudService solicitudService;
 
     public List<Alumno> findAll() {
         return alumnoRepository.findAll();
@@ -23,8 +27,11 @@ public class AlumnoService {
         return alumnoRepository.findByDni(dni);
     }
 
-    public Alumno save(String dni,String nombre, String apellido,LocalDate fechaNacimiento) {
-        return alumnoRepository.save(new Alumno(dni, nombre, apellido, fechaNacimiento));
+    public Alumno save(String dni,String nombre, String apellido,LocalDate fechaNacimiento, String idSolicitud) {
+        Alumno alumno = new Alumno(dni, nombre, apellido, fechaNacimiento);
+        Solicitud solicitud = solicitudService.findById(idSolicitud);
+        alumno.setSolicitud(solicitud);
+        return alumnoRepository.save(alumno);
     }
 
     public Alumno findById(Long idAlumno) {
