@@ -29,7 +29,7 @@ public class Alumno {
     private LocalDate fechaNacimiento;
 
     @ManyToOne
-    @JoinColumn(name = "idSolicitud") // Nombre de la columna FK en la tabla de alumnos
+    @JoinColumn(name = "idSolicitud")
     private Solicitud solicitud;
 
 
