@@ -49,9 +49,6 @@ public class EnviarDatosController {
     @Autowired
     private SolicitudService solicitudService;
 
-    @Autowired
-    private AlumnoRepository alumnoRepository;
-
     @GetMapping("/enviarDatosAJefatura")
     public String crearDocumento(ModelMap m) {
         m.put("usuariosJefatura", inicioSesionService.obtenerUsuariosPorRol(RolUsuario.JEFATURA));
@@ -67,10 +64,9 @@ public class EnviarDatosController {
             @RequestParam String cifEmpresa, @RequestParam String direccionPracticas,
             @RequestParam String localidadPracticas, @RequestParam String codigoPostalPracticas,
             @RequestParam String[] apellidosAlumno, @RequestParam String[] nombreAlumno,
-            @RequestParam String[] nifAlumno,
-            @RequestParam String cicloFormativoAlumno,
-            @RequestParam String[] fechaDeNacimientoAlumno, @RequestParam Integer horasTotales,
-            @RequestParam LocalDate fechaInicio, @RequestParam LocalDate fechaFin, @RequestParam LocalTime lunesInicio1,
+            @RequestParam String[] nifAlumno, @RequestParam String cicloFormativoAlumno,
+            @RequestParam Integer horasTotales,@RequestParam LocalDate fechaInicio, 
+            @RequestParam LocalDate fechaFin, @RequestParam LocalTime lunesInicio1,
             @RequestParam LocalTime martesInicio1, @RequestParam LocalTime lunesFin1,
             @RequestParam LocalTime martesFin1, @RequestParam LocalTime miercolesInicio1,
             @RequestParam LocalTime juevesInicio1, @RequestParam LocalTime viernesInicio1,
@@ -143,11 +139,10 @@ public class EnviarDatosController {
                 datos.append("Nombre alumno: ").append(nombreAlumno[i]).append("\n");
                 datos.append("NIF alumno: ").append(nifAlumno[i]).append("\n");
                 datos.append("Ciclo formativo: ").append(cicloFormativoAlumno).append("\n");
-                datos.append("Fecha de nacimiento alumno: ").append(fechaDeNacimientoAlumno[i]).append("\n");
+                datos.append("Fecha de nacimiento alumno: ").append("\n");
                 datos.append("\n");
                 try {
-                    alumnoService.save(nifAlumno[i], nombreAlumno[i], apellidosAlumno[i],
-                            LocalDate.parse(fechaDeNacimientoAlumno[i]), idSolicitud);
+                    alumnoService.save(nifAlumno[i], nombreAlumno[i], apellidosAlumno[i], idSolicitud);
                 } catch (Exception e) {
                     PRG.error("El NIF de ese alumno ya esta en uso");
                 }

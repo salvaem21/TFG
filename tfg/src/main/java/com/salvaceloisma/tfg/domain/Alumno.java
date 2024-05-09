@@ -1,7 +1,6 @@
 package com.salvaceloisma.tfg.domain;
 
 
-import java.time.LocalDate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -26,7 +25,6 @@ public class Alumno {
     private String dni;
     private String nombre;
     private String apellido;
-    private LocalDate fechaNacimiento;
 
     @ManyToOne
     @JoinColumn(name = "idSolicitud") // Nombre de la columna FK en la tabla de alumnos
@@ -35,11 +33,10 @@ public class Alumno {
 
     // ==================
 
-    public Alumno(String dni, String nombre, String apellido, LocalDate fechaNacimiento) {
+    public Alumno(String dni, String nombre, String apellido) {
         this.dni =dni;
         this.nombre = nombre;
         this.apellido = apellido;
-        this.fechaNacimiento = fechaNacimiento;
     }
 
 

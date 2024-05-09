@@ -1,6 +1,6 @@
 package com.salvaceloisma.tfg.service;
 
-import java.time.LocalDate;
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,8 +27,8 @@ public class AlumnoService {
         return alumnoRepository.findByDni(dni);
     }
 
-    public Alumno save(String dni,String nombre, String apellido,LocalDate fechaNacimiento, String idSolicitud) {
-        Alumno alumno = new Alumno(dni, nombre, apellido, fechaNacimiento);
+    public Alumno save(String dni,String nombre, String apellido, String idSolicitud) {
+        Alumno alumno = new Alumno(dni, nombre, apellido);
         Solicitud solicitud = solicitudService.findById(idSolicitud);
         alumno.setSolicitud(solicitud);
         return alumnoRepository.save(alumno);
@@ -37,12 +37,11 @@ public class AlumnoService {
     public Alumno findById(Long idAlumno) {
         return alumnoRepository.findById(idAlumno).get();
     }
-    public void update(Long idAlumno,String dni,String nombre, String apellido,LocalDate fechaNacimiento) {
+    public void update(Long idAlumno,String dni,String nombre, String apellido) {
         Alumno alumno = alumnoRepository.findById(idAlumno).get();
         alumno.setDni(dni);
         alumno.setNombre(nombre);
         alumno.setApellido(apellido);
-        alumno.setFechaNacimiento(fechaNacimiento);
         alumnoRepository.save(alumno);
     }
 

@@ -47,7 +47,7 @@ public class AlumnoController {
             @RequestParam("apellido") String apellido,
             @RequestParam("fechaNacimiento") LocalDate fechaNacimiento, HttpSession s) throws Exception {
         try {
-            alumnoService.save(dni, nombre, apellido, fechaNacimiento, null);
+            alumnoService.save(dni, nombre, apellido, null);
         } catch (Exception e) {
             PRG.error("El alumno ya existe", "/alumno/c");
         }
@@ -68,10 +68,9 @@ public class AlumnoController {
         @RequestParam("idAlumno") Long idAlumno,
         @RequestParam("dni") String dni,
         @RequestParam("nombre") String nombre,
-        @RequestParam("apellido") String apellido,
-        @RequestParam("fechaNacimiento") LocalDate fechaNacimiento,HttpSession s) throws DangerException {
+        @RequestParam("apellido") String apellido, HttpSession s) throws DangerException {
         try {
-            alumnoService.update(idAlumno,dni, nombre, apellido, fechaNacimiento);
+            alumnoService.update(idAlumno,dni, nombre, apellido);
         } catch (Exception e) {
             PRG.error("El alumno no pudo ser actualizado", "/alumno/r");
         }
