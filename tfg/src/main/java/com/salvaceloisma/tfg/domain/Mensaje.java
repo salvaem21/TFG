@@ -23,6 +23,9 @@ public class Mensaje {
     @ManyToOne
     private Usuario destinatario;
 
+    @ManyToOne
+    private Solicitud solicitud;
+
     @Column(columnDefinition = "TEXT")
     private String contenido;
 

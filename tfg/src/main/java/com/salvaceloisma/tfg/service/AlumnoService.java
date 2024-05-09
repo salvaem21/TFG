@@ -37,7 +37,12 @@ public class AlumnoService {
     public Alumno findById(Long idAlumno) {
         return alumnoRepository.findById(idAlumno).get();
     }
-    public void update(Long idAlumno,String dni,String nombre, String apellido) {
+
+    public List<Alumno> findBySolicitudIdSolicitud(String idSolicitud) {
+        return alumnoRepository.findBySolicitudIdSolicitud(idSolicitud);
+    }
+    
+    public void update(Long idAlumno,String dni,String nombre, String apellido,LocalDate fechaNacimiento) {
         Alumno alumno = alumnoRepository.findById(idAlumno).get();
         alumno.setDni(dni);
         alumno.setNombre(nombre);
