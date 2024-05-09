@@ -1,9 +1,24 @@
-<h2>Mensajes Recibidos</h2>
-<ul>
-    <!-- Itera sobre los mensajes recibidos y muéstralos -->
-    <li th:each="mensaje : ${mensajes}">
-        <strong>De:</strong> <span th:text="${mensaje.remitente.nombre}"></span>
-        <br>
-        <strong>Contenido:</strong> <span th:text="${mensaje.contenido}"> <br></span>
-    </li>
-</ul>
+<div class="container">
+    <h1>Lista de solicitudes</h1>
+    <p>Bienvenido, <span th:text="${nombreUsuario}"></span>!</p>
+    <table class="table table-striped">
+        <thead>
+            <th>Nº Solicitud</th>
+            <th>Empresa</th>
+            <th>Numero convenio</th>
+            <th>Ciclo Formativo</th>
+            <th>Fecha Inicio</th>
+            <th>Estado</th>
+        </thead>
+        <tbody>
+            <tr th:each="solicitud : ${solicitudes}">
+                <td th:text="${solicitud.idSolicitud}"></td>
+                <td th:text="${solicitud.empresa}"></td>
+                <td th:text="${solicitud.numeroConvenio}"></td>
+                <td th:text="${solicitud.cicloFormativo}"></td>
+                <td th:text="${solicitud.fechaInicio}"></td>
+                <td th:text="${solicitud.estado}"></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
