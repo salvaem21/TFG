@@ -4,25 +4,95 @@
     </a>
     <ul class="navbar-nav ml-auto" th:if="${session.usuario==null}">
         <li class="nav-item">
-            <a class="nav-link btn btn-outline-light" href="/inicioSesion/inicioSesion" id="inicioSesion">Iniciar sesión</a>
+            <a class="nav-link btn btn-outline-light" href="/inicioSesion/inicioSesion" id="inicioSesion" >Iniciar sesión</a>
         </li>
     </ul>
     <ul class="navbar-nav ml-auto" th:if="${session.usuario!=null}">
         <li class="nav-item mt-2" th:if="${session.usuario.rol != T(com.salvaceloisma.tfg.enumerados.RolUsuario).ALUMNO}">
-            <i class="fa-solid fa-bell fa-2xl mr-2" style="color: #fafad2;"></i>
+            <i class="fa-solid fa-bell fa-2xl mr-2" style="color: #fafad2; cursor: pointer;" onclick="toggleCanvas()"></i>
         </li>
         <li class="nav-item" th:if="${session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).ADMIN || session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).DIRECTOR}">
-            <a class="nav-link btn btn-outline-light  mr-2" th:if="${session.usuario!=null}" href="/inicioSesion/crearUsuario" id="registrarse">REGISTRAR USUARIO</a>
+            <a class="nav-link btn btn-outline-light mr-2" th:if="${session.usuario!=null}" href="/inicioSesion/crearUsuario" id="registrarse">REGISTRAR USUARIO</a>
         </li>
         <li class="nav-item" th:if="${session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).ADMIN || session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).DIRECTOR}">
-            <a class="nav-link btn btn-outline-light  mr-2" th:if="${session.usuario!=null}" href="/inicioSesion/gestionarAlumnos" id="registrarse">GESTIONAR ALUMNOS</a>
+            <a class="nav-link btn btn-outline-light mr-2" th:if="${session.usuario!=null}" href="/inicioSesion/gestionarAlumnos" id="registrarse">GESTIONAR ALUMNOS</a>
         </li>
         <li class="nav-item" th:if="${session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).PROFESOR || session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).ALUMNO}">
-            <a class="nav-link btn btn-outline-light  mr-2" th:if="${session.usuario!=null}" href="/inicioSesion/cambiarContrasenia" id="registrarse">CAMBIAR CONTRASEÑA</a>
+            <a class="nav-link btn btn-outline-light mr-2" th:if="${session.usuario!=null}" href="/inicioSesion/cambiarContrasenia" id="registrarse">CAMBIAR CONTRASEÑA</a>
         </li>
+        <!-- Opción de logout -->
         <li class="nav-item">
-            <a class="nav-link btn btn-outline-light " href="/inicioSesion/logout" id="registrarse">LOGOUT</a>
+            <a class="nav-link btn btn-outline-light" href="/inicioSesion/logout" id="registrarse">LOGOUT</a>
             <span class="text-light" th:text="|Hola ${session.usuario.nombre} / ${session.usuario.rol} |"></span>
         </li>
+        <!-- Aquí van los demás elementos del menú -->
     </ul>
 </nav>
+
+<div id="canvasMenu" style="display: none;">
+    <!-- Contenido del menú -->
+    <div>
+        <!-- Contenido del menú desplegable -->
+        <!-- Mostrar los mensajes con novedad -->
+        <h3>Mensajes Nuevos</h3>
+        <ul>
+            <th:block th:each="mensaje : ${mensajesConNovedad}">
+                <li th:text="${mensaje.contenido}"></li>
+            </th:block>
+        </ul>
+        <!-- Puedes agregar aquí los enlaces o contenido que desees mostrar en el menú -->
+        <a class="nav-link btn btn-outline-light" href="#">Opción 1</a>
+        <a class="nav-link btn btn-outline-light" href="#">Opción 2</a>
+        <!-- Botón para cerrar el menú -->
+        <button class="nav-link btn btn-outline-light" onclick="toggleCanvas()">Cerrar</button>
+    </div>
+</div>
+
+
+<script>
+    function toggleCanvas() {
+        var canvas = document.getElementById("canvasMenu");
+        var canvasContent = canvas.children[0];
+        if (canvas.style.display === "none" || canvas.style.display === "") {
+            canvas.style.display = "block";
+            setTimeout(function() {
+                canvasContent.style.opacity = 1;
+                canvasContent.style.transform = "translateX(0%)";
+            }, 100);
+            document.body.classList.add("no-click"); // Añadir clase para deshabilitar eventos de clic en la página
+        } else {
+            canvasContent.style.opacity = 0;
+            canvasContent.style.transform = "translateX(100%)";
+            setTimeout(function() {
+                canvas.style.display = "none";
+            }, 500);
+            document.body.classList.remove("no-click"); // Eliminar clase para habilitar eventos de clic en la página
+        }
+    }
+</script>
+
+<style>
+    #canvasMenu {
+        position: fixed;
+        top: 0;
+        right: 0;
+        width: 25%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+        overflow-y: auto;
+        transition: opacity 0.5s ease, transform 0.5s ease;
+        overflow-x: hidden;
+    }
+
+    #canvasMenu > div {
+        opacity: 0;
+        transform: translateX(100%);
+        background-color: rgba(0, 0, 0, 0.5);
+        padding: 20px;
+        border-radius: 5px;
+        transition: opacity 0.5s ease, transform 0.5s ease;
+        overflow-x: hidden;
+    }
+
+</style>

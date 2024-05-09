@@ -1,5 +1,7 @@
 package com.salvaceloisma.tfg.controller.web;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -8,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.salvaceloisma.tfg.domain.Mensaje;
 import com.salvaceloisma.tfg.domain.Usuario;
 import com.salvaceloisma.tfg.enumerados.RolUsuario;
 import com.salvaceloisma.tfg.exception.DangerException;
@@ -35,22 +38,26 @@ public class InicioSesionController {
     }
 
     @PostMapping("/inicioSesion")
-    public String inicioSesionPost(
-            @RequestParam("correo") String correo,
-            @RequestParam("contrasenia") String contrasenia,
-            HttpSession s,
-            ModelMap m) throws DangerException {
-        try {
-            correo = correo + "@educa.madrid.org";
-            Usuario usuario = inicioSesionService.inicioSesion(correo, contrasenia);
+public String inicioSesionPost(
+        @RequestParam("correo") String correo,
+        @RequestParam("contrasenia") String contrasenia,
+        HttpSession s,
+        ModelMap m) throws DangerException {
+    try {
+        correo = correo + "@educa.madrid.org";
+        Usuario usuario = inicioSesionService.inicioSesion(correo, contrasenia);
+        List<Mensaje> mensajesConNovedad = inicioSesionService.obtenerMensajesConNovedadParaUsuario(usuario);
 
-            s.setAttribute("usuario", usuario);
-        } catch (Exception e) {
-            PRG.error("Usuario o contraseña incorrectos");
-        }
-
-        return "redirect:../";
+        s.setAttribute("usuario", usuario);
+        // Agregar los mensajes con novedad al modelo para enviar al frontend
+        m.addAttribute("mensajesConNovedad", mensajesConNovedad);
+    } catch (Exception e) {
+        PRG.error("Usuario o contraseña incorrectos");
     }
+    
+    return "redirect:../";
+}
+
 
     @GetMapping("/logout")
     public String logout(

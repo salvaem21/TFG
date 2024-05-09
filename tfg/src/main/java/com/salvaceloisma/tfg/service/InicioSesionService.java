@@ -15,7 +15,7 @@ import com.salvaceloisma.tfg.repository.MensajeRepository;
 
 @Service
 public class InicioSesionService {
-    
+
     @Autowired
     private InicioSesionRepository inicioSesionRepository;
 
@@ -31,6 +31,11 @@ public class InicioSesionService {
         mensajeRepository.save(mensaje);
     }
 
+    public List<Mensaje> obtenerMensajesConNovedadParaUsuario(Usuario usuario) {
+        // Obtener los mensajes con novedad para el usuario destinatario
+        return mensajeRepository.findByDestinatarioAndNovedadTrue(usuario);
+    }
+
     public List<Mensaje> recibirMensajes(Usuario destinatario) {
         return mensajeRepository.findByDestinatario(destinatario);
     }
@@ -43,12 +48,12 @@ public class InicioSesionService {
         return inicioSesionRepository.findByCorreo(correo);
     }
 
-    public Usuario save(String nombre, String apellido, String correo, String contrasenia,  RolUsuario rol) {
+    public Usuario save(String nombre, String apellido, String correo, String contrasenia, RolUsuario rol) {
         // Cifrar la contraseña
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         String contraseniaCifrada = encoder.encode(contrasenia);
         //
-        Usuario usuario = new Usuario(nombre, apellido,correo, contraseniaCifrada, rol);
+        Usuario usuario = new Usuario(nombre, apellido, correo, contraseniaCifrada, rol);
         return inicioSesionRepository.save(usuario);
     }
 
@@ -62,20 +67,21 @@ public class InicioSesionService {
 
     public Usuario inicioSesion(String correo, String contrasenia) throws Exception {
         Usuario usuario = inicioSesionRepository.findByCorreo(correo);
-        if(usuario == null) {
+        if (usuario == null) {
             throw new Exception("El correo " + correo + " no existe");
         }
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        if(!encoder.matches(contrasenia, usuario.getContrasenia())) {
+        if (!encoder.matches(contrasenia, usuario.getContrasenia())) {
             throw new Exception("La contraseña no es correcta");
         }
 
         return usuario;
     }
-    
-    public Usuario cambiarContrasenia(Usuario usuario, String contraseniaActual, String contraseniaNueva) throws Exception {
+
+    public Usuario cambiarContrasenia(Usuario usuario, String contraseniaActual, String contraseniaNueva)
+            throws Exception {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        if(encoder.matches(contraseniaActual, usuario.getContrasenia())) {
+        if (encoder.matches(contraseniaActual, usuario.getContrasenia())) {
             // Cifrar la contraseña nueva
             String contraseniaNuevaCifrada = encoder.encode(contraseniaNueva);
             usuario.setContrasenia(contraseniaNuevaCifrada);
@@ -85,4 +91,3 @@ public class InicioSesionService {
         }
     }
 }
-

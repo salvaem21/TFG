@@ -26,7 +26,13 @@ public class Mensaje {
     @ManyToOne
     private Solicitud solicitud;
 
+    private boolean novedad;
+
     @Column(columnDefinition = "TEXT")
     private String contenido;
-
+    
+    public Mensaje(String contenido){
+        this.contenido = contenido;
+        this.novedad = true;
+    }
 }
