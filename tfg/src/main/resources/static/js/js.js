@@ -37,27 +37,15 @@ $(document).ready(function () {
     }
 
     // Validar el DNI cuando se modifica el campo de entrada
-    $("#nifTutorAlumno, #nifAlumno").on('input', function () {
+    $("#nifAlumno").on('input', function () {
         validarDNI($(this));
     });
 
     // Validar el formulario antes de enviarlo
     $("#formularioAlumnos").submit(function (event) {
-        var tutorValido = validarDNI($("#nifTutorAlumno"));
         var alumnoValido = validarDNI($("#nifAlumno"));
 
-        // Si tanto el NIF del Tutor como del Alumno son inválidos
-        if (!tutorValido && !alumnoValido) {
-            alert("El NIF del Tutor y del Alumno introducidos no son válidos.");
-            event.preventDefault(); // Evitar que se envíe el formulario si ambos NIF no son válidos
-            return;
-        }
-        // Si solo el NIF del Tutor es inválido
-        if (!tutorValido) {
-            alert("El NIF del Tutor introducido no es válido.");
-            event.preventDefault(); // Evitar que se envíe el formulario si el NIF del Tutor no es válido
-            return;
-        }
+
         // Si solo el NIF del Alumno es inválido
         if (!alumnoValido) {
             alert("El NIF del Alumno introducido no es válido.");
@@ -85,7 +73,7 @@ $(document).ready(function () {
         // Limpiar los valores de los campos clonados para evitar confusiones
         ultimoAlumno.find("input[type=text], input[type=date]").val("");
         // Aplicar la validación del DNI a los nuevos campos de DNI
-        ultimoAlumno.find("#nifTutorAlumno, #nifAlumno").on('input', function () {
+        ultimoAlumno.find("#nifAlumno").on('input', function () {
             validarDNI($(this));
         });
         // Agregar un botón "Eliminar alumno" solo si no existe ya uno en este conjunto de campos de datos del alumno

@@ -3,6 +3,7 @@ package com.salvaceloisma.tfg.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.salvaceloisma.tfg.domain.Mensaje;
@@ -41,7 +42,11 @@ public class InicioSesionService {
     }
 
     public Usuario save(String nombre, String apellido, String correo, String contrasenia,  RolUsuario rol) {
-        Usuario usuario = new Usuario(nombre, apellido,correo, contrasenia, rol);
+        // Cifrar la contraseña
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        String contraseniaCifrada = encoder.encode(contrasenia);
+        //
+        Usuario usuario = new Usuario(nombre, apellido,correo, contraseniaCifrada, rol);
         return inicioSesionRepository.save(usuario);
     }
 
@@ -58,7 +63,8 @@ public class InicioSesionService {
         if(usuario == null) {
             throw new Exception("El correo " + correo + " no existe");
         }
-        if(!contrasenia.equals(usuario.getContrasenia())) {
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        if(!encoder.matches(contrasenia, usuario.getContrasenia())) {
             throw new Exception("La contraseña no es correcta");
         }
 
@@ -66,11 +72,15 @@ public class InicioSesionService {
     }
     
     public Usuario cambiarContrasenia(Usuario usuario, String contraseniaActual, String contraseniaNueva) throws Exception {
-        if(contraseniaActual.equals(usuario.getContrasenia())) {
-            usuario.setContrasenia(contraseniaNueva);
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        if(encoder.matches(contraseniaActual, usuario.getContrasenia())) {
+            // Cifrar la contraseña nueva
+            String contraseniaNuevaCifrada = encoder.encode(contraseniaNueva);
+            usuario.setContrasenia(contraseniaNuevaCifrada);
             return inicioSesionRepository.save(usuario);
         } else {
             throw new Exception("La contraseña actual no es correcta");
         }
     }
 }
+

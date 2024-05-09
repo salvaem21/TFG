@@ -58,8 +58,8 @@ public class EnviarDatosController {
 
     @PostMapping("/enviarDatosAJefatura")
     public String crearDocumento(HttpServletResponse response, HttpSession session,
-            @RequestParam Integer numeroConvenio,
-            @RequestParam String tutorAlumno, @RequestParam String nifTutorAlumno,
+            @RequestParam String numeroConvenio,
+            @RequestParam String tutorAlumno,
             @RequestParam String nombreEmpresa, @RequestParam String tutorEmpresa,
             @RequestParam String cifEmpresa, @RequestParam String direccionPracticas,
             @RequestParam String localidadPracticas, @RequestParam String codigoPostalPracticas,
@@ -105,7 +105,6 @@ public class EnviarDatosController {
         // Agregar los datos comunes al final
         datos.append("Datos comunes:\n");
         datos.append("Tutor alumno: ").append(tutorAlumno).append("\n");
-        datos.append("NIF tutor alumno: ").append(nifTutorAlumno).append("\n");
         datos.append("Numero Convenio: ").append(numeroConvenio).append("\n");
         datos.append("Nombre empresa: ").append(nombreEmpresa).append("\n");
         datos.append("Tutor empresa: ").append(tutorEmpresa).append("\n");
