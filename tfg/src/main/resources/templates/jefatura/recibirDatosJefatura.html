@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <div class="container">
     <h1>Lista de solicitudes</h1>
     <p>Bienvenido, <span th:text="${nombreUsuario}"></span>!</p>
@@ -23,14 +22,3 @@
         </tbody>
     </table>
 </div>
-=======
-<h2>Mensajes Recibidos</h2>
-<ul>
-    <!-- Itera sobre los mensajes recibidos y muéstralos -->
-    <li th:each="mensaje : ${mensajes}">
-        <strong>De:</strong> <span th:text="${mensaje.remitente.nombre}"></span>
-        <br>
-        <strong>Contenido:</strong> <span th:text="${mensaje.contenido}"></span>
-    </li>
-</ul>
->>>>>>> parent of 92f2cf0 (Merge branch 'isma' into salva)
