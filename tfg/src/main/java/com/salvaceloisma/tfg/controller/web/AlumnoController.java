@@ -1,6 +1,5 @@
 package com.salvaceloisma.tfg.controller.web;
 
-import java.time.LocalDate;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -44,8 +43,7 @@ public class AlumnoController {
     public String cPost(
             @RequestParam("dni") String dni,
             @RequestParam("nombre") String nombre,
-            @RequestParam("apellido") String apellido,
-            @RequestParam("fechaNacimiento") LocalDate fechaNacimiento, HttpSession s) throws Exception {
+            @RequestParam("apellido") String apellido, HttpSession s) throws Exception {
         try {
             alumnoService.save(dni, nombre, apellido, null);
         } catch (Exception e) {
