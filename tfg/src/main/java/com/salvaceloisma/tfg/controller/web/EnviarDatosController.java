@@ -143,7 +143,7 @@ public class EnviarDatosController {
                     PRG.error("El NIF de ese alumno ya esta en uso");
                 }
             }
-            inicioSesionService.enviarMensaje(remitente, destinatario, datos.toString());
+            inicioSesionService.enviarMensaje(remitente, destinatario, datos.toString(), solicitud);
             emailService.enviarEmail(correo, "Datos pendientes de ser revisados por Jefatura.",
                     nombre + " ha enviado unos datos.");
         } catch (Exception e) {
@@ -153,18 +153,28 @@ public class EnviarDatosController {
         return "redirect:../";
     }
 
-@GetMapping("/recibirDatosJefatura")
-public String recibirMensajes(Model model, HttpSession session) {
-    Usuario usuario = (Usuario) session.getAttribute("usuario");
-    model.addAttribute("nombreUsuario", usuario.getNombre());  // Agregar nombre del usuario al modelo
+    @GetMapping("/recibirDatosJefatura")
+    public String recibirMensajes(Model model, HttpSession session) {
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+        model.addAttribute("nombreUsuario", usuario.getNombre()); // Agregar nombre del usuario al modelo
 
-    List<Mensaje> mensajes = inicioSesionService.recibirMensajes(usuario);
-    List<Solicitud> solicitudes = solicitudService.findAll();
+        // Obtener los mensajes enviados y recibidos por el usuario
+        List<Mensaje> mensajes = inicioSesionService.recibirMensajes(usuario);
 
-    model.addAttribute("mensajes", mensajes);
-    model.addAttribute("solicitudes", solicitudes);
-    model.addAttribute("view", "jefatura/recibirDatosJefatura");
-    
-    return "_t/frame";
-}
+        // Extraer las solicitudes de los mensajes y agregarlas a una lista
+        List<Solicitud> solicitudes = new ArrayList<>();
+        for (Mensaje mensaje : mensajes) {
+            Solicitud solicitud = mensaje.getSolicitud();
+            if (solicitud != null) {
+                // Cargar los alumnos vinculados a esta solicitud
+                solicitud.setAlumnos(alumnoService.findBySolicitudIdSolicitud(solicitud.getIdSolicitud()));
+                solicitudes.add(solicitud);
+            }
+        }
+
+        model.addAttribute("solicitudes", solicitudes);
+        model.addAttribute("view", "jefatura/recibirDatosJefatura");
+
+        return "_t/frame";
+    }
 }
