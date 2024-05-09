@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.salvaceloisma.tfg.domain.Alumno;
 import com.salvaceloisma.tfg.domain.Mensaje;
 import com.salvaceloisma.tfg.domain.Solicitud;
 import com.salvaceloisma.tfg.domain.Usuario;
@@ -17,6 +18,7 @@ import com.salvaceloisma.tfg.enumerados.RolUsuario;
 import com.salvaceloisma.tfg.exception.DangerException;
 import com.salvaceloisma.tfg.exception.InfoException;
 import com.salvaceloisma.tfg.helper.PRG;
+import com.salvaceloisma.tfg.repository.AlumnoRepository;
 import com.salvaceloisma.tfg.service.AlumnoService;
 import com.salvaceloisma.tfg.service.EmailService;
 import com.salvaceloisma.tfg.service.InicioSesionService;
@@ -27,7 +29,9 @@ import jakarta.servlet.http.HttpSession;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RequestMapping("/enviarDatos")
 @Controller
@@ -44,6 +48,9 @@ public class EnviarDatosController {
 
     @Autowired
     private SolicitudService solicitudService;
+
+    @Autowired
+    private AlumnoRepository alumnoRepository;
 
     @GetMapping("/enviarDatosAJefatura")
     public String crearDocumento(ModelMap m) {
@@ -155,12 +162,18 @@ public class EnviarDatosController {
         return "redirect:../";
     }
 
-    @GetMapping("/recibirDatosJefatura")
-    public String recibirMensajes(Model model, HttpSession session, ModelMap m) {
-        Usuario destinatario = (Usuario) session.getAttribute("usuario");
-        List<Mensaje> mensajes = inicioSesionService.recibirMensajes(destinatario);
-        model.addAttribute("mensajes", mensajes);
-        m.put("view", "jefatura/recibirDatosJefatura");
-        return "_t/frame";
-    }
+@GetMapping("/recibirDatosJefatura")
+public String recibirMensajes(Model model, HttpSession session) {
+    Usuario usuario = (Usuario) session.getAttribute("usuario");
+    model.addAttribute("nombreUsuario", usuario.getNombre());  // Agregar nombre del usuario al modelo
+
+    List<Mensaje> mensajes = inicioSesionService.recibirMensajes(usuario);
+    List<Solicitud> solicitudes = solicitudService.findAll();
+
+    model.addAttribute("mensajes", mensajes);
+    model.addAttribute("solicitudes", solicitudes);
+    model.addAttribute("view", "jefatura/recibirDatosJefatura");
+    
+    return "_t/frame";
+}
 }
