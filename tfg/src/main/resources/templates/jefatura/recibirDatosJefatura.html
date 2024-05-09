@@ -39,12 +39,7 @@
                     </div>
                 </details>
             </td>
-            <td class="col-1">
-                <form action="/enviarDatos/corregirDatosJefatura" method="post">
-                    <input type="hidden" name="solicitudId" value="${solicitud.idSolicitud}">
-                    <button type="submit" class="btn btn-outline-propio1">Gestionar</button>
-                </form>
-            </td>
+            <td class="col-1"><a class="btn btn-outline-propio1" href="/enviarDatos/corregirDatosJefatura?solicitudId=${solicitud.idSolicitud}">Gestionar</a></td>
         </tr>
     </tbody>
 </table>

@@ -177,4 +177,13 @@ public class EnviarDatosController {
 
         return "_t/frame";
     }
+
+    @GetMapping("/corregirDatosJefatura")
+    public String update(
+            @RequestParam("id") String idSolicitud,
+            ModelMap m) {
+        m.put("solicitud", solicitudService.findById(idSolicitud));
+        m.put("view", "jefatura/corregirDatosJefatura");
+        return "_t/frame";
+    }
 }
