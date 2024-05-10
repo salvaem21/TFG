@@ -4,21 +4,30 @@
     </a>
     <ul class="navbar-nav ml-auto" th:if="${session.usuario==null}">
         <li class="nav-item">
-            <a class="nav-link btn btn-outline-light" href="/inicioSesion/inicioSesion" id="inicioSesion" >Iniciar sesión</a>
+            <a class="nav-link btn btn-outline-light" href="/inicioSesion/inicioSesion" id="inicioSesion">Iniciar
+                sesión</a>
         </li>
     </ul>
     <ul class="navbar-nav ml-auto" th:if="${session.usuario!=null}">
-        <li class="nav-item mt-2" th:if="${session.usuario.rol != T(com.salvaceloisma.tfg.enumerados.RolUsuario).ALUMNO}">
-            <i class="fa-solid fa-bell fa-2xl mr-2" style="color: #fafad2; cursor: pointer;" onclick="toggleCanvas()"></i>
+        <li class="nav-item mt-2"
+            th:if="${session.usuario.rol != T(com.salvaceloisma.tfg.enumerados.RolUsuario).ALUMNO}">
+            <i class="fa-solid fa-bell fa-2xl mr-2" style="color: #fafad2; cursor: pointer;"
+                onclick="toggleCanvas()"></i>
         </li>
-        <li class="nav-item" th:if="${session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).ADMIN || session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).DIRECTOR}">
-            <a class="nav-link btn btn-outline-light mr-2" th:if="${session.usuario!=null}" href="/inicioSesion/crearUsuario" id="registrarse">REGISTRAR USUARIO</a>
+        <li class="nav-item"
+            th:if="${session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).ADMIN || session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).DIRECTOR}">
+            <a class="nav-link btn btn-outline-light mr-2" th:if="${session.usuario!=null}"
+                href="/inicioSesion/crearUsuario" id="registrarse">REGISTRAR USUARIO</a>
         </li>
-        <li class="nav-item" th:if="${session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).ADMIN || session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).DIRECTOR}">
-            <a class="nav-link btn btn-outline-light mr-2" th:if="${session.usuario!=null}" href="/inicioSesion/gestionarAlumnos" id="registrarse">GESTIONAR ALUMNOS</a>
+        <li class="nav-item"
+            th:if="${session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).ADMIN || session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).DIRECTOR}">
+            <a class="nav-link btn btn-outline-light mr-2" th:if="${session.usuario!=null}"
+                href="/inicioSesion/gestionarAlumnos" id="registrarse">GESTIONAR ALUMNOS</a>
         </li>
-        <li class="nav-item" th:if="${session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).PROFESOR || session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).ALUMNO}">
-            <a class="nav-link btn btn-outline-light mr-2" th:if="${session.usuario!=null}" href="/inicioSesion/cambiarContrasenia" id="registrarse">CAMBIAR CONTRASEÑA</a>
+        <li class="nav-item"
+            th:if="${session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).PROFESOR || session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).ALUMNO}">
+            <a class="nav-link btn btn-outline-light mr-2" th:if="${session.usuario!=null}"
+                href="/inicioSesion/cambiarContrasenia" id="registrarse">CAMBIAR CONTRASEÑA</a>
         </li>
         <!-- Opción de logout -->
         <li class="nav-item">
@@ -30,21 +39,22 @@
 </nav>
 
 <div id="canvasMenu" style="display: none;">
-    <!-- Contenido del menú -->
     <div>
-        <!-- Contenido del menú desplegable -->
-        <!-- Mostrar los mensajes con novedad -->
-        <h3>Mensajes Nuevos</h3>
-        <ul>
-            <th:block th:each="mensaje : ${mensajesConNovedad}">
-                <li th:text="${mensaje.contenido}"></li>
-            </th:block>
-        </ul>
-        <!-- Puedes agregar aquí los enlaces o contenido que desees mostrar en el menú -->
-        <a class="nav-link btn btn-outline-light" href="#">Opción 1</a>
-        <a class="nav-link btn btn-outline-light" href="#">Opción 2</a>
-        <!-- Botón para cerrar el menú -->
-        <button class="nav-link btn btn-outline-light" onclick="toggleCanvas()">Cerrar</button>
+        <div th:with="mensajesConNovedad=${session.mensajesConNovedad}">
+            <h3 class="text-light ">Mensajes Nuevos</h3>
+            <details th:each="mensaje : ${mensajesConNovedad}">
+                <summary class="text-light "
+                    th:text="|Mensaje de: ${mensaje.solicitud.usuario.nombre} (${mensaje.solicitud.estado})|"></summary>
+                <li class="text-light "
+                    th:text="|Empresa: ${mensaje.solicitud.empresa} (Tutor: ${mensaje.solicitud.tutorEmpresa})|"></li>
+                <li class="text-light " th:text="|Ciclo Formativo: ${mensaje.solicitud.cicloFormativo}|"></li>
+            </details>
+
+        </div>
+        <div class="row">
+            <button class="nav-link btn btn-outline-light col-12" onclick="toggleCanvas()">Cerrar</button>
+        </div>
+
     </div>
 </div>
 
@@ -55,15 +65,25 @@
         var canvasContent = canvas.children[0];
         if (canvas.style.display === "none" || canvas.style.display === "") {
             canvas.style.display = "block";
-            setTimeout(function() {
+            setTimeout(function () {
                 canvasContent.style.opacity = 1;
                 canvasContent.style.transform = "translateX(0%)";
             }, 100);
             document.body.classList.add("no-click"); // Añadir clase para deshabilitar eventos de clic en la página
+
+            // Cuando se abre el canvas, enviar una solicitud al servidor para marcar los mensajes como vistos
+            // Cuando se abre el canvas, enviar una solicitud al servidor para marcar los mensajes como vistos
+            fetch('/inicioSesion/actualizarMensajes', {
+                method: 'POST',
+            })
+                .then(response => response.json())
+                .then(data => console.log(data))
+                .catch(error => console.error('Error:', error));
+
         } else {
             canvasContent.style.opacity = 0;
             canvasContent.style.transform = "translateX(100%)";
-            setTimeout(function() {
+            setTimeout(function () {
                 canvas.style.display = "none";
             }, 500);
             document.body.classList.remove("no-click"); // Eliminar clase para habilitar eventos de clic en la página
@@ -85,7 +105,7 @@
         overflow-x: hidden;
     }
 
-    #canvasMenu > div {
+    #canvasMenu>div {
         opacity: 0;
         transform: translateX(100%);
         background-color: rgba(0, 0, 0, 0.5);
@@ -94,5 +114,4 @@
         transition: opacity 0.5s ease, transform 0.5s ease;
         overflow-x: hidden;
     }
-
 </style>

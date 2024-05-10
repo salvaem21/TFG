@@ -1,5 +1,6 @@
 package com.salvaceloisma.tfg.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +34,14 @@ public class InicioSesionService {
 
     public List<Mensaje> obtenerMensajesConNovedadParaUsuario(Usuario usuario) {
         // Obtener los mensajes con novedad para el usuario destinatario
-        return mensajeRepository.findByDestinatarioAndNovedadTrue(usuario);
+        List<Mensaje> mensajes = mensajeRepository.findByDestinatario(usuario);
+        List<Mensaje> mensajesNuevos = new ArrayList<>();
+        for (Mensaje mensaje : mensajes) {
+            if(mensaje.isNovedad()){
+                mensajesNuevos.add(mensaje);
+            }
+        }
+        return mensajesNuevos;
     }
 
     public List<Mensaje> recibirMensajes(Usuario destinatario) {
@@ -89,5 +97,13 @@ public class InicioSesionService {
         } else {
             throw new Exception("La contraseña actual no es correcta");
         }
+    }
+
+    public void marcarMensajesComoVistos(Usuario usuario) {
+        List<Mensaje> mensajes = mensajeRepository.findByDestinatario(usuario);
+        for (Mensaje mensaje : mensajes) {
+            mensaje.setNovedad(true);
+        }
+        mensajeRepository.saveAll(mensajes);
     }
 }

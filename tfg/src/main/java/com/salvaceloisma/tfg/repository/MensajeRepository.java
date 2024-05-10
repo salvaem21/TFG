@@ -11,5 +11,4 @@ import com.salvaceloisma.tfg.domain.Usuario;
 @Repository
 public interface MensajeRepository extends JpaRepository<Mensaje, Long> {
     List<Mensaje> findByDestinatario(Usuario destinatario);
-    List<Mensaje> findByDestinatarioAndNovedadTrue(Usuario destinatario);
 }
