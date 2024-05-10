@@ -179,7 +179,7 @@ public class EnviarDatosController {
     }
 
     @GetMapping("/corregirDatosJefatura")
-    public String update(
+    public String verificarDocumento(
             @RequestParam("id") String idSolicitud,
             ModelMap m) {
         m.put("solicitud", solicitudService.findById(idSolicitud));
