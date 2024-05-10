@@ -183,6 +183,7 @@ public class EnviarDatosController {
             @RequestParam("id") String idSolicitud,
             ModelMap m) {
         m.put("solicitud", solicitudService.findById(idSolicitud));
+        m.put("alumnos", alumnoService.findBySolicitudIdSolicitud(idSolicitud));
         m.put("view", "jefatura/corregirDatosJefatura");
         return "_t/frame";
     }
