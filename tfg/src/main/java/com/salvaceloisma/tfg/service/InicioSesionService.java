@@ -29,6 +29,7 @@ public class InicioSesionService {
         mensaje.setDestinatario(destinatario);
         mensaje.setContenido(contenido);
         mensaje.setSolicitud(solicitud);
+        mensaje.setNovedad(true);
         mensajeRepository.save(mensaje);
     }
 
@@ -102,8 +103,8 @@ public class InicioSesionService {
     public void marcarMensajesComoVistos(Usuario usuario) {
         List<Mensaje> mensajes = mensajeRepository.findByDestinatario(usuario);
         for (Mensaje mensaje : mensajes) {
-            mensaje.setNovedad(true);
+            mensaje.setNovedad(false); // Establecer el booleano en false
         }
-        mensajeRepository.saveAll(mensajes);
+        mensajeRepository.saveAll(mensajes); // Guardar los cambios en la base de datos
     }
 }
