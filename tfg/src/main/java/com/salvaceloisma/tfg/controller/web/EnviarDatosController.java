@@ -182,7 +182,10 @@ public class EnviarDatosController {
     public String verificarDocumento(
             @RequestParam("id") String idSolicitud,
             ModelMap m) {
-        m.put("solicitud", solicitudService.findById(idSolicitud));
+        Solicitud solicitud = solicitudService.findById(idSolicitud);
+        String horarioSinSegundoHorario = solicitud.getHorario().replace("Segundo horario:", "");
+        solicitud.setHorario(horarioSinSegundoHorario); //ELIMINAMOS EL TEXTO PARA QUE NO DE ERROR AL RECORRER.
+        m.put("solicitud", solicitud);
         m.put("alumnos", alumnoService.findBySolicitudIdSolicitud(idSolicitud));
         m.put("usuariosJefatura", inicioSesionService.obtenerUsuariosPorRol(RolUsuario.JEFATURA));
         m.put("view", "jefatura/corregirDatosJefatura");
