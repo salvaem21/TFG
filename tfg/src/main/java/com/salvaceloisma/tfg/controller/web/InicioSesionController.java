@@ -1,6 +1,9 @@
 package com.salvaceloisma.tfg.controller.web;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -8,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.salvaceloisma.tfg.domain.Mensaje;
 import com.salvaceloisma.tfg.domain.Usuario;
 import com.salvaceloisma.tfg.enumerados.RolUsuario;
 import com.salvaceloisma.tfg.exception.DangerException;
@@ -43,8 +47,11 @@ public class InicioSesionController {
         try {
             correo = correo + "@educa.madrid.org";
             Usuario usuario = inicioSesionService.inicioSesion(correo, contrasenia);
+            List<Mensaje> mensajesConNovedad = inicioSesionService.obtenerMensajesConNovedadParaUsuario(usuario);
 
             s.setAttribute("usuario", usuario);
+            // Agregar los mensajes con novedad al modelo para enviar al frontend
+            s.setAttribute("mensajesConNovedad", mensajesConNovedad);
         } catch (Exception e) {
             PRG.error("Usuario o contraseña incorrectos");
         }
@@ -118,4 +125,12 @@ public class InicioSesionController {
 
         return "redirect:../";
     }
+
+    @PostMapping("/actualizarMensajes")
+    public ResponseEntity<String> actualizarMensajes(HttpSession session) {
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+        inicioSesionService.marcarMensajesComoVistos(usuario);
+        return ResponseEntity.ok("Mensajes actualizados correctamente");
+    }
+
 }

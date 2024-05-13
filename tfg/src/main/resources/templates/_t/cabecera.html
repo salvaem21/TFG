@@ -4,25 +4,126 @@
     </a>
     <ul class="navbar-nav ml-auto" th:if="${session.usuario==null}">
         <li class="nav-item">
-            <a class="nav-link btn btn-outline-light" href="/inicioSesion/inicioSesion" id="inicioSesion">Iniciar sesión</a>
+            <a class="nav-link btn btn-outline-light" href="/inicioSesion/inicioSesion" id="inicioSesion">Iniciar
+                sesión</a>
         </li>
     </ul>
     <ul class="navbar-nav ml-auto" th:if="${session.usuario!=null}">
-        <li class="nav-item mt-2" th:if="${session.usuario.rol != T(com.salvaceloisma.tfg.enumerados.RolUsuario).ALUMNO}">
-            <i class="fa-solid fa-bell fa-2xl mr-2" style="color: #fafad2;"></i>
+        <li class="nav-item mt-2"
+            th:if="${session.usuario.rol != T(com.salvaceloisma.tfg.enumerados.RolUsuario).ALUMNO}">
+            <span class="badge badge-pill badge-danger mr-2" th:if="${#lists.size(session.mensajesConNovedad) >= 1}" th:text="${#lists.size(session.mensajesConNovedad)}"
+                style="font-size: 0.8rem;"></span>
+            <i class="fa-regular fa-bell fa-shake fa-2x mr-2" th:if="${#lists.size(session.mensajesConNovedad) >= 1}"
+                style="color: #fafad2; cursor: pointer;" onclick="toggleCanvas()"></i>
+            <i class="fa-regular fa-bell fa-2xl mr-2" th:if="${#lists.size(session.mensajesConNovedad) == 0}"
+                style="color: #fafad2; cursor: pointer;" onclick="toggleCanvas()"></i>
         </li>
-        <li class="nav-item" th:if="${session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).ADMIN || session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).DIRECTOR}">
-            <a class="nav-link btn btn-outline-light  mr-2" th:if="${session.usuario!=null}" href="/inicioSesion/crearUsuario" id="registrarse">REGISTRAR USUARIO</a>
+        <li class="nav-item"
+            th:if="${session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).ADMIN || session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).DIRECTOR}">
+            <a class="nav-link btn btn-outline-light mr-2" th:if="${session.usuario!=null}"
+                href="/inicioSesion/crearUsuario" id="registrarse">REGISTRAR USUARIO</a>
         </li>
-        <li class="nav-item" th:if="${session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).ADMIN || session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).DIRECTOR}">
-            <a class="nav-link btn btn-outline-light  mr-2" th:if="${session.usuario!=null}" href="/inicioSesion/gestionarAlumnos" id="registrarse">GESTIONAR ALUMNOS</a>
+        <li class="nav-item"
+            th:if="${session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).ADMIN || session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).DIRECTOR}">
+            <a class="nav-link btn btn-outline-light mr-2" th:if="${session.usuario!=null}"
+                href="/inicioSesion/gestionarAlumnos" id="registrarse">GESTIONAR ALUMNOS</a>
         </li>
-        <li class="nav-item" th:if="${session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).PROFESOR || session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).ALUMNO}">
-            <a class="nav-link btn btn-outline-light  mr-2" th:if="${session.usuario!=null}" href="/inicioSesion/cambiarContrasenia" id="registrarse">CAMBIAR CONTRASEÑA</a>
+        <li class="nav-item"
+            th:if="${session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).PROFESOR || session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).ALUMNO}">
+            <a class="nav-link btn btn-outline-light mr-2" th:if="${session.usuario!=null}"
+                href="/inicioSesion/cambiarContrasenia" id="registrarse">CAMBIAR CONTRASEÑA</a>
         </li>
+        <!-- Opción de logout -->
         <li class="nav-item">
-            <a class="nav-link btn btn-outline-light " href="/inicioSesion/logout" id="registrarse">LOGOUT</a>
+            <a class="nav-link btn btn-outline-light" href="/inicioSesion/logout" id="registrarse">LOGOUT</a>
             <span class="text-light" th:text="|Hola ${session.usuario.nombre} / ${session.usuario.rol} |"></span>
         </li>
+        <!-- Aquí van los demás elementos del menú -->
     </ul>
 </nav>
+
+<div id="canvasMenu" style="display: none;">
+    <div>
+        <div th:with="mensajesConNovedad=${session.mensajesConNovedad}">
+            <h3 class="text-light ">Mensajes Nuevos</h3>
+            <details th:each="mensaje : ${mensajesConNovedad}">
+                <summary class="text-light "
+                    th:text="|Mensaje de: ${mensaje.solicitud.usuario.nombre} (${mensaje.solicitud.estado})|"></summary>
+                <li class="text-light "
+                    th:text="|Empresa: ${mensaje.solicitud.empresa} (Tutor: ${mensaje.solicitud.tutorEmpresa})|"></li>
+                <li class="text-light " th:text="|Ciclo Formativo: ${mensaje.solicitud.cicloFormativo}|"></li>
+            </details>
+
+        </div>
+        <div class="row">
+            <button class="nav-link btn btn-outline-light col-12" onclick="toggleCanvas()">Cerrar</button>
+        </div>
+
+    </div>
+</div>
+
+
+<script>
+    function toggleCanvas() {
+    var canvas = document.getElementById("canvasMenu");
+    var canvasContent = canvas.children[0];
+    if (canvas.style.display === "none" || canvas.style.display === "") {
+        canvas.style.display = "block";
+        setTimeout(function () {
+            canvasContent.style.opacity = 1;
+            canvasContent.style.transform = "translateX(0%)";
+        }, 100);
+        document.body.classList.add("no-click"); // Añadir clase para deshabilitar eventos de clic en la página
+
+        // Cuando se abre el canvas, enviar una solicitud al servidor para marcar los mensajes como vistos
+        fetch('/inicioSesion/actualizarMensajes', {
+            method: 'POST',
+        })
+        .then(response => {
+            // Eliminar todos los elementos span con la clase badge
+            var badges = document.querySelectorAll('.badge');
+            badges.forEach(badge => {
+                badge.remove();
+            });
+            return response.json();
+        })
+        .then(data => console.log(data))
+        .catch(error => console.error('Error:', error));
+
+    } else {
+        canvasContent.style.opacity = 0;
+        canvasContent.style.transform = "translateX(100%)";
+        setTimeout(function () {
+            canvas.style.display = "none";
+        }, 500);
+        document.body.classList.remove("no-click"); // Eliminar clase para habilitar eventos de clic en la página
+    }
+}
+</script>
+
+
+
+<style>
+    #canvasMenu {
+        position: fixed;
+        top: 0;
+        right: 0;
+        width: 25%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+        overflow-y: auto;
+        transition: opacity 0.5s ease, transform 0.5s ease;
+        overflow-x: hidden;
+    }
+
+    #canvasMenu>div {
+        opacity: 0;
+        transform: translateX(100%);
+        background-color: rgba(0, 0, 0, 0.5);
+        padding: 20px;
+        border-radius: 5px;
+        transition: opacity 0.5s ease, transform 0.5s ease;
+        overflow-x: hidden;
+    }
+</style>

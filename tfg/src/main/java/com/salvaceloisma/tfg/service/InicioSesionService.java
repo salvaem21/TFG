@@ -1,5 +1,6 @@
 package com.salvaceloisma.tfg.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,7 @@ import com.salvaceloisma.tfg.repository.MensajeRepository;
 
 @Service
 public class InicioSesionService {
-    
+
     @Autowired
     private InicioSesionRepository inicioSesionRepository;
 
@@ -28,7 +29,20 @@ public class InicioSesionService {
         mensaje.setDestinatario(destinatario);
         mensaje.setContenido(contenido);
         mensaje.setSolicitud(solicitud);
+        mensaje.setNovedad(true);
         mensajeRepository.save(mensaje);
+    }
+
+    public List<Mensaje> obtenerMensajesConNovedadParaUsuario(Usuario usuario) {
+        // Obtener los mensajes con novedad para el usuario destinatario
+        List<Mensaje> mensajes = mensajeRepository.findByDestinatario(usuario);
+        List<Mensaje> mensajesNuevos = new ArrayList<>();
+        for (Mensaje mensaje : mensajes) {
+            if(mensaje.isNovedad()){
+                mensajesNuevos.add(mensaje);
+            }
+        }
+        return mensajesNuevos;
     }
 
     public List<Mensaje> recibirMensajes(Usuario destinatario) {
@@ -43,12 +57,12 @@ public class InicioSesionService {
         return inicioSesionRepository.findByCorreo(correo);
     }
 
-    public Usuario save(String nombre, String apellido, String correo, String contrasenia,  RolUsuario rol) {
+    public Usuario save(String nombre, String apellido, String correo, String contrasenia, RolUsuario rol) {
         // Cifrar la contraseña
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         String contraseniaCifrada = encoder.encode(contrasenia);
         //
-        Usuario usuario = new Usuario(nombre, apellido,correo, contraseniaCifrada, rol);
+        Usuario usuario = new Usuario(nombre, apellido, correo, contraseniaCifrada, rol);
         return inicioSesionRepository.save(usuario);
     }
 
@@ -62,20 +76,21 @@ public class InicioSesionService {
 
     public Usuario inicioSesion(String correo, String contrasenia) throws Exception {
         Usuario usuario = inicioSesionRepository.findByCorreo(correo);
-        if(usuario == null) {
+        if (usuario == null) {
             throw new Exception("El correo " + correo + " no existe");
         }
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        if(!encoder.matches(contrasenia, usuario.getContrasenia())) {
+        if (!encoder.matches(contrasenia, usuario.getContrasenia())) {
             throw new Exception("La contraseña no es correcta");
         }
 
         return usuario;
     }
-    
-    public Usuario cambiarContrasenia(Usuario usuario, String contraseniaActual, String contraseniaNueva) throws Exception {
+
+    public Usuario cambiarContrasenia(Usuario usuario, String contraseniaActual, String contraseniaNueva)
+            throws Exception {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        if(encoder.matches(contraseniaActual, usuario.getContrasenia())) {
+        if (encoder.matches(contraseniaActual, usuario.getContrasenia())) {
             // Cifrar la contraseña nueva
             String contraseniaNuevaCifrada = encoder.encode(contraseniaNueva);
             usuario.setContrasenia(contraseniaNuevaCifrada);
@@ -84,5 +99,12 @@ public class InicioSesionService {
             throw new Exception("La contraseña actual no es correcta");
         }
     }
-}
 
+    public void marcarMensajesComoVistos(Usuario usuario) {
+        List<Mensaje> mensajes = mensajeRepository.findByDestinatario(usuario);
+        for (Mensaje mensaje : mensajes) {
+            mensaje.setNovedad(false); // Establecer el booleano en false
+        }
+        mensajeRepository.saveAll(mensajes); // Guardar los cambios en la base de datos
+    }
+}
