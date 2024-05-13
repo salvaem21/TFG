@@ -41,10 +41,259 @@ $(document).ready(function () {
         validarDNI($(this));
     });
 
+    function validarNombreTutor(nombreInput) {
+        var nombre = nombreInput.val();
+        // Expresión regular para validar el nombre (letras, espacios en blanco y algunos signos)
+        var nombreRegex = /^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ \-'']+$/;
+
+        if (!nombreRegex.test(nombre)) {
+            nombreInput.css('border-color', 'red');
+            return false;
+        }
+
+        // Si el nombre es válido, eliminar el resaltado rojo
+        nombreInput.css('border-color', '');
+        return true;
+    }
+
+    // Evento para validar el nombre cuando se modifica el campo de entrada
+    $("#tutorAlumno").on('blur', function () {
+        validarNombreTutor($(this));
+    });
+
+    function validarCicloFormativo(cicloInput) {
+        var cicloFormativo = cicloInput.val();
+        // Expresión regular para validar el ciclo formativo (letras y saltos de línea)
+        var cicloRegex = /^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\s]+$/;
+
+        if (!cicloRegex.test(cicloFormativo)) {
+            cicloInput.css('border-color', 'red');
+            return false;
+        }
+
+        // Si el ciclo formativo es válido, eliminar el resaltado rojo
+        cicloInput.css('border-color', '');
+        return true;
+    }
+    $("#cicloFormativoAlumno").on('blur', function () {
+        validarCicloFormativo($(this));
+    });
+
+    function validarNumeroConvenio(convenioInput) {
+        var numeroConvenio = convenioInput.val();
+        // Expresión regular para validar que el número de convenio tenga exactamente 14 dígitos
+        var convenioRegex = /^\d{14}$/;
+
+        if (!convenioRegex.test(numeroConvenio)) {
+            convenioInput.css('border-color', 'red');
+            return false;
+        }
+
+        // Si el número de convenio es válido, eliminar el resaltado rojo
+        convenioInput.css('border-color', '');
+        return true;
+    }
+
+    // Evento para validar el número de convenio cuando se modifica el campo de entrada
+    $("#numeroConvenio").on('blur', function () {
+        validarNumeroConvenio($(this));
+    });
+
+    function validarNombreEmpresa(nombreInput) {
+        var nombreEmpresa = nombreInput.val();
+        // Expresión regular para validar el nombre (letras, números, espacios y signos de puntuación)
+        var nombreRegex = /^[a-zA-Z0-9áéíóúÁÉÍÓÚüÜñÑ \s.,'-]+$/;
+
+        if (!nombreRegex.test(nombreEmpresa)) {
+            nombreInput.css('border-color', 'red');
+            return false;
+        }
+
+        // Si el nombre de la empresa es válido, eliminar el resaltado rojo
+        nombreInput.css('border-color', '');
+        return true;
+    }
+
+    // Evento para validar el nombre de la empresa cuando se modifica el campo de entrada
+    $("#nombreEmpresa").on('blur', function () {
+        validarNombreEmpresa($(this));
+    });
+
+    function validarTutorEmpresa(nombreInput) {
+        var nombre = nombreInput.val();
+        // Expresión regular para validar el nombre (letras, espacios en blanco y guiones)
+        var nombreRegex = /^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ \-'']+$/;
+
+        if (!nombreRegex.test(nombre)) {
+            nombreInput.css('border-color', 'red');
+            return false;
+        }
+
+        // Si el nombre es válido, eliminar el resaltado rojo
+        nombreInput.css('border-color', '');
+        return true;
+    }
+
+    // Evento para validar el nombre cuando se modifica el campo de entrada
+    $("#tutorEmpresa").on('blur', function () {
+        validarTutorEmpresa($(this));
+    });
+
+    function validarCIFEmpresa(cifInput) {
+        var cifEmpresa = cifInput.val();
+        // Expresión regular para validar que el CIF tenga 1 número seguido de 8 letras
+        var cifRegex = /^[a-zA-Z]\d{8}$/;
+
+        if (!cifRegex.test(cifEmpresa)) {
+            cifInput.css('border-color', 'red');
+            return false;
+        }
+
+        // Si el CIF de la empresa es válido, eliminar el resaltado rojo
+        cifInput.css('border-color', '');
+        return true;
+    }
+
+    // Evento para validar el CIF de la empresa cuando se modifica el campo de entrada
+    $("#cifEmpresa").on('blur', function () {
+        validarCIFEmpresa($(this));
+    });
+
+    function validarDireccionPracticas(direccionInput) {
+        var direccion = direccionInput.val();
+        var direccionRegex = /^[0-9a-zA-Zº/, ]+$/;
+        if (!direccionRegex.test(direccion)) {
+            direccionInput.css('border-color', 'red');
+            return false;
+        }
+        direccionInput.css('border-color', '');
+        return true;
+    }
+
+    $("#direccionPracticas").on('blur', function () {
+        validarDireccionPracticas($(this));
+    });
+
+    // Validación de la Localidad de las Prácticas
+    function validarLocalidadPracticas(localidadInput) {
+        var localidad = localidadInput.val();
+        var localidadRegex = /^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ \-]+$/;
+        if (!localidadRegex.test(localidad)) {
+            localidadInput.css('border-color', 'red');
+            return false;
+        }
+        localidadInput.css('border-color', '');
+        return true;
+    }
+
+    $("#localidadPracticas").on('blur', function () {
+        validarLocalidadPracticas($(this));
+    });
+
+    // Validación del Código Postal de las Prácticas
+    function validarCodigoPostalPracticas(codigoInput) {
+        var codigoPostal = codigoInput.val();
+        var codigoRegex = /^\d{5}$/;
+        if (!codigoRegex.test(codigoPostal)) {
+            codigoInput.css('border-color', 'red');
+            return false;
+        }
+        codigoInput.css('border-color', '');
+        return true;
+    }
+
+    $("#codigoPostalPracticas").on('blur', function () {
+        validarCodigoPostalPracticas($(this));
+    });
+
+    function validarNombreApellidos(input) {
+        var texto = input.val();
+        var regex = /^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ \-'']+$/;
+
+        if (!regex.test(texto)) {
+            input.css('border-color', 'red');
+            return false;
+        }
+        input.css('border-color', ''); // Eliminar el resaltado si es válido
+        return true;
+    }
+
+    // Evento para validar el nombre y apellidos cuando se modifica el campo de entrada
+    $("#apellidosAlumno, #nombreAlumno").on('blur', function () {
+        validarNombreApellidos($(this));
+    });
+
+    // Asegurarse de aplicar la validación a campos dinámicos
+    $(document).on('blur', '.datos-alumno #apellidosAlumno, .datos-alumno #nombreAlumno', function () {
+        validarNombreApellidos($(this));
+    });
+
+    //Validacion horas totales entre 240(practicas Fp basica) y 440(practias maximo 5 titulos LOGSE)
+    function validarHorasTotales(horasInput) {
+        var horas = parseInt(horasInput.val(), 10);
+        if (isNaN(horas) || horas < 240 || horas > 440) {
+            horasInput.css('border-color', 'red');
+            return false;
+        }
+        horasInput.css('border-color', ''); // Limpiar el color del borde si es válido
+        return true;
+    }
+
+    // Evento para validar las horas totales cuando se modifica el campo
+    $("#horasTotales").on('input', function () {
+        validarHorasTotales($(this));
+    });
+
+    function validarFechaInicio(fechaInicioInput) {
+        var fechaInicio = new Date(fechaInicioInput.val());
+        var hoy = new Date();
+        hoy.setHours(0, 0, 0, 0); // Asegura comparar solo la fecha sin tiempo
+
+        if (fechaInicio <= hoy) {
+            fechaInicioInput.css('border-color', 'red');
+            return false;
+        }
+        fechaInicioInput.css('border-color', '');
+        return true;
+    }
+
+    // Función para validar la fecha de fin
+    function validarFechaFin(fechaInicioInput, fechaFinInput) {
+        var fechaInicio = new Date(fechaInicioInput.val());
+        var fechaFin = new Date(fechaFinInput.val());
+
+        if (fechaFin <= fechaInicio) {
+            fechaFinInput.css('border-color', 'red');
+            return false;
+        }
+        fechaFinInput.css('border-color', '');
+        return true;
+    }
+
+    // Evento para validar las fechas cuando se modifica cualquiera de los campos
+    $("#fechaInicio, #fechaFin").on('change', function () {
+        validarFechaInicio($('#fechaInicio'));
+        validarFechaFin($('#fechaInicio'), $('#fechaFin'));
+    });
+
+
     // Validar el formulario antes de enviarlo
     $("#formularioAlumnos").submit(function (event) {
         var alumnoValido = validarDNI($("#nifAlumno"));
-
+        var nombreTutorValido = validarNombreTutor($("#tutorAlumno"));
+        var cicloFormativoValido = validarCicloFormativo($("#cicloFormativoAlumno"));
+        var numeroConvenioValido = validarNumeroConvenio($("#numeroConvenio"));
+        var nombreEmpresaValido = validarNombreEmpresa($("#nombreEmpresa"));
+        var tutorEmpresaValido = validarTutorEmpresa($("#tutorEmpresa"));
+        var cifEmpresaValido = validarCIFEmpresa($("#cifEmpresa"));
+        var direccionValida = validarDireccionPracticas($("#direccionPracticas"));
+        var localidadValida = validarLocalidadPracticas($("#localidadPracticas"));
+        var codigoPostalValido = validarCodigoPostalPracticas($("#codigoPostalPracticas"));
+        var validarNombreAlumno=validarNombreApellidos($("#nombreAlumno"));
+        var validarApellidoAlumno=validarNombreApellidos($("#apellidosAlumno"));
+        var horasValidas = validarHorasTotales($("#horasTotales"));
+        var fechaInicioValida = validarFechaInicio($("#fechaInicio"));
+        var fechaFinValida = validarFechaFin($("#fechaInicio"), $("#fechaFin"));
 
         // Si solo el NIF del Alumno es inválido
         if (!alumnoValido) {
@@ -52,6 +301,78 @@ $(document).ready(function () {
             event.preventDefault(); // Evitar que se envíe el formulario si el NIF del Alumno no es válido
             return;
         }
+        if (!nombreTutorValido) {
+            alert("El nombre del tutor introducido no es válido.");
+            event.preventDefault(); 
+            return;
+        }
+        if (!cicloFormativoValido) {
+            alert("El ciclo formativo introducido no es válido.");
+            event.preventDefault(); 
+            return;
+        }
+        if (!numeroConvenioValido) {
+            alert("El numero de convenio introducido no es válido.");
+            event.preventDefault(); 
+            return;
+        }
+        if (!nombreEmpresaValido) {
+            alert("El nombre de empresa introducido no es válido.");
+            event.preventDefault(); 
+            return;
+        }
+        if (!tutorEmpresaValido) {
+            alert("El nombre del tutor de la empresa introducido no es válido.");
+            event.preventDefault(); 
+            return;
+        }
+        if (!cifEmpresaValido) {
+            alert("El cif de la empresa introducido no es válido.");
+            event.preventDefault(); 
+            return;
+        }
+        if (!direccionValida) {
+            alert("La direccion de la empresa introducido no es válido.");
+            event.preventDefault(); 
+            return;
+        }
+        if (!localidadValida) {
+            alert("La localidad de la empresa introducido no es válido.");
+            event.preventDefault(); 
+            return;
+        }
+        if (!codigoPostalValido) {
+            alert("El codigo postal de la empresa introducido no es válido.");
+            event.preventDefault(); 
+            return;
+        }
+        if (!validarNombreAlumno) {
+            alert("El nombre del Alumno introducido no es válido.");
+            event.preventDefault(); 
+            return;
+        }
+        if (!validarApellidoAlumno) {
+            alert("El apellido del alumno introducido no es válido.");
+            event.preventDefault(); 
+            return;
+        }
+        if (!horasValidas) {
+            alert("Las horas totales deben de ser entre 240 y 440.");
+            event.preventDefault();
+            return;
+        }
+        if (!fechaInicioValida) {
+            alert("la fecha de inicio tiene que ser posterior a hoy.");
+            event.preventDefault(); 
+            return;
+        }
+        if (!fechaFinValida) {
+            alert("La fecha de fin tiene que ser posterior a la fecha de inicio.");
+            event.preventDefault();
+            return;
+        }
+
+        //ALUMNOS EXTRAS
         // Validar el NIF de los alumnos extra
         var alumnosExtraValidos = true;
         $(".datos-alumno").not(":first").find("#nifAlumno").each(function () {
@@ -59,12 +380,28 @@ $(document).ready(function () {
                 alumnosExtraValidos = false;
                 return false; // Romper el bucle si se encuentra un NIF inválido
             }
+            // Validar Apellidos del alumno
+        if (!validarNombreApellidos($(this).find("#apellidosAlumno"))) {
+            alert("Los apellidos de uno o más alumnos introducidos no son válidos.");
+            alumnosExtraValidos = false;
+            event.preventDefault();
+            return false; // Romper el bucle si se encuentra un apellido inválido
+        }
+
+        // Validar Nombre del alumno
+        if (!validarNombreApellidos($(this).find("#nombreAlumno"))) {
+            alert("El nombre de uno o más alumnos introducidos no es válido.");
+            alumnosExtraValidos = false;
+            event.preventDefault();
+            return false; // Romper el bucle si se encuentra un nombre inválido
+        }
         });
         if (!alumnosExtraValidos) {
-            alert("El NIF de uno o más alumnos introducidos no es válido.");
-            event.preventDefault(); // Evitar que se envíe el formulario si uno o más NIF de alumnos son inválidos
+            alert("El nombre,apellido o NIF del alumno extra es invalido.");
+            event.preventDefault(); // Evitar que se envíe el formulario si uno o más campos de alumnos son inválidos
         }
     });
+
 
     // Manejador de clic en el botón para agregar otro alumno
     $("#agregarAlumno").click(function () {
