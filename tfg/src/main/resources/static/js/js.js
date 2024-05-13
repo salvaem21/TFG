@@ -184,4 +184,34 @@ $(document).ready(function () {
         // Opcional: mostrar un mensaje o realizar alguna acción adicional
         alert("Horas del lunes copiadas a todos los días de la semana.");
     });
+
+    const opcionPDF = document.getElementById("opcionPDF");
+    const opcionObservaciones = document.getElementById("opcionObservaciones");
+    const campoPDF = document.getElementById("campoPDF");
+    const campoObservaciones = document.getElementById("campoObservaciones");
+
+    // Función para habilitar el campo PDF y deshabilitar Observaciones
+    function habilitarPDF() {
+        campoPDF.style.display = "block";
+        campoObservaciones.style.display = "none";
+    }
+
+    // Función para habilitar el campo Observaciones y deshabilitar PDF
+    function habilitarObservaciones() {
+        campoPDF.style.display = "none";
+        campoObservaciones.style.display = "block";
+    }
+
+    // Event listener para detectar el cambio en la selección de opción
+    opcionPDF.addEventListener("change", function() {
+        if (opcionPDF.checked) {
+            habilitarPDF();
+        }
+    });
+
+    opcionObservaciones.addEventListener("change", function() {
+        if (opcionObservaciones.checked) {
+            habilitarObservaciones();
+        }
+    });
 });
