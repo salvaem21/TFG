@@ -1,5 +1,6 @@
 package com.salvaceloisma.tfg.controller.web;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -130,6 +131,8 @@ public class InicioSesionController {
     public ResponseEntity<String> actualizarMensajes(HttpSession session) {
         Usuario usuario = (Usuario) session.getAttribute("usuario");
         inicioSesionService.marcarMensajesComoVistos(usuario);
+        session.setAttribute("mensajesConNovedad", Collections.emptyList());
+
         return ResponseEntity.ok("Mensajes actualizados correctamente");
     }
 
