@@ -25,7 +25,6 @@ import com.salvaceloisma.tfg.service.InicioSesionService;
 import com.salvaceloisma.tfg.service.MensajeService;
 import com.salvaceloisma.tfg.service.SolicitudService;
 
-import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
@@ -207,7 +206,7 @@ public class EnviarDatosController {
     @PostMapping("/corregirDatosJefaturaObservaciones")
     public String verificarDocumentoEnviarObservacionACorregir(HttpServletResponse response, HttpSession session,
     @RequestParam("idSolicitud") String idSolicitud,
-    @RequestParam("observaciones") String observaciones) throws InfoException, DangerException, MessagingException {
+    @RequestParam("observaciones") String observaciones) throws Exception {
 
 
             
@@ -217,9 +216,11 @@ public class EnviarDatosController {
             Usuario remitente =  mensaje.getDestinatario(); 
             String destinatarioCorreo = destinatario.getCorreo();
             String remitenteCorreo = destinatario.getCorreo();
+            EstadoSolicitud estadoSolicitud= EstadoSolicitud.RECHAZADO_JEFATURA;
             
         try {
             mensajeService.actualizarMensaje(idSolicitud,destinatario, remitente, observaciones);
+            solicitudService.cambiarEstadoSolicitud(idSolicitud, estadoSolicitud, remitente);
             emailService.enviarEmail(destinatarioCorreo, remitenteCorreo,"Datos pendientes de ser revisados.");
             
             PRG.info("Correción enviada correctamente.","/home/home");
@@ -227,6 +228,7 @@ public class EnviarDatosController {
             PRG.error("Error al subir el archivo.","/jefatura/corregirDatosJefatura");
             
         }
+
         return "redirect: ../";
     }
 
@@ -235,7 +237,7 @@ public class EnviarDatosController {
     @PostMapping("/corregirDatosJefaturaArchivo")
     public String verificarDocumento(HttpServletResponse response, HttpSession session,
     @RequestParam("idSolicitud") String idSolicitud,
-    @RequestParam("archivoPDF") MultipartFile archivo) throws InfoException, DangerException, MessagingException {
+    @RequestParam("archivoPDF") MultipartFile archivo) throws Exception {
 
 
             
@@ -245,18 +247,19 @@ public class EnviarDatosController {
             Usuario remitente =  mensaje.getDestinatario(); 
             String destinatarioCorreo = destinatario.getCorreo();
             String remitenteCorreo = destinatario.getCorreo();
-            
+            EstadoSolicitud estadoSolicitud= EstadoSolicitud.APROBADO_JEFATURA_PDF;
         try {
             //AÑADIR ARCHIVO AQUI
             archivoService.guardarArchivo(archivo);
             mensajeService.actualizarNotificacion(idSolicitud,destinatario, remitente);
+            solicitudService.cambiarEstadoSolicitud(idSolicitud, estadoSolicitud, remitente);
             emailService.enviarEmail(destinatarioCorreo, remitenteCorreo,"Solicitud aceptada. Revisa tu bandeja de entrada.");
             
             PRG.info("Correción enviada correctamente.","/home/home");
         } catch (IOException e) {
             PRG.error("Error al subir el archivo.","/jefatura/corregirDatosJefatura");
             
-        }
+        } 
         return "redirect: ../";
     }
 

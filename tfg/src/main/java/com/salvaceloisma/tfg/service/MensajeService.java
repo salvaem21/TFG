@@ -37,6 +37,7 @@ public class MensajeService {
         mensaje.setDestinatario(destinatario);
         mensaje.setRemitente(remitente);
         mensaje.setContenido(contenido);
+        mensaje.setNovedad(true);
         mensajeRepository.save(mensaje);
     }
 
@@ -48,6 +49,7 @@ public class MensajeService {
         Mensaje mensaje = mensajeRepository.findBySolicitudIdSolicitud(idSolicitud);
         mensaje.setDestinatario(destinatario);
         mensaje.setRemitente(remitente);
+        mensaje.setNovedad(true);
         mensajeRepository.save(mensaje);
     }
 }

@@ -1,0 +1,47 @@
+<div class="container ">
+<h1>Lista de solicitudes y alumnos</h1>
+</div>
+<div class="ml-3 mr-3">
+<table class="table">
+    <thead class="thead">
+        <tr class="row">
+            <th class="col-2">Nº Solicitud</th>
+            <th class="col-1">Empresa</th>
+            <th class="col-1">Numero convenio</th>
+            <th class="col-2">Ciclo Formativo</th>
+            <th class="col-1">Fecha Inicio</th>
+            <th class="col-2">Estado</th>
+            <th class="col-2">Alumnos</th>
+            <th class="col-1">Gestionar</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Bucle de solicitudes -->
+        <tr class="row solicitud-row" th:each="solicitud : ${solicitudes}">
+            <!-- Fila de la solicitud -->
+            <td class="col-2" th:text="${solicitud.idSolicitud}"></td>
+            <td class="col-1" th:text="${solicitud.empresa}"></td>
+            <td class="col-1" th:text="${solicitud.numeroConvenio}"></td>
+            <td class="col-2" th:text="${solicitud.cicloFormativo}"></td>
+            <td class="col-1" th:text="${solicitud.fechaInicio}"></td>
+            <td class="col-2" th:text="${solicitud.estado}"></td>
+            <!-- Columna para los detalles de los alumnos -->
+            <td class="col-2">
+                <!-- Detalles de los alumnos -->
+                <details class="alumnos-details">
+                    <summary><b>Mostrar alumnos</b></summary>
+                    <!-- Lista de alumnos -->
+                    <div class="alumnos-list">
+                        <!-- Bucle de alumnos -->
+                        <li class="alumno" th:each="alumno : ${solicitud?.alumnos}">
+                            <span th:text="${alumno.nombre}"></span> <span th:text="${alumno.apellido}"></span>
+                        </li>
+                    </div>
+                </details>
+            </td>
+            <td class="col-1"><a class="btn btn-outline-propio1" th:href="@{/profesor/corregirDatosJefatura(id=${solicitud.idSolicitud})}">Gestionar</a></td>
+        </tr>
+        </tr>
+    </tbody>
+</table>
+</div>
