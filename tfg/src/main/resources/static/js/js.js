@@ -214,4 +214,14 @@ $(document).ready(function () {
             habilitarObservaciones();
         }
     });
+    // Selección de uno u otro endpoints
+    document.getElementById('formularioAlumnos').addEventListener('submit', function(event) {
+        var opcionSeleccionada = document.querySelector('input[name="opcion"]:checked').value;
+        if (opcionSeleccionada === 'pdf') {
+            this.action = '/enviarDatos/corregirDatosJefaturaArchivo';
+            this.enctype = 'multipart/form-data'; // Añadir el tipo de codificación para archivos
+        } else if (opcionSeleccionada === 'observaciones') {
+            this.action = '/enviarDatos/corregirDatosJefaturaObservaciones';
+        }
+    });
 });

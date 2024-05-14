@@ -1,6 +1,6 @@
 <div class="container">
     <h2 class="text-center mb-4">Formulario de Creación de Documento</h2>
-    <form action="/enviarDatos/corregirDatosJefatura" method="post" id="formularioAlumnos">
+    <form action="" method="post" id="formularioAlumnos">
         <div class="mb-4 pb-2 border-bottom">
             <h3 class="text-center">Tutor-Alumnado</h3>
             <div class="row">
@@ -220,6 +220,7 @@
             <label for="observaciones">Observaciones:</label>
             <textarea class="form-control" id="observaciones" name="observaciones" rows="3"></textarea>
         </div>
+        <input type="hidden" name="idSolicitud" th:value="${solicitud.idSolicitud}">
         <button type="submit" class="btn btn-outline-propio1 mt-3 w-100 " id="boton">Enviar Datos FCTs</button>
     </form>
 </div>

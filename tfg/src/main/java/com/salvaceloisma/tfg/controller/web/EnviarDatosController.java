@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.salvaceloisma.tfg.domain.Mensaje;
 import com.salvaceloisma.tfg.domain.Solicitud;
@@ -18,13 +19,17 @@ import com.salvaceloisma.tfg.exception.DangerException;
 import com.salvaceloisma.tfg.exception.InfoException;
 import com.salvaceloisma.tfg.helper.PRG;
 import com.salvaceloisma.tfg.service.AlumnoService;
+import com.salvaceloisma.tfg.service.ArchivoService;
 import com.salvaceloisma.tfg.service.EmailService;
 import com.salvaceloisma.tfg.service.InicioSesionService;
+import com.salvaceloisma.tfg.service.MensajeService;
 import com.salvaceloisma.tfg.service.SolicitudService;
 
+import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -45,6 +50,13 @@ public class EnviarDatosController {
 
     @Autowired
     private SolicitudService solicitudService;
+
+    @Autowired
+    private ArchivoService archivoService;
+
+    @Autowired
+    private MensajeService mensajeService;
+
 
     @GetMapping("/enviarDatosAJefatura")
     public String crearDocumento(ModelMap m) {
@@ -191,4 +203,62 @@ public class EnviarDatosController {
         m.put("view", "jefatura/corregirDatosJefatura");
         return "_t/frame";
     }
+    // MENSAJE Y NOTIFICACIÓN
+    @PostMapping("/corregirDatosJefaturaObservaciones")
+    public String verificarDocumentoEnviarObservacionACorregir(HttpServletResponse response, HttpSession session,
+    @RequestParam("idSolicitud") String idSolicitud,
+    @RequestParam("observaciones") String observaciones) throws InfoException, DangerException, MessagingException {
+
+
+            
+            Mensaje mensaje = mensajeService.findBySolicitudIdSolicitud(idSolicitud);
+            //Invertimos el correo devuelta
+            Usuario destinatario = mensaje.getRemitente();
+            Usuario remitente =  mensaje.getDestinatario(); 
+            String destinatarioCorreo = destinatario.getCorreo();
+            String remitenteCorreo = destinatario.getCorreo();
+            
+        try {
+            mensajeService.actualizarMensaje(idSolicitud,destinatario, remitente, observaciones);
+            emailService.enviarEmail(destinatarioCorreo, remitenteCorreo,"Datos pendientes de ser revisados.");
+            
+            PRG.info("Correción enviada correctamente.","/home/home");
+        } catch (IOException e) {
+            PRG.error("Error al subir el archivo.","/jefatura/corregirDatosJefatura");
+            
+        }
+        return "redirect: ../";
+    }
+
+
+    // ARCHIVO Y NOTIFICACIÓN
+    @PostMapping("/corregirDatosJefaturaArchivo")
+    public String verificarDocumento(HttpServletResponse response, HttpSession session,
+    @RequestParam("idSolicitud") String idSolicitud,
+    @RequestParam("archivoPDF") MultipartFile archivo) throws InfoException, DangerException, MessagingException {
+
+
+            
+            Mensaje mensaje = mensajeService.findBySolicitudIdSolicitud(idSolicitud);
+            //Invertimos el correo devuelta
+            Usuario destinatario = mensaje.getRemitente();
+            Usuario remitente =  mensaje.getDestinatario(); 
+            String destinatarioCorreo = destinatario.getCorreo();
+            String remitenteCorreo = destinatario.getCorreo();
+            
+        try {
+            //AÑADIR ARCHIVO AQUI
+            archivoService.guardarArchivo(archivo);
+            mensajeService.actualizarNotificacion(idSolicitud,destinatario, remitente);
+            emailService.enviarEmail(destinatarioCorreo, remitenteCorreo,"Solicitud aceptada. Revisa tu bandeja de entrada.");
+            
+            PRG.info("Correción enviada correctamente.","/home/home");
+        } catch (IOException e) {
+            PRG.error("Error al subir el archivo.","/jefatura/corregirDatosJefatura");
+            
+        }
+        return "redirect: ../";
+    }
+
+
 }
