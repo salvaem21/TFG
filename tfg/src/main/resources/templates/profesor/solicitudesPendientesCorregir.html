@@ -1,0 +1,41 @@
+<div class="container">
+    <h1>Solicitudes pendientes de corregir</h1>
+</div>
+<div class="ml-3 mr-3">
+    <table class="table">
+        <thead class="thead">
+            <tr class="row">
+                <th class="col-2">Nº Solicitud</th>
+                <th class="col-1">Empresa</th>
+                <th class="col-1">Numero convenio</th>
+                <th class="col-2">Ciclo Formativo</th>
+                <th class="col-1">Fecha Inicio</th>
+                <th class="col-2">Estado</th>
+                <th class="col-2">Observaciones</th>
+                <th class="col-1">Gestionar</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Bucle de solicitudes -->
+            <tr class="row solicitud-row" th:each="solicitud : ${solicitudes}">
+                <!-- Fila de la solicitud -->
+                <td class="col-2" th:text="${solicitud.idSolicitud}"></td>
+                <td class="col-1" th:text="${solicitud.empresa}"></td>
+                <td class="col-1" th:text="${solicitud.numeroConvenio}"></td>
+                <td class="col-2" th:text="${solicitud.cicloFormativo}"></td>
+                <td class="col-1" th:text="${solicitud.fechaInicio}"></td>
+                <td class="col-2" th:text="${solicitud.estado}"></td>
+                <!-- Columna para las observaciones -->
+                <td class="col-2">
+                    <!-- Observaciones -->
+                    <div class="mensaje">
+                        <span th:text="${solicitud.mensaje.contenido}"></span>
+                    </div>
+                </td>
+                <td class="col-1"><a class="btn btn-outline-propio1" th:href="@{/enviarDatos/corregirDatosJefatura(id=${solicitud.idSolicitud})}">Gestionar</a></td>
+            </tr>
+            </tr>
+        </tbody>
+    </table>
+</div>
+

@@ -262,6 +262,43 @@ public class EnviarDatosController {
         } 
         return "redirect: ../";
     }
+    @GetMapping("/recibirCorreccionDatosJefatura")
+    public String recibirCorrecionDatosDeJefatura(Model model, HttpSession session) {
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+        model.addAttribute("nombreUsuario", usuario.getNombre()); // Agregar nombre del usuario al modelo
 
+        // Obtener los mensajes enviados y recibidos por el usuario
+        List<Mensaje> mensajes = inicioSesionService.recibirMensajes(usuario);
+
+        // Extraer las solicitudes de los mensajes y agregarlas a una lista
+        List<Solicitud> solicitudes = new ArrayList<>();
+        EstadoSolicitud estadoValido = EstadoSolicitud.APROBADO_JEFATURA_PDF;
+        for (Mensaje mensaje : mensajes) {
+            Solicitud solicitud = mensaje.getSolicitud();
+            if (solicitud != null && solicitud.getEstado()== estadoValido) {
+                // Cargar los alumnos vinculados a esta solicitud
+                solicitud.setAlumnos(alumnoService.findBySolicitudIdSolicitud(solicitud.getIdSolicitud()));
+                solicitudes.add(solicitud);
+            }
+        }
+
+        model.addAttribute("solicitudes", solicitudes);
+        model.addAttribute("view", "profesor/solicitudesPendientesCorregir");
+
+        return "_t/frame";
+    }
+
+    @GetMapping("/enviarCorreccionDatosAJefatura")
+    public String modificarDocumento(@RequestParam("id") String idSolicitud,ModelMap m) {
+    Solicitud solicitud = solicitudService.findById(idSolicitud);
+    String horarioSinSegundoHorario = solicitud.getHorario().replace("Segundo horario:", "");
+    solicitud.setHorario(horarioSinSegundoHorario); //ELIMINAMOS EL TEXTO PARA QUE NO DE ERROR AL RECORRER.
+    m.put("solicitud", solicitud);
+    m.put("alumnos", alumnoService.findBySolicitudIdSolicitud(idSolicitud));
+    m.put("usuariosJefatura", inicioSesionService.obtenerUsuariosPorRol(RolUsuario.JEFATURA));
+    m.put("view", "profesor/solicitudPendientesCorregir");
+    return "_t/frame";
+    }
+    
 
 }
