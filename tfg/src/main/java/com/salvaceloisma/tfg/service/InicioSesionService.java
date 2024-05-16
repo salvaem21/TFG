@@ -32,7 +32,7 @@ public class InicioSesionService {
         mensaje.setNovedad(true);
         mensajeRepository.save(mensaje);
     }
-    
+
     public List<Mensaje> obtenerMensajesConNovedadParaUsuario(Usuario usuario) {
         // Obtener los mensajes con novedad para el usuario destinatario
         List<Mensaje> mensajes = mensajeRepository.findByDestinatario(usuario);
@@ -45,7 +45,9 @@ public class InicioSesionService {
         return mensajesNuevos;
     }
 
-
+    public List<Mensaje> recibirMensajes(Usuario destinatario) {
+        return mensajeRepository.findByDestinatario(destinatario);
+    }
 
     public List<Usuario> findAll() {
         return inicioSesionRepository.findAll();

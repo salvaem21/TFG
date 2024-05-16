@@ -121,9 +121,6 @@ public class SolicitudService {
         }
 
         // Lógica para cambiar el estado de la solicitud
-        Solicitud solicitud = solicitudRepository.findById(idSolicitud).orElse(null);
-        solicitud.setEstado(nuevoEstado);
-        solicitudRepository.save(solicitud);
     }
 
 

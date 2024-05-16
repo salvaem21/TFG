@@ -4,7 +4,7 @@
     <div class="row justify-content-center">
     <!------------------------            PROFESOR                    ------------------------------>
         <a th:if="${session.usuario != null and session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).PROFESOR}" class="btn btn-outline-propio1 mb-2 col-4 mr-2" href="/enviarDatos/enviarDatosAJefatura">Enviar Formulario A Jefatura A Revision</a>
-        <a th:if="${session.usuario != null and session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).PROFESOR}" class="btn btn-outline-propio1 mb-2 col-4 mr-2" href="/enviarDatos/correccionSolicitudListado">Documentos Pendientes De Corregir Por Profesor</a>
+        <a th:if="${session.usuario != null and session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).PROFESOR}" class="btn btn-outline-propio1 mb-2 col-4 mr-2" href="/documento/descargarArchivo">Documentos Pendientes De Corregir Por Profesor</a>
         <a th:if="${session.usuario != null and session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).PROFESOR}" class="btn btn-outline-propio1 mb-2 col-4 mr-2" href="/documento/subirArchivo">Documentos Pendientes De Notificar A Empresa/Enviar A Direccion</a>
         
     <!------------------------            JEFATURA                    ------------------------------> 

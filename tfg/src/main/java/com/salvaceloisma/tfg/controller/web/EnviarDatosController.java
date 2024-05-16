@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.salvaceloisma.tfg.domain.Mensaje;
 import com.salvaceloisma.tfg.domain.Solicitud;
@@ -19,16 +18,13 @@ import com.salvaceloisma.tfg.exception.DangerException;
 import com.salvaceloisma.tfg.exception.InfoException;
 import com.salvaceloisma.tfg.helper.PRG;
 import com.salvaceloisma.tfg.service.AlumnoService;
-import com.salvaceloisma.tfg.service.ArchivoService;
 import com.salvaceloisma.tfg.service.EmailService;
 import com.salvaceloisma.tfg.service.InicioSesionService;
-import com.salvaceloisma.tfg.service.MensajeService;
 import com.salvaceloisma.tfg.service.SolicitudService;
 
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -50,13 +46,6 @@ public class EnviarDatosController {
     @Autowired
     private SolicitudService solicitudService;
 
-    @Autowired
-    private ArchivoService archivoService;
-
-    @Autowired
-    private MensajeService mensajeService;
-
-
     @GetMapping("/enviarDatosAJefatura")
     public String crearDocumento(ModelMap m) {
         m.put("usuariosJefatura", inicioSesionService.obtenerUsuariosPorRol(RolUsuario.JEFATURA));
@@ -66,7 +55,6 @@ public class EnviarDatosController {
 
     @PostMapping("/enviarDatosAJefatura")
     public String crearDocumento(HttpServletResponse response, HttpSession session,
-            @RequestParam(required = false) String idSolicitud, // Nuevo parámetro para identificar si se está creando o actualizando
             @RequestParam String numeroConvenio,
             @RequestParam String tutorAlumno,
             @RequestParam String nombreEmpresa, @RequestParam String tutorEmpresa,
@@ -89,9 +77,7 @@ public class EnviarDatosController {
             @RequestParam LocalTime viernesFin2, @RequestParam Integer horasDia,
             @RequestParam("rolUsuario") Long usuarioEnvio, ModelMap m)
             throws DangerException, InfoException {
-                    
-        // Verificar si se está creando una nueva solicitud o actualizando una existente
-        boolean creandoNuevaSolicitud = (idSolicitud == null || idSolicitud.isEmpty());
+
         Usuario usuario = (Usuario) session.getAttribute("usuario");
         String nombre = usuario.getNombre();
 
@@ -132,23 +118,17 @@ public class EnviarDatosController {
         Usuario destinatario = inicioSesionService.findById(usuarioEnvio);
         // Establecer el estado por defecto a PENDIENTE_JEFATURA
         EstadoSolicitud estado = EstadoSolicitud.PENDIENTE_FIRMA_JEFATURA;
-
         String observaciones = "";
+        String idSolicitud = "";
 
         try {
-
-            Solicitud solicitud = null;
-            if (creandoNuevaSolicitud) {
-                solicitud = solicitudService.save(numeroConvenio, nombreEmpresa, cifEmpresa, tutorEmpresa,
-                        direccionPracticas, localidadPracticas, codigoPostalPracticas, cicloFormativoAlumno, usuario,
-                        fechaInicio, fechaFin, horasDia, horasTotales, horario, observaciones, estado);
-                idSolicitud = solicitud.getIdSolicitud();
-            } else {
-                // Si se está actualizando, obtener la solicitud existente y actualizar sus datos
-                solicitudService.update(idSolicitud, numeroConvenio, nombreEmpresa, cifEmpresa, tutorEmpresa, direccionPracticas, localidadPracticas, correo, cicloFormativoAlumno, usuario, fechaInicio, fechaFin, horasDia, horasTotales, horario, observaciones, estado);
-            }
+            Solicitud solicitud = solicitudService.save(numeroConvenio, nombreEmpresa, cifEmpresa, tutorEmpresa,
+                    direccionPracticas, localidadPracticas, codigoPostalPracticas, cicloFormativoAlumno, usuario,
+                    fechaInicio, fechaFin, horasDia, horasTotales, horario, observaciones, estado);
+            idSolicitud = solicitud.getIdSolicitud();
             
-            // Construir/Actualizar el mensaje para cada alumno
+
+            // Construir el mensaje para cada alumno
             for (int i = 0; i < apellidosAlumno.length; i++) {
                 datos.append("Alumno ").append(i + 1).append(":\n");
                 datos.append("Apellidos alumno: ").append(apellidosAlumno[i]).append("\n");
@@ -158,22 +138,18 @@ public class EnviarDatosController {
                 datos.append("Fecha de nacimiento alumno: ").append("\n");
                 datos.append("\n");
                 try {
-                    if (creandoNuevaSolicitud) {
-                        alumnoService.save(nifAlumno[i], nombreAlumno[i], apellidosAlumno[i], idSolicitud);
-                    }else{
-                        alumnoService.updateByDni(nifAlumno[i], nombreAlumno[i], apellidosAlumno[i], idSolicitud);
-                    }
+                    alumnoService.save(nifAlumno[i], nombreAlumno[i], apellidosAlumno[i], idSolicitud);
                 } catch (Exception e) {
                     PRG.error("El NIF de ese alumno ya esta en uso");
                 }
             }
-            //Construir/Actualizar mensaje
-
-            mensajeService.enviarMensaje(remitente, destinatario, observaciones, solicitud);
-            emailService.enviarEmail(correo, "Datos pendientes de ser revisados por Jefatura.", nombre + " ha enviado unos datos.");
+            inicioSesionService.enviarMensaje(remitente, destinatario, datos.toString(), solicitud);
+            emailService.enviarEmail(correo, "Datos pendientes de ser revisados por Jefatura.",
+                    nombre + " ha enviado unos datos.");
         } catch (Exception e) {
             PRG.error("Los datos no pudieron enviarse correctamente.");
         }
+
         return "redirect:../";
     }
 
@@ -183,7 +159,7 @@ public class EnviarDatosController {
         model.addAttribute("nombreUsuario", usuario.getNombre()); // Agregar nombre del usuario al modelo
 
         // Obtener los mensajes enviados y recibidos por el usuario
-        List<Mensaje> mensajes = mensajeService.recibirMensajes(usuario);
+        List<Mensaje> mensajes = inicioSesionService.recibirMensajes(usuario);
 
         // Extraer las solicitudes de los mensajes y agregarlas a una lista
         List<Solicitud> solicitudes = new ArrayList<>();
@@ -215,93 +191,4 @@ public class EnviarDatosController {
         m.put("view", "jefatura/corregirDatosJefatura");
         return "_t/frame";
     }
-    // MENSAJE Y NOTIFICACIÓN
-    @PostMapping("/corregirDatosJefaturaObservaciones")
-    public String verificarDocumentoEnviarObservacionACorregir(HttpServletResponse response, HttpSession session,
-    @RequestParam("idSolicitud") String idSolicitud,
-    @RequestParam("observaciones") String observaciones) throws Exception {
-
-            Mensaje mensaje = mensajeService.findBySolicitudIdSolicitud(idSolicitud);
-            //Invertimos el correo devuelta
-            Usuario destinatario = mensaje.getRemitente();
-            Usuario remitente =  mensaje.getDestinatario(); 
-            String destinatarioCorreo = destinatario.getCorreo();
-            String remitenteCorreo = destinatario.getCorreo();
-            EstadoSolicitud estadoSolicitud= EstadoSolicitud.RECHAZADO_JEFATURA;
-            
-        try {
-            mensajeService.actualizarMensaje(idSolicitud,destinatario, remitente, observaciones);
-            solicitudService.cambiarEstadoSolicitud(idSolicitud, estadoSolicitud, remitente);
-            emailService.enviarEmail(destinatarioCorreo, remitenteCorreo,"Datos pendientes de ser revisados.");
-            
-            PRG.info("Correción enviada correctamente.","/home/home");
-        } catch (IOException e) {
-            PRG.error("Error al subir el archivo.","/jefatura/corregirDatosJefatura");
-            
-        }
-
-        return "redirect: ../";
-    }
-
-
-    // ARCHIVO Y NOTIFICACIÓN
-    @PostMapping("/corregirDatosJefaturaArchivo")
-    public String verificarDocumento(HttpServletResponse response, HttpSession session,
-    @RequestParam("idSolicitud") String idSolicitud,
-    @RequestParam("archivoPDF") MultipartFile archivo) throws Exception {
-
-
-            
-            Mensaje mensaje = mensajeService.findBySolicitudIdSolicitud(idSolicitud);
-            //Invertimos el correo devuelta
-            Usuario destinatario = mensaje.getRemitente();
-            Usuario remitente =  mensaje.getDestinatario(); 
-            String destinatarioCorreo = destinatario.getCorreo();
-            String remitenteCorreo = destinatario.getCorreo();
-            EstadoSolicitud estadoSolicitud= EstadoSolicitud.APROBADO_JEFATURA_PDF;
-        try {
-            //AÑADIR ARCHIVO AQUI
-            archivoService.guardarArchivo(archivo);
-            mensajeService.actualizarNotificacion(idSolicitud,destinatario, remitente);
-            solicitudService.cambiarEstadoSolicitud(idSolicitud, estadoSolicitud, remitente);
-            emailService.enviarEmail(destinatarioCorreo, remitenteCorreo,"Solicitud aceptada. Revisa tu bandeja de entrada.");
-            
-            PRG.info("Correción enviada correctamente.","/home/home");
-        } catch (IOException e) {
-            PRG.error("Error al subir el archivo.","/jefatura/corregirDatosJefatura");
-            
-        } 
-        return "redirect: ../";
-    }
-
-
-    //    EN PRUEBAAAA ------------------------------------------------
-    @GetMapping("/correccionSolicitudListado")
-    public String recibirCorrecionDatosDeJefatura(ModelMap m, HttpSession session) {
-        Usuario usuario = (Usuario) session.getAttribute("usuario");
-        m.addAttribute("nombreUsuario", usuario.getNombre()); // Agregar nombre del usuario al modelo
-
-        // Obtener los mensajes recibidos por el usuario
-        EstadoSolicitud estadoRechazado = EstadoSolicitud.RECHAZADO_JEFATURA;
-        List<Mensaje> mensajes = mensajeService.recibirMensajes(usuario);
-        m.put("estadoRechazado", estadoRechazado);
-        m.put("mensajes", mensajes);
-        m.put("view", "profesor/solicitudesPendientesCorregir");
-
-        return "_t/frame";
-    }
-
-    @GetMapping("/correccionSolicitud")
-    public String modificarDocumento(@RequestParam("id") String idSolicitud,ModelMap m) {
-    Solicitud solicitud = solicitudService.findById(idSolicitud);
-    String horarioSinSegundoHorario = solicitud.getHorario().replace("Segundo horario:", "");
-    solicitud.setHorario(horarioSinSegundoHorario); //ELIMINAMOS EL TEXTO PARA QUE NO DE ERROR AL RECORRER.
-    m.put("solicitud", solicitud);
-    m.put("alumnos", alumnoService.findBySolicitudIdSolicitud(idSolicitud));
-    m.put("usuariosJefatura", inicioSesionService.obtenerUsuariosPorRol(RolUsuario.JEFATURA));
-    m.put("view", "profesor/solicitudCorreccion");
-    return "_t/frame";
-    }
-    
-
 }
