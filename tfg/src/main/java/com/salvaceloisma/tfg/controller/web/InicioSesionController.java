@@ -1,5 +1,6 @@
 package com.salvaceloisma.tfg.controller.web;
 
+
 import java.util.Collections;
 import java.util.List;
 
@@ -132,7 +133,6 @@ public class InicioSesionController {
         Usuario usuario = (Usuario) session.getAttribute("usuario");
         inicioSesionService.marcarMensajesComoVistos(usuario);
         session.setAttribute("mensajesConNovedad", Collections.emptyList());
-
         return ResponseEntity.ok("Mensajes actualizados correctamente");
     }
 
