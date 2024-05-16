@@ -157,19 +157,19 @@ public class EnviarDatosController {
                 datos.append("Ciclo formativo: ").append(cicloFormativoAlumno).append("\n");
                 datos.append("Fecha de nacimiento alumno: ").append("\n");
                 datos.append("\n");
+
+                //Limpiamos todos los alumnos con id de la solicitud
+                alumnoService.deleteAllBySolicitudIdSolicitud(idSolicitud);
+                //////////////////////////////////////////////////
                 try {
-                    if (creandoNuevaSolicitud) {
-                        alumnoService.save(nifAlumno[i], nombreAlumno[i], apellidosAlumno[i], idSolicitud);
-                    }else{
-                        alumnoService.updateByDni(nifAlumno[i], nombreAlumno[i], apellidosAlumno[i], idSolicitud);
-                    }
+                    alumnoService.save(nifAlumno[i], nombreAlumno[i], apellidosAlumno[i], idSolicitud);
                 } catch (Exception e) {
                     PRG.error("El NIF de ese alumno ya esta en uso");
                 }
             }
             //Construir/Actualizar mensaje
 
-            mensajeService.enviarMensaje(remitente, destinatario, observaciones, solicitud);
+            mensajeService.enviarMensaje(remitente, destinatario, solicitud);
             emailService.enviarEmail(correo, "Datos pendientes de ser revisados por Jefatura.", nombre + " ha enviado unos datos.");
         } catch (Exception e) {
             PRG.error("Los datos no pudieron enviarse correctamente.");

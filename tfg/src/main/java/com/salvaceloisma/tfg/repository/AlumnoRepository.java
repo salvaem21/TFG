@@ -11,4 +11,7 @@ import com.salvaceloisma.tfg.domain.Alumno;
 public interface AlumnoRepository extends JpaRepository<Alumno, Long> {
     List<Alumno> findBySolicitudIdSolicitud(String idSolicitud);
     List<Alumno> findByDni(String dni);
+    void deleteByIdSolicitud(String idSolicitud);
+    void deleteAllBySolicitudIdSolicitud(String idSolicitud);
+
 }
