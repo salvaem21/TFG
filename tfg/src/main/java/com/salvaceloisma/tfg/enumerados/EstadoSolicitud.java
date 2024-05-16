@@ -1,0 +1,12 @@
+package com.salvaceloisma.tfg.enumerados;
+
+public enum EstadoSolicitud {
+    PENDIENTE_FIRMA_JEFATURA,
+    RECHAZADO_JEFATURA,
+    APROBADO_JEFATURA_PDF,
+    PENDIENTE_FIRMA_DIRECCION,
+    RECHAZADO_DIRECCION,
+    APROBADO_DIRECCION,
+    SOLICITUD_FINALIZADA
+}
+

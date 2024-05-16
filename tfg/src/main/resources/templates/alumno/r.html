@@ -1,0 +1,36 @@
+<div class="container">
+    <h1>Lista de alumnos</h1>
+    <table class="table">
+        <thead>
+            <th>Nombre</th>
+            <th>Apellidos</th>
+            <th>Dni</th>
+            <th>Fecha de nacimiento</th>
+            <th>Editar</th>
+            <th>Borrar</th>
+        </thead>
+
+        <tr th:each="alumno : ${alumnos}">
+            
+            <td th:text="${alumno.nombre}" />
+            <td th:text="${alumno.apellido}" />
+            <td th:text="${alumno.dni}" />
+            <td th:text="${alumno.fechaNacimiento}" />
+
+            <td>
+                <button class="btn btn-outline-propio1 mb-2 col-4 mr-2" th:onclick="|window.location.href='/alumno/u?id=${alumno.id}'|">
+                    <img src="/img/lapiz.png" height="20" width="20">
+                </button>
+            </td>
+            
+            <td>
+                <form action="/alumno/d" method="post">
+                    <input type="hidden" name="id" th:value="${alumno.id}">
+                    <button class="btn btn-outline-propio1 mb-2 col-4 mr-2">
+                        <img src="/img/basura.png" height="20" width="20">
+                    </button>
+                </form>
+            </td>
+        </tr>
+    </table>
+</div>
