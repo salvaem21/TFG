@@ -160,18 +160,20 @@ public class EnviarDatosController {
                 try {
                     if (creandoNuevaSolicitud) {
                         alumnoService.save(nifAlumno[i], nombreAlumno[i], apellidosAlumno[i], idSolicitud);
+                        mensajeService.enviarMensaje(remitente, destinatario, observaciones, solicitud);
+            emailService.enviarEmail(correo, "Datos pendientes de ser revisados por Jefatura.", nombre + " ha enviado unos datos.");
+
                     }else{
                         alumnoService.updateByDni(nifAlumno[i], nombreAlumno[i], apellidosAlumno[i], idSolicitud);
+                        mensajeService.actualizarMensaje(idSolicitud, destinatario, remitente, observaciones);
+            emailService.enviarEmail(correo, "Datos pendientes de ser revisados por Jefatura.", nombre + " ha enviado unos datos.");
+
                     }
                 } catch (Exception e) {
                     PRG.error("El NIF de ese alumno ya esta en uso");
                 }
             }
-            //Construir/Actualizar mensaje
-
-            mensajeService.enviarMensaje(remitente, destinatario, observaciones, solicitud);
-            emailService.enviarEmail(correo, "Datos pendientes de ser revisados por Jefatura.", nombre + " ha enviado unos datos.");
-        } catch (Exception e) {
+                } catch (Exception e) {
             PRG.error("Los datos no pudieron enviarse correctamente.");
         }
         return "redirect:../";
