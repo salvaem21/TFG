@@ -45,9 +45,7 @@ public class InicioSesionService {
         return mensajesNuevos;
     }
 
-    public List<Mensaje> recibirMensajes(Usuario destinatario) {
-        return mensajeRepository.findByDestinatario(destinatario);
-    }
+
 
     public List<Usuario> findAll() {
         return inicioSesionRepository.findAll();

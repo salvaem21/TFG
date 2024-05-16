@@ -129,6 +129,7 @@ public class EnviarDatosController {
         Usuario destinatario = inicioSesionService.findById(usuarioEnvio);
         // Establecer el estado por defecto a PENDIENTE_JEFATURA
         EstadoSolicitud estado = EstadoSolicitud.PENDIENTE_FIRMA_JEFATURA;
+        
         String observaciones = "";
         String idSolicitud = "";
 
@@ -170,7 +171,7 @@ public class EnviarDatosController {
         model.addAttribute("nombreUsuario", usuario.getNombre()); // Agregar nombre del usuario al modelo
 
         // Obtener los mensajes enviados y recibidos por el usuario
-        List<Mensaje> mensajes = inicioSesionService.recibirMensajes(usuario);
+        List<Mensaje> mensajes = mensajeService.recibirMensajes(usuario);
 
         // Extraer las solicitudes de los mensajes y agregarlas a una lista
         List<Solicitud> solicitudes = new ArrayList<>();
@@ -262,33 +263,25 @@ public class EnviarDatosController {
         } 
         return "redirect: ../";
     }
-    @GetMapping("/recibirCorreccionDatosJefatura")
-    public String recibirCorrecionDatosDeJefatura(Model model, HttpSession session) {
+
+
+    //    EN PRUEBAAAA ------------------------------------------------
+    @GetMapping("/correccionSolicitudListado")
+    public String recibirCorrecionDatosDeJefatura(ModelMap m, HttpSession session) {
         Usuario usuario = (Usuario) session.getAttribute("usuario");
-        model.addAttribute("nombreUsuario", usuario.getNombre()); // Agregar nombre del usuario al modelo
+        m.addAttribute("nombreUsuario", usuario.getNombre()); // Agregar nombre del usuario al modelo
 
-        // Obtener los mensajes enviados y recibidos por el usuario
-        List<Mensaje> mensajes = inicioSesionService.recibirMensajes(usuario);
-
-        // Extraer las solicitudes de los mensajes y agregarlas a una lista
-        List<Solicitud> solicitudes = new ArrayList<>();
-        EstadoSolicitud estadoValido = EstadoSolicitud.APROBADO_JEFATURA_PDF;
-        for (Mensaje mensaje : mensajes) {
-            Solicitud solicitud = mensaje.getSolicitud();
-            if (solicitud != null && solicitud.getEstado()== estadoValido) {
-                // Cargar los alumnos vinculados a esta solicitud
-                solicitud.setAlumnos(alumnoService.findBySolicitudIdSolicitud(solicitud.getIdSolicitud()));
-                solicitudes.add(solicitud);
-            }
-        }
-
-        model.addAttribute("solicitudes", solicitudes);
-        model.addAttribute("view", "profesor/solicitudesPendientesCorregir");
+        // Obtener los mensajes recibidos por el usuario
+        EstadoSolicitud estadoRechazado = EstadoSolicitud.RECHAZADO_JEFATURA;
+        List<Mensaje> mensajes = mensajeService.recibirMensajes(usuario);
+        m.put("estadoRechazado", estadoRechazado);
+        m.put("mensajes", mensajes);
+        m.put("view", "profesor/solicitudesPendientesCorregir");
 
         return "_t/frame";
     }
 
-    @GetMapping("/enviarCorreccionDatosAJefatura")
+    @GetMapping("/correccionSolicitud")
     public String modificarDocumento(@RequestParam("id") String idSolicitud,ModelMap m) {
     Solicitud solicitud = solicitudService.findById(idSolicitud);
     String horarioSinSegundoHorario = solicitud.getHorario().replace("Segundo horario:", "");
@@ -296,7 +289,7 @@ public class EnviarDatosController {
     m.put("solicitud", solicitud);
     m.put("alumnos", alumnoService.findBySolicitudIdSolicitud(idSolicitud));
     m.put("usuariosJefatura", inicioSesionService.obtenerUsuariosPorRol(RolUsuario.JEFATURA));
-    m.put("view", "profesor/solicitudPendientesCorregir");
+    m.put("view", "profesor/solicitudCorreccion");
     return "_t/frame";
     }
     

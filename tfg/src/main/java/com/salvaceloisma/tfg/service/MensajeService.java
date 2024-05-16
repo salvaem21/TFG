@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.salvaceloisma.tfg.domain.Mensaje;
 import com.salvaceloisma.tfg.domain.Usuario;
+import com.salvaceloisma.tfg.enumerados.EstadoSolicitud;
 import com.salvaceloisma.tfg.repository.MensajeRepository;
 
 @Service
@@ -18,6 +19,10 @@ public class MensajeService {
 
     public List<Mensaje> findAll() {
         return mensajeRepository.findAll();
+    }
+
+    public List<Mensaje> recibirMensajes(Usuario destinatario) {
+        return mensajeRepository.findByDestinatario(destinatario);
     }
 
     public Mensaje findBySolicitudIdSolicitud(String solicitud) {
