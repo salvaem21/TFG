@@ -73,7 +73,4 @@ public class AlumnoService {
     }
 
 
-    public void  deleteAllBySolicitudIdSolicitud(String idSolicitud) {
-        alumnoRepository. deleteAllBySolicitudIdSolicitud(idSolicitud);
-    }
 }

@@ -37,27 +37,23 @@ public class MensajeService {
         return mensajeRepository.findById(idMensaje).get();
     }
 
-    public void enviarMensaje(Usuario remitente, Usuario destinatario, Solicitud solicitud) {
+    public void enviarMensaje(Usuario remitente, Usuario destinatario, String contenido, Solicitud solicitud) {
     Mensaje mensaje = mensajeRepository.findBySolicitud(solicitud);
-    
+
     if (mensaje == null) {
         // El mensaje no existe, crear uno nuevo
         mensaje = new Mensaje();
         mensaje.setRemitente(remitente);
         mensaje.setDestinatario(destinatario);
         mensaje.setSolicitud(solicitud);
-        mensaje.setNovedad(true);
-        mensajeRepository.save(mensaje);
-        
     } else {
         // El mensaje ya existe, actualizar su contenido y establecer novedad a true
-        mensaje.setContenido("");
-        mensaje.setRemitente(remitente);
-        mensaje.setDestinatario(destinatario);
+        mensaje.setContenido(contenido);
         mensaje.setNovedad(true);
-        mensajeRepository.save(mensaje);
     }
     
+    // Guardar el mensaje (ya sea nuevo o actualizado)
+    mensajeRepository.save(mensaje);
 }
 
 
