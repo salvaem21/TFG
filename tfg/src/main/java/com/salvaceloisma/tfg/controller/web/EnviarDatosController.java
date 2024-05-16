@@ -66,6 +66,7 @@ public class EnviarDatosController {
 
     @PostMapping("/enviarDatosAJefatura")
     public String crearDocumento(HttpServletResponse response, HttpSession session,
+            @RequestParam(required = false) String idSolicitud, // Nuevo parámetro para identificar si se está creando o actualizando
             @RequestParam String numeroConvenio,
             @RequestParam String tutorAlumno,
             @RequestParam String nombreEmpresa, @RequestParam String tutorEmpresa,
@@ -88,7 +89,9 @@ public class EnviarDatosController {
             @RequestParam LocalTime viernesFin2, @RequestParam Integer horasDia,
             @RequestParam("rolUsuario") Long usuarioEnvio, ModelMap m)
             throws DangerException, InfoException {
-
+                    
+        // Verificar si se está creando una nueva solicitud o actualizando una existente
+        boolean creandoNuevaSolicitud = (idSolicitud == null || idSolicitud.isEmpty());
         Usuario usuario = (Usuario) session.getAttribute("usuario");
         String nombre = usuario.getNombre();
 
@@ -129,18 +132,23 @@ public class EnviarDatosController {
         Usuario destinatario = inicioSesionService.findById(usuarioEnvio);
         // Establecer el estado por defecto a PENDIENTE_JEFATURA
         EstadoSolicitud estado = EstadoSolicitud.PENDIENTE_FIRMA_JEFATURA;
-        
+
         String observaciones = "";
-        String idSolicitud = "";
 
         try {
-            Solicitud solicitud = solicitudService.save(numeroConvenio, nombreEmpresa, cifEmpresa, tutorEmpresa,
-                    direccionPracticas, localidadPracticas, codigoPostalPracticas, cicloFormativoAlumno, usuario,
-                    fechaInicio, fechaFin, horasDia, horasTotales, horario, observaciones, estado);
-            idSolicitud = solicitud.getIdSolicitud();
-            
 
-            // Construir el mensaje para cada alumno
+            Solicitud solicitud = null;
+            if (creandoNuevaSolicitud) {
+                solicitud = solicitudService.save(numeroConvenio, nombreEmpresa, cifEmpresa, tutorEmpresa,
+                        direccionPracticas, localidadPracticas, codigoPostalPracticas, cicloFormativoAlumno, usuario,
+                        fechaInicio, fechaFin, horasDia, horasTotales, horario, observaciones, estado);
+                idSolicitud = solicitud.getIdSolicitud();
+            } else {
+                // Si se está actualizando, obtener la solicitud existente y actualizar sus datos
+                solicitudService.update(idSolicitud, numeroConvenio, nombreEmpresa, cifEmpresa, tutorEmpresa, direccionPracticas, localidadPracticas, correo, cicloFormativoAlumno, usuario, fechaInicio, fechaFin, horasDia, horasTotales, horario, observaciones, estado);
+            }
+            
+            // Construir/Actualizar el mensaje para cada alumno
             for (int i = 0; i < apellidosAlumno.length; i++) {
                 datos.append("Alumno ").append(i + 1).append(":\n");
                 datos.append("Apellidos alumno: ").append(apellidosAlumno[i]).append("\n");
@@ -150,18 +158,22 @@ public class EnviarDatosController {
                 datos.append("Fecha de nacimiento alumno: ").append("\n");
                 datos.append("\n");
                 try {
-                    alumnoService.save(nifAlumno[i], nombreAlumno[i], apellidosAlumno[i], idSolicitud);
+                    if (creandoNuevaSolicitud) {
+                        alumnoService.save(nifAlumno[i], nombreAlumno[i], apellidosAlumno[i], idSolicitud);
+                    }else{
+                        alumnoService.updateByDni(nifAlumno[i], nombreAlumno[i], apellidosAlumno[i], idSolicitud);
+                    }
                 } catch (Exception e) {
                     PRG.error("El NIF de ese alumno ya esta en uso");
                 }
             }
-            inicioSesionService.enviarMensaje(remitente, destinatario, datos.toString(), solicitud);
-            emailService.enviarEmail(correo, "Datos pendientes de ser revisados por Jefatura.",
-                    nombre + " ha enviado unos datos.");
+            //Construir/Actualizar mensaje
+
+            mensajeService.enviarMensaje(remitente, destinatario, observaciones, solicitud);
+            emailService.enviarEmail(correo, "Datos pendientes de ser revisados por Jefatura.", nombre + " ha enviado unos datos.");
         } catch (Exception e) {
             PRG.error("Los datos no pudieron enviarse correctamente.");
         }
-
         return "redirect:../";
     }
 
@@ -209,8 +221,6 @@ public class EnviarDatosController {
     @RequestParam("idSolicitud") String idSolicitud,
     @RequestParam("observaciones") String observaciones) throws Exception {
 
-
-            
             Mensaje mensaje = mensajeService.findBySolicitudIdSolicitud(idSolicitud);
             //Invertimos el correo devuelta
             Usuario destinatario = mensaje.getRemitente();
