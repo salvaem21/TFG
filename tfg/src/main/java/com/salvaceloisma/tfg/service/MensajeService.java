@@ -7,8 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.salvaceloisma.tfg.domain.Mensaje;
+import com.salvaceloisma.tfg.domain.Solicitud;
 import com.salvaceloisma.tfg.domain.Usuario;
-import com.salvaceloisma.tfg.enumerados.EstadoSolicitud;
 import com.salvaceloisma.tfg.repository.MensajeRepository;
 
 @Service
@@ -37,6 +37,27 @@ public class MensajeService {
         return mensajeRepository.findById(idMensaje).get();
     }
 
+    public void enviarMensaje(Usuario remitente, Usuario destinatario, String contenido, Solicitud solicitud) {
+    Mensaje mensaje = mensajeRepository.findBySolicitud(solicitud);
+
+    if (mensaje == null) {
+        // El mensaje no existe, crear uno nuevo
+        mensaje = new Mensaje();
+        mensaje.setRemitente(remitente);
+        mensaje.setDestinatario(destinatario);
+        mensaje.setSolicitud(solicitud);
+    } else {
+        // El mensaje ya existe, actualizar su contenido y establecer novedad a true
+        mensaje.setContenido(contenido);
+        mensaje.setNovedad(true);
+    }
+    
+    // Guardar el mensaje (ya sea nuevo o actualizado)
+    mensajeRepository.save(mensaje);
+}
+
+
+    //Con este necesitamos CONTENIDO
     public void actualizarMensaje(String solicitud, Usuario destinatario, Usuario remitente, String contenido) {
         Mensaje mensaje = mensajeRepository.findBySolicitudIdSolicitud(solicitud);
         mensaje.setDestinatario(destinatario);
@@ -46,15 +67,16 @@ public class MensajeService {
         mensajeRepository.save(mensaje);
     }
 
-    public void delete(Long idMensaje) {
-        mensajeRepository.delete(mensajeRepository.getReferenceById(idMensaje));
-    }
-
+    //Sin CONTENIDO
     public void actualizarNotificacion(String idSolicitud, Usuario destinatario, Usuario remitente) {
         Mensaje mensaje = mensajeRepository.findBySolicitudIdSolicitud(idSolicitud);
         mensaje.setDestinatario(destinatario);
         mensaje.setRemitente(remitente);
         mensaje.setNovedad(true);
         mensajeRepository.save(mensaje);
+    }
+
+    public void delete(Long idMensaje) {
+        mensajeRepository.delete(mensajeRepository.getReferenceById(idMensaje));
     }
 }
