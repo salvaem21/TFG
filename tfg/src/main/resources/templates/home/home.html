@@ -5,13 +5,11 @@
     <!------------------------            PROFESOR                    ------------------------------>
         <a th:if="${session.usuario != null and session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).PROFESOR}" class="btn btn-outline-propio1 mb-2 col-4 mr-2" href="/enviarDatos/enviarDatosAJefatura">Enviar Formulario A Jefatura A Revision</a>
         <a th:if="${session.usuario != null and session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).PROFESOR}" class="btn btn-outline-propio1 mb-2 col-4 mr-2" href="/enviarDatos/correccionSolicitudListado">Documentos Pendientes De Corregir Por Profesor</a>
-        <a th:if="${session.usuario != null and session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).PROFESOR}" class="btn btn-outline-propio1 mb-2 col-4 mr-2" href="/documento/subirArchivo">Documentos Pendientes De Notificar A Empresa/Enviar A Direccion</a>
+        <a th:if="${session.usuario != null and session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).PROFESOR}" class="btn btn-outline-propio1 mb-2 col-4 mr-2" href="/enviarDatos/solicitudListadoOk">Documentos Pendientes De Notificar A Empresa/Enviar A Direccion</a>
         
-    <!------------------------            JEFATURA                    ------------------------------> 
-        <a th:if="${session.usuario != null and session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).JEFATURA}" class="btn btn-outline-propio1 mb-2 col-4 mr-2" href="/documento/subirArchivo">Envio de Solicitud FCT (profesorado)</a>
+    <!------------------------            JEFATURA                    ------------------------------>
         <a th:if="${session.usuario != null and session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).JEFATURA}" class="btn btn-outline-propio1 mb-2 col-4 mr-2" href="/enviarDatos/recibirDatosJefatura">Revision de Datos de Alumnos</a>
-        <a th:if="${session.usuario != null and session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).JEFATURA}" class="btn btn-outline-propio1 mb-2 col-4 mr-2" href="/documento/descargarArchivo">Documentos Pendientes De Firmar Por Jefatura a Direccion</a>
-        <a th:if="${session.usuario != null and session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).JEFATURA}" class="btn btn-outline-propio1 mb-2 col-4 mr-2" href="/documento/subirArchivo">Envio de Solicitud FCT (DIRECCIÓN)</a>
+        <a th:if="${session.usuario != null and session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).JEFATURA}" class="btn btn-outline-propio1 mb-2 col-4 mr-2" href="/enviarDatos/listadoAllSolicitudes">Historial de Solicitudes</a>
 
     <!------------------------            DIRECCIÓN                    ------------------------------>
         <a th:if="${session.usuario != null and session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).DIRECTOR}" class="btn btn-outline-propio1 mb-2 col-4 mr-2" href="/documento/subirArchivo">Documentos Pendientes De Firmar(profesorado)</a>

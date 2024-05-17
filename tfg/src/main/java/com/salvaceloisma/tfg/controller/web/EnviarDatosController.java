@@ -194,6 +194,32 @@ public class EnviarDatosController {
     }
     return "redirect:../";
     }
+    //--------------------------------------------------------------------------------------------------------------------------------------------//
+    //    LISTADOS TODAS LAS SOLICITUDES  JEFATURA
+    @GetMapping("/listadoAllSolicitudes")
+    public String allSolicitudes(ModelMap m, HttpSession session) {
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+        m.addAttribute("nombreUsuario", usuario.getNombre()); // Agregar nombre del usuario al modelo
+
+        // Obtener los mensajes enviados y recibidos por el usuario
+        List<Mensaje> mensajes = mensajeService.recibirMensajes(usuario);
+
+        // Extraer las solicitudes de los mensajes y agregarlas a una lista
+        List<Solicitud> solicitudes = new ArrayList<>();
+        for (Mensaje mensaje : mensajes) {
+            Solicitud solicitud = mensaje.getSolicitud();
+            if (solicitud != null) {
+                // Cargar los alumnos vinculados a esta solicitud
+                solicitud.setAlumnos(alumnoService.findBySolicitudIdSolicitud(solicitud.getIdSolicitud()));
+                solicitudes.add(solicitud);
+            }
+        }
+
+        m.put("solicitudes", solicitudes);
+        m.put("view", "jefatura/solicitudesAll");
+
+        return "_t/frame";
+        }
 
     @GetMapping("/recibirDatosJefatura")
     public String recibirMensajes(Model model, HttpSession session) {
@@ -293,7 +319,7 @@ public class EnviarDatosController {
     }
 
 
-    //    EN PRUEBAAAA ------------------------------------------------
+    //    RECHAZADOS
     @GetMapping("/correccionSolicitudListado")
     public String recibirCorrecionDatosDeJefatura(ModelMap m, HttpSession session) {
         Usuario usuario = (Usuario) session.getAttribute("usuario");
@@ -321,5 +347,21 @@ public class EnviarDatosController {
     return "_t/frame";
     }
     
+    //    APROBADOS
+    @GetMapping("/solicitudListadoOk")
+    public String aprobadosDatosDeJefatura(ModelMap m, HttpSession session) {
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+        m.addAttribute("nombreUsuario", usuario.getNombre()); // Agregar nombre del usuario al modelo
+        
+        // Obtener los mensajes recibidos por el usuario
+        EstadoSolicitud estadoAprobado = EstadoSolicitud.APROBADO_JEFATURA_PDF;
+        List<Mensaje> mensajes = mensajeService.recibirMensajes(usuario);
+        m.put("estadoAprobado", estadoAprobado);
+        m.put("mensajes", mensajes);
+         m.put("view", "profesor/solicitudesAprobados");
+        
+        return "_t/frame";
+        }
+
 
 }
