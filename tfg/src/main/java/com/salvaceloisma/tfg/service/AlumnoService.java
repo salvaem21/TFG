@@ -72,5 +72,9 @@ public class AlumnoService {
         alumnoRepository.delete(alumnoRepository.getReferenceById(idAlumno));
     }
 
+    public void deleteByDni(String dni) {
+       alumnoRepository.deleteByDni(dni);
+    }
+
 
 }

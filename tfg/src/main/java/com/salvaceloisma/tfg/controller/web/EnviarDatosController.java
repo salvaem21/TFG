@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.salvaceloisma.tfg.domain.Alumno;
 import com.salvaceloisma.tfg.domain.Mensaje;
 import com.salvaceloisma.tfg.domain.Solicitud;
 import com.salvaceloisma.tfg.domain.Usuario;
@@ -32,7 +33,9 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequestMapping("/enviarDatos")
 @Controller
@@ -145,38 +148,51 @@ public class EnviarDatosController {
                 idSolicitud = solicitud.getIdSolicitud();
             } else {
                 // Si se está actualizando, obtener la solicitud existente y actualizar sus datos
+                solicitud = solicitudService.findById(idSolicitud);
                 solicitudService.update(idSolicitud, numeroConvenio, nombreEmpresa, cifEmpresa, tutorEmpresa, direccionPracticas, localidadPracticas, codigoPostalPracticas, cicloFormativoAlumno, usuario, fechaInicio, fechaFin, horasDia, horasTotales, horario, observaciones, estado);
             }
-            
-            // Construir/Actualizar el mensaje para cada alumno
-            for (int i = 0; i < apellidosAlumno.length; i++) {
-                datos.append("Alumno ").append(i + 1).append(":\n");
-                datos.append("Apellidos alumno: ").append(apellidosAlumno[i]).append("\n");
-                datos.append("Nombre alumno: ").append(nombreAlumno[i]).append("\n");
-                datos.append("NIF alumno: ").append(nifAlumno[i]).append("\n");
-                datos.append("Ciclo formativo: ").append(cicloFormativoAlumno).append("\n");
-                datos.append("Fecha de nacimiento alumno: ").append("\n");
-                datos.append("\n");
-                try {
-                    if (creandoNuevaSolicitud) {
-                        alumnoService.save(nifAlumno[i], nombreAlumno[i], apellidosAlumno[i], idSolicitud);
-                        mensajeService.enviarMensaje(remitente, destinatario, observaciones, solicitud);
-            emailService.enviarEmail(correo, "Datos pendientes de ser revisados por Jefatura.", nombre + " ha enviado unos datos.");
+             // Obtener lista de alumnos actuales de la solicitud
+            List<Alumno> alumnosActuales = alumnoService.findBySolicitudIdSolicitud(idSolicitud);
+            List<String> nifAlumnosActuales = alumnosActuales.stream()
+                    .map(Alumno::getDni)
+                    .collect(Collectors.toList());
 
-                    }else{
-                        alumnoService.updateByDni(nifAlumno[i], nombreAlumno[i], apellidosAlumno[i], idSolicitud);
-                        mensajeService.actualizarMensaje(idSolicitud, destinatario, remitente, observaciones);
-            emailService.enviarEmail(correo, "Datos pendientes de ser revisados por Jefatura.", nombre + " ha enviado unos datos.");
+            // Crear lista de NIFs recibidos en la solicitud
+            List<String> nifAlumnosRecibidos = Arrays.asList(nifAlumno);
 
-                    }
-                } catch (Exception e) {
-                    PRG.error("El NIF de ese alumno ya esta en uso");
+            // Determinar alumnos a eliminar
+            for (Alumno alumno : alumnosActuales) {
+                if (!nifAlumnosRecibidos.contains(alumno.getDni())) {
+                    alumnoService.deleteByDni(alumno.getDni());
                 }
             }
-                } catch (Exception e) {
-            PRG.error("Los datos no pudieron enviarse correctamente.");
+            
+        // Crear o actualizar los alumnos
+        for (int i = 0; i < apellidosAlumno.length; i++) {
+            datos.append("Alumno ").append(i + 1).append(":\n");
+            datos.append("Apellidos alumno: ").append(apellidosAlumno[i]).append("\n");
+            datos.append("Nombre alumno: ").append(nombreAlumno[i]).append("\n");
+            datos.append("NIF alumno: ").append(nifAlumno[i]).append("\n");
+            datos.append("Ciclo formativo: ").append(cicloFormativoAlumno).append("\n");
+            datos.append("Fecha de nacimiento alumno: ").append("\n");
+            datos.append("\n");
+            try {
+                if (creandoNuevaSolicitud || !nifAlumnosActuales.contains(nifAlumno[i])) {
+                    alumnoService.save(nifAlumno[i], nombreAlumno[i], apellidosAlumno[i], idSolicitud);
+                } else {
+                    alumnoService.updateByDni(nifAlumno[i], nombreAlumno[i], apellidosAlumno[i], idSolicitud);
+                }
+            } catch (Exception e) {
+                PRG.error("Los alumnos no pueden ser creados o actualizados.");
+            }
         }
-        return "redirect:../";
+
+        mensajeService.enviarMensaje(remitente, destinatario, observaciones, solicitud);
+        emailService.enviarEmail(correo, "Datos pendientes de ser revisados por Jefatura.", nombre + " ha enviado unos datos.");
+    } catch (Exception e) {
+        PRG.error("Los datos no pudieron enviarse correctamente.");
+    }
+    return "redirect:../";
     }
 
     @GetMapping("/recibirDatosJefatura")
