@@ -145,7 +145,7 @@ public class EnviarDatosController {
                 idSolicitud = solicitud.getIdSolicitud();
             } else {
                 // Si se está actualizando, obtener la solicitud existente y actualizar sus datos
-                solicitudService.update(idSolicitud, numeroConvenio, nombreEmpresa, cifEmpresa, tutorEmpresa, direccionPracticas, localidadPracticas, correo, cicloFormativoAlumno, usuario, fechaInicio, fechaFin, horasDia, horasTotales, horario, observaciones, estado);
+                solicitudService.update(idSolicitud, numeroConvenio, nombreEmpresa, cifEmpresa, tutorEmpresa, direccionPracticas, localidadPracticas, codigoPostalPracticas, cicloFormativoAlumno, usuario, fechaInicio, fechaFin, horasDia, horasTotales, horario, observaciones, estado);
             }
             
             // Construir/Actualizar el mensaje para cada alumno

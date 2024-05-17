@@ -55,7 +55,7 @@ public class SolicitudService {
         if (solicitud != null) {
             // Actualizar los atributos de la solicitud con los valores proporcionados
             solicitud.setNumeroConvenio(numeroConvenio);
-            solicitud.setEmpresa(tutorEmpresa);
+            solicitud.setEmpresa(empresa);
             solicitud.setCif(cif);
             solicitud.setTutorEmpresa(tutorEmpresa);
             solicitud.setDireccion(direccion);
@@ -90,7 +90,7 @@ public class SolicitudService {
                 if (solicitud != null) {
                     // Actualizar los atributos de la solicitud con los valores proporcionados
                     solicitud.setNumeroConvenio(numeroConvenio);
-                    solicitud.setEmpresa(tutorEmpresa);
+                    solicitud.setEmpresa(empresa);
                     solicitud.setCif(cif);
                     solicitud.setTutorEmpresa(tutorEmpresa);
                     solicitud.setDireccion(direccion);
