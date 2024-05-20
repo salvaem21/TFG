@@ -198,33 +198,22 @@ public class EnviarDatosController {
     //    LISTADOS TODAS LAS SOLICITUDES  JEFATURA
     @GetMapping("/listadoAllSolicitudes")
     public String allSolicitudes(ModelMap m) {
-
-        // Obtener los mensajes enviados y recibidos por el usuario
-        List<Mensaje> mensajes = mensajeService.findAll();
+        List<Solicitud> allSolicitudes = solicitudService.findAll();
         
-
-        // Extraer las solicitudes de los mensajes y agregarlas a una lista
-        List<Solicitud> allSolicitudes = new ArrayList<>();
-        for (Mensaje mensaje : mensajes) {
-            Solicitud solicitud = mensaje.getSolicitud();
-            if (solicitud != null) {
-                // Cargar los alumnos vinculados a esta solicitud
-                solicitud.setAlumnos(alumnoService.findBySolicitudIdSolicitud(solicitud.getIdSolicitud()));
-                allSolicitudes.add(solicitud);
-            }
-        }
         // Procesar el campo de horario de cada solicitud
         for (Solicitud solicitud : allSolicitudes) {
-            // Extraer las solicitudes del servicio y procesar los horarios
             String horarioProcesado = solicitud.getHorario().replace("Segundo horario:", "<br><strong>Segundo horario:</strong><br><br>");
             horarioProcesado = horarioProcesado.replace(".", "<br>");
             solicitud.setHorario(horarioProcesado);
+            // Cargar los alumnos vinculados a esta solicitud (LISTA) ya que se utilizara en la vista
+            solicitud.setAlumnos(alumnoService.findBySolicitudIdSolicitud(solicitud.getIdSolicitud()));
         }
+
         m.put("solicitudes", allSolicitudes);
         m.put("view", "jefatura/solicitudesAll");
 
         return "_t/frame";
-        }
+    }
 
     @GetMapping("/recibirDatosJefatura")
     public String recibirMensajes(Model model, HttpSession session) {
@@ -363,7 +352,7 @@ public class EnviarDatosController {
         List<Mensaje> mensajes = mensajeService.recibirMensajes(usuario);
         m.put("estadoAprobado", estadoAprobado);
         m.put("mensajes", mensajes);
-         m.put("view", "profesor/solicitudesAprobados");
+        m.put("view", "profesor/solicitudesAprobados");
         
         return "_t/frame";
         }
