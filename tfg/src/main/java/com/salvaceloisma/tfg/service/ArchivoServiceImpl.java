@@ -46,7 +46,12 @@ public class ArchivoServiceImpl implements ArchivoService {
 
     @Override
     public void guardarArchivo(MultipartFile archivo) throws IOException {
-        String nombreArchivo = StringUtils.cleanPath(archivo.getOriginalFilename());
+        // Validar que el nombre original del archivo no sea nulo
+        String nombreOriginal = archivo.getOriginalFilename();
+        if (nombreOriginal == null) {
+            throw new IllegalArgumentException("El nombre del archivo no puede ser nulo");
+        }
+        String nombreArchivo = StringUtils.cleanPath(nombreOriginal);
         String uuid = UUID.randomUUID().toString();
         String nombreArchivoConUuid = uuid + "-" + nombreArchivo;
         Path rutaArchivo = Paths.get(directorioDeArchivosCarga, nombreArchivoConUuid);
