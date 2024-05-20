@@ -224,4 +224,9 @@ $(document).ready(function () {
             this.action = '/enviarDatos/corregirDatosJefaturaObservaciones';
         }
     });
+
+
+    //-------------------------------ARCHIVO CARGA Y DESCARGA------------------------------------------------------------
+
+            
 });

@@ -64,3 +64,7 @@ body {
     display: block;
     width: 100%;
   }
+.custom-file-input {
+    width: 50px; /* Ajusta el ancho según tu necesidad */
+    padding: 5px;  /* Ajusta el padding según tu necesidad */
+}

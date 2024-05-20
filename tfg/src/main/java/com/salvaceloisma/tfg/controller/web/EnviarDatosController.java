@@ -356,6 +356,44 @@ public class EnviarDatosController {
         
         return "_t/frame";
         }
-
+    
+        // ARCHIVO Y NOTIFICACIÓN  PROFESOR JEFATURA
+        @PostMapping("/solicitudListadoOk")
+        public String solicitudADireccion(HttpServletResponse response, 
+            HttpSession session,
+            @RequestParam("idSolicitud") String idSolicitud,
+            @RequestParam("archivo") MultipartFile archivo) throws Exception {
+        
+            Mensaje mensaje = mensajeService.findBySolicitudIdSolicitud(idSolicitud);
+        
+            // Obtener los usuarios con el rol de DIRECTOR
+            List<Usuario> directores = inicioSesionService.obtenerUsuariosPorRol(RolUsuario.DIRECTOR);
+            if (directores.isEmpty()) {
+                // Manejar el caso donde no hay directores encontrados
+                PRG.error("No se encontraron usuarios con el rol de DIRECTOR.", "/profesor/solicitudesAprobados");
+                return null;
+            }
+            // Obtener el primer director de la lista
+            Usuario destinatario = directores.get(0);
+            Usuario remitente = mensaje.getDestinatario();
+            String destinatarioCorreo = destinatario.getCorreo();
+            String remitenteCorreo = remitente.getCorreo();
+            EstadoSolicitud estadoSolicitud = EstadoSolicitud.PENDIENTE_FIRMA_DIRECCION;
+        
+            try {
+                // AÑADIR ARCHIVO AQUI
+                archivoService.guardarArchivo(archivo);
+                mensajeService.actualizarNotificacion(idSolicitud, destinatario, remitente);
+                solicitudService.cambiarEstadoSolicitud(idSolicitud, estadoSolicitud, remitente);
+                emailService.enviarEmail(destinatarioCorreo, remitenteCorreo, "Solicitud pendiente. Revisa tu bandeja de entrada.");
+        
+                PRG.info("Correción enviada correctamente.", "/home/home");
+            } catch (IOException e) {
+                PRG.error("Error al subir el archivo.", "/profesor/solicitudesAprobados");
+            }
+            
+            return "redirect:/home/home";
+        }
+        
 
 }

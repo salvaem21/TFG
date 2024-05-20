@@ -33,7 +33,7 @@ public class DescargarArchivoController {
 
 
 
-    @GetMapping("/archivos-disponibles")
+    @GetMapping("/solicitudListadoOk")
     @ResponseBody
     public List<String> listarArchivosDisponibles() {
         List<String> archivos = archivoService.listarArchivosEnCarpeta();
