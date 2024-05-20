@@ -5,21 +5,21 @@
 <table class="table">
     <thead class="thead">
         <tr class="row">
-            <th class="col-1">Nº Solicitud</th>
+            <th class="col-2">Nº Solicitud</th>
             <th class="col-1">Empresa</th>
             <th class="col-1">Numero convenio</th>
             <th class="col-1">Ciclo Formativo</th>
             <th class="col-1">Fecha Inicio</th>
             <th class="col-2">Estado</th>
             <th class="col-2">Alumnos</th>
-            <th class="col-3">Horarios</th>
+            <th class="col-2">Horarios</th>
         </tr>
     </thead>
     <tbody>
         <!-- Bucle de solicitudes -->
         <tr class="row solicitud-row" th:each="solicitud : ${solicitudes}">
             <!-- Fila de la solicitud -->
-            <td class="col-1" th:text="${solicitud.idSolicitud}"></td>
+            <td class="col-2 small" th:text="${solicitud.idSolicitud}"></td>
             <td class="col-1" th:text="${solicitud.empresa}"></td>
             <td class="col-1" th:text="${solicitud.numeroConvenio}"></td>
             <td class="col-1" th:text="${solicitud.cicloFormativo}"></td>
@@ -39,7 +39,7 @@
                     </div>
                 </details>
             </td>
-            <td class="col-3 ">
+            <td class="col-2 ">
                 <details class="solicitud-details">
                     <summary><b>Mostrar horarios</b></summary>
                     <span th:text="${solicitud.horario}"></span>

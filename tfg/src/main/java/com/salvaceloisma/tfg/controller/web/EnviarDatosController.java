@@ -197,12 +197,10 @@ public class EnviarDatosController {
     //--------------------------------------------------------------------------------------------------------------------------------------------//
     //    LISTADOS TODAS LAS SOLICITUDES  JEFATURA
     @GetMapping("/listadoAllSolicitudes")
-    public String allSolicitudes(ModelMap m, HttpSession session) {
-        Usuario usuario = (Usuario) session.getAttribute("usuario");
-        m.addAttribute("nombreUsuario", usuario.getNombre()); // Agregar nombre del usuario al modelo
+    public String allSolicitudes(ModelMap m) {
 
         // Obtener los mensajes enviados y recibidos por el usuario
-        List<Mensaje> mensajes = mensajeService.recibirMensajes(usuario);
+        List<Mensaje> mensajes = mensajeService.findAll();
 
         // Extraer las solicitudes de los mensajes y agregarlas a una lista
         List<Solicitud> solicitudes = new ArrayList<>();
