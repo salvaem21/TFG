@@ -201,19 +201,26 @@ public class EnviarDatosController {
 
         // Obtener los mensajes enviados y recibidos por el usuario
         List<Mensaje> mensajes = mensajeService.findAll();
+        
 
         // Extraer las solicitudes de los mensajes y agregarlas a una lista
-        List<Solicitud> solicitudes = new ArrayList<>();
+        List<Solicitud> allSolicitudes = new ArrayList<>();
         for (Mensaje mensaje : mensajes) {
             Solicitud solicitud = mensaje.getSolicitud();
             if (solicitud != null) {
                 // Cargar los alumnos vinculados a esta solicitud
                 solicitud.setAlumnos(alumnoService.findBySolicitudIdSolicitud(solicitud.getIdSolicitud()));
-                solicitudes.add(solicitud);
+                allSolicitudes.add(solicitud);
             }
         }
-
-        m.put("solicitudes", solicitudes);
+        // Procesar el campo de horario de cada solicitud
+        for (Solicitud solicitud : allSolicitudes) {
+            // Extraer las solicitudes del servicio y procesar los horarios
+            String horarioProcesado = solicitud.getHorario().replace("Segundo horario:", "<br><strong>Segundo horario:</strong><br><br>");
+            horarioProcesado = horarioProcesado.replace(".", "<br>");
+            solicitud.setHorario(horarioProcesado);
+        }
+        m.put("solicitudes", allSolicitudes);
         m.put("view", "jefatura/solicitudesAll");
 
         return "_t/frame";
