@@ -23,6 +23,9 @@ public class InicioSesionService {
     @Autowired
     private MensajeRepository mensajeRepository;
 
+    @Autowired
+    private CarpetaUsuarioService carpetaUsuarioService;
+
     public void enviarMensaje(Usuario remitente, Usuario destinatario, String contenido, Solicitud solicitud) {
         Mensaje mensaje = new Mensaje();
         mensaje.setRemitente(remitente);
@@ -61,8 +64,16 @@ public class InicioSesionService {
         String contraseniaCifrada = encoder.encode(contrasenia);
         //
         Usuario usuario = new Usuario(nombre, apellido, correo, contraseniaCifrada, rol);
-        return inicioSesionRepository.save(usuario);
-    }
+        usuario = inicioSesionRepository.save(usuario);
+        
+        // Crear la carpeta del usuario
+        String rutaCarpetaUsuario = carpetaUsuarioService.crearCarpetaUsuario(usuario.getCorreo());
+        
+        // Actualizar la ruta de la carpeta del usuario en la entidad Usuario
+        usuario.setRutaCarpeta(rutaCarpetaUsuario);
+        
+        // Guardar los cambios en la base de datos
+        return inicioSesionRepository.save(usuario);    }
 
     public Usuario findById(Long idUsuario) {
         return inicioSesionRepository.findById(idUsuario).get();

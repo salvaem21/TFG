@@ -38,6 +38,9 @@ public class Usuario {
     @Enumerated(EnumType.STRING)
     private RolUsuario rol;
 
+    @Column(name = "ruta_carpeta")
+    private String rutaCarpeta;
+
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Solicitud> solicitudes;
 
