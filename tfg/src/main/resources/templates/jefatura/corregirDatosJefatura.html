@@ -7,14 +7,14 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="tutorAlumno">Tutor del Alumno:</label>
-                        <input type="text" class="form-control" id="tutorAlumno" name="tutorAlumno" th:value="${solicitud.usuario.nombre}" required>
+                        <input type="text" class="form-control" id="tutorAlumno" name="tutorAlumno" th:value="${solicitud.usuario.nombre}" readonly>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="cicloFormativoAlumno">Ciclo Formativo del Alumno:</label>
                         <input type="text" class="form-control" id="cicloFormativoAlumno" name="cicloFormativoAlumno" th:value="${solicitud.cicloFormativo}"
-                            required>
+                            readonly>
                     </div>
                 </div>
             </div>
@@ -27,26 +27,26 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="numeroConvenio">Número de Convenio:</label>
-                        <input type="text" class="form-control" id="numeroConvenio" name="numeroConvenio" th:value="${solicitud.numeroConvenio}" required>
+                        <input type="text" class="form-control" id="numeroConvenio" name="numeroConvenio" th:value="${solicitud.numeroConvenio}" readonly>
                     </div>
                     <div class="form-group">
                         <label for="nombreEmpresa">Nombre de la Empresa:</label>
-                        <input type="text" class="form-control" id="nombreEmpresa" name="nombreEmpresa"  th:value="${solicitud.empresa}" required>
+                        <input type="text" class="form-control" id="nombreEmpresa" name="nombreEmpresa"  th:value="${solicitud.empresa}" readonly>
                     </div>
                     <div class="form-group">
                         <label for="tutorEmpresa">Tutor de la Empresa:</label>
-                        <input type="text" class="form-control" id="tutorEmpresa" name="tutorEmpresa" th:value="${solicitud.tutorEmpresa}" required>
+                        <input type="text" class="form-control" id="tutorEmpresa" name="tutorEmpresa" th:value="${solicitud.tutorEmpresa}" readonly>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="cifEmpresa">CIF de la Empresa:</label>
-                        <input type="text" class="form-control" id="cifEmpresa" name="cifEmpresa"  th:value="${solicitud.cif}" required>
+                        <input type="text" class="form-control" id="cifEmpresa" name="cifEmpresa"  th:value="${solicitud.cif}" readonly>
                     </div>
                     <div class="form-group">
                         <label for="direccionPracticas">Dirección de las Prácticas:</label>
                         <input type="text" class="form-control" id="direccionPracticas" name="direccionPracticas"  th:value="${solicitud.direccion}"
-                            required>
+                        readonly>
                     </div>
                     <div class="form-group">
                         <label for="localidadPracticas">Localidad de las Prácticas:</label>
@@ -56,7 +56,7 @@
                     <div class="form-group">
                         <label for="codigoPostalPracticas">Código Postal de las Prácticas:</label>
                         <input type="text" class="form-control" id="codigoPostalPracticas" name="codigoPostalPracticas"  th:value="${solicitud.cp}"
-                            required>
+                        readonly>
                     </div>
                 </div>
             </div>
@@ -71,17 +71,17 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="apellidosAlumno">Apellidos del Alumno:</label>
-                                <input type="text" class="form-control" id="apellidosAlumno" name="apellidosAlumno" th:value="${alumno.apellido}" required>
+                                <input type="text" class="form-control" id="apellidosAlumno" name="apellidosAlumno" th:value="${alumno.apellido}" readonly>
                             </div>
                             <div class="form-group">
                                 <label for="nombreAlumno">Nombre del Alumno:</label>
-                                <input type="text" class="form-control" id="nombreAlumno" name="nombreAlumno" th:value="${alumno.nombre}" required>
+                                <input type="text" class="form-control" id="nombreAlumno" name="nombreAlumno" th:value="${alumno.nombre}" readonly>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="nifAlumno">NIF del Alumno:</label>
-                                <input type="text" class="form-control" id="nifAlumno" name="nifAlumno" th:value="${alumno.dni}" required>
+                                <input type="text" class="form-control" id="nifAlumno" name="nifAlumno" th:value="${alumno.dni}" readonly>
                             </div>
                         </div>
                     </div>
@@ -105,19 +105,19 @@
                     <div class="form-group">
                         <label for="horasTotales">Horas Totales:</label>
                         <input type="text" class="form-control" id="horasTotales" name="horasTotales" 
-                       th:value="${solicitud.horasTotales}" required>
+                       th:value="${solicitud.horasTotales}" readonly>
                     </div>
                     <div class="form-group">
                         <label for="fechaInicio">Fecha de Inicio:</label>
-                        <input type="date" class="form-control" id="fechaInicio" name="fechaInicio" th:value="${solicitud.fechaInicio}" required>
+                        <input type="date" class="form-control" id="fechaInicio" name="fechaInicio" th:value="${solicitud.fechaInicio}" readonly>
                     </div>
                     <div class="form-group">
                         <label for="fechaFin">Fecha de Fin:</label>
-                        <input type="date" class="form-control" id="fechaFin" name="fechaFin" th:value="${solicitud.fechaFin}" required>
+                        <input type="date" class="form-control" id="fechaFin" name="fechaFin" th:value="${solicitud.fechaFin}" readonly>
                     </div>
                     <div class="form-group">
                         <label for="horasDia">Horas por Día:</label>
-                        <input type="text" class="form-control" id="horasDia" name="horasDia" th:value="${solicitud.horasDia}" required>
+                        <input type="text" class="form-control" id="horasDia" name="horasDia" th:value="${solicitud.horasDia}" readonly>
                     </div>
                     <div class="form-group">
                         <label for="selectJefatura">Responsable de Jefatura:</label>
@@ -151,42 +151,42 @@
                                 <!-- Lunes -->
                                 <tr>
                                     <td>Lunes</td>
-                                    <td><input type="time" class="form-control" name="lunesInicio1" th:value="${#strings.listSplit(solicitud.horario, '.')[0].split(': ')[1].split(' - ')[0]}" required></td>
-                                    <td><input type="time" class="form-control" name="lunesFin1" th:value="${#strings.listSplit(solicitud.horario, '.')[0].split(': ')[1].split(' - ')[1]}" required></td>
-                                    <td><input type="time" class="form-control" name="lunesInicio2" th:value="${#strings.listSplit(solicitud.horario, '.')[5].split(': ')[1].split(' - ')[0]}" required></td>
-                                    <td><input type="time" class="form-control" name="lunesFin2" th:value="${#strings.listSplit(solicitud.horario, '.')[5].split(': ')[1].split(' - ')[1]}" required></td>
+                                    <td><input type="time" class="form-control" name="lunesInicio1" th:value="${#strings.listSplit(solicitud.horario, '.')[0].split(': ')[1].split(' - ')[0]}" readonly></td>
+                                    <td><input type="time" class="form-control" name="lunesFin1" th:value="${#strings.listSplit(solicitud.horario, '.')[0].split(': ')[1].split(' - ')[1]}" readonly></td>
+                                    <td><input type="time" class="form-control" name="lunesInicio2" th:value="${#strings.listSplit(solicitud.horario, '.')[5].split(': ')[1].split(' - ')[0]}" readonly></td>
+                                    <td><input type="time" class="form-control" name="lunesFin2" th:value="${#strings.listSplit(solicitud.horario, '.')[5].split(': ')[1].split(' - ')[1]}" readonly></td>
                                 </tr>
                                 <!-- Martes -->
                                 <tr>
                                     <td>Martes</td>
-                                    <td><input type="time" class="form-control" name="martesInicio1" th:value="${#strings.listSplit(solicitud.horario, '.')[1].split(': ')[1].split(' - ')[0]}" required></td>
-                                    <td><input type="time" class="form-control" name="martesFin1" th:value="${#strings.listSplit(solicitud.horario, '.')[1].split(': ')[1].split(' - ')[1]}" required></td>
-                                    <td><input type="time" class="form-control" name="martesInicio2" th:value="${#strings.listSplit(solicitud.horario, '.')[6].split(': ')[1].split(' - ')[0]}" required></td>
-                                    <td><input type="time" class="form-control" name="martesFin2" th:value="${#strings.listSplit(solicitud.horario, '.')[6].split(': ')[1].split(' - ')[1]}" required></td>
+                                    <td><input type="time" class="form-control" name="martesInicio1" th:value="${#strings.listSplit(solicitud.horario, '.')[1].split(': ')[1].split(' - ')[0]}" readonly></td>
+                                    <td><input type="time" class="form-control" name="martesFin1" th:value="${#strings.listSplit(solicitud.horario, '.')[1].split(': ')[1].split(' - ')[1]}" readonly></td>
+                                    <td><input type="time" class="form-control" name="martesInicio2" th:value="${#strings.listSplit(solicitud.horario, '.')[6].split(': ')[1].split(' - ')[0]}" readonly></td>
+                                    <td><input type="time" class="form-control" name="martesFin2" th:value="${#strings.listSplit(solicitud.horario, '.')[6].split(': ')[1].split(' - ')[1]}" readonly></td>
                                 </tr>
                                 <!-- Miércoles -->
                                 <tr>
                                     <td>Miércoles</td>
-                                    <td><input type="time" class="form-control" name="miercolesInicio1" th:value="${#strings.listSplit(solicitud.horario, '.')[2].split(': ')[1].split(' - ')[0]}" required></td>
-                                    <td><input type="time" class="form-control" name="miercolesFin1" th:value="${#strings.listSplit(solicitud.horario, '.')[2].split(': ')[1].split(' - ')[1]}" required></td>
-                                    <td><input type="time" class="form-control" name="miercolesInicio2" th:value="${#strings.listSplit(solicitud.horario, '.')[7].split(': ')[1].split(' - ')[0]}" required></td>
-                                    <td><input type="time" class="form-control" name="miercolesFin2" th:value="${#strings.listSplit(solicitud.horario, '.')[7].split(': ')[1].split(' - ')[1]}" required></td>
+                                    <td><input type="time" class="form-control" name="miercolesInicio1" th:value="${#strings.listSplit(solicitud.horario, '.')[2].split(': ')[1].split(' - ')[0]}" readonly></td>
+                                    <td><input type="time" class="form-control" name="miercolesFin1" th:value="${#strings.listSplit(solicitud.horario, '.')[2].split(': ')[1].split(' - ')[1]}" readonly></td>
+                                    <td><input type="time" class="form-control" name="miercolesInicio2" th:value="${#strings.listSplit(solicitud.horario, '.')[7].split(': ')[1].split(' - ')[0]}" readonly></td>
+                                    <td><input type="time" class="form-control" name="miercolesFin2" th:value="${#strings.listSplit(solicitud.horario, '.')[7].split(': ')[1].split(' - ')[1]}" readonly></td>
                                 </tr>
                                 <!-- Jueves -->
                                 <tr>
                                     <td>Jueves</td>
-                                    <td><input type="time" class="form-control" name="juevesInicio1" th:value="${#strings.listSplit(solicitud.horario, '.')[3].split(': ')[1].split(' - ')[0]}" required></td>
-                                    <td><input type="time" class="form-control" name="juevesFin1" th:value="${#strings.listSplit(solicitud.horario, '.')[3].split(': ')[1].split(' - ')[1]}" required></td>
-                                    <td><input type="time" class="form-control" name="juevesInicio2" th:value="${#strings.listSplit(solicitud.horario, '.')[8].split(': ')[1].split(' - ')[0]}" required></td>
-                                    <td><input type="time" class="form-control" name="juevesFin2" th:value="${#strings.listSplit(solicitud.horario, '.')[8].split(': ')[1].split(' - ')[1]}" required></td>
+                                    <td><input type="time" class="form-control" name="juevesInicio1" th:value="${#strings.listSplit(solicitud.horario, '.')[3].split(': ')[1].split(' - ')[0]}" readonly></td>
+                                    <td><input type="time" class="form-control" name="juevesFin1" th:value="${#strings.listSplit(solicitud.horario, '.')[3].split(': ')[1].split(' - ')[1]}" readonly></td>
+                                    <td><input type="time" class="form-control" name="juevesInicio2" th:value="${#strings.listSplit(solicitud.horario, '.')[8].split(': ')[1].split(' - ')[0]}" readonly></td>
+                                    <td><input type="time" class="form-control" name="juevesFin2" th:value="${#strings.listSplit(solicitud.horario, '.')[8].split(': ')[1].split(' - ')[1]}" readonly></td>
                                 </tr>
                                 <!-- Viernes -->
                                 <tr>
                                     <td>Viernes</td>
-                                    <td><input type="time" class="form-control" name="viernesInicio1" th:value="${#strings.listSplit(solicitud.horario, '.')[4].split(': ')[1].split(' - ')[0]}" required></td>
-                                    <td><input type="time" class="form-control" name="viernesFin1" th:value="${#strings.listSplit(solicitud.horario, '.')[4].split(': ')[1].split(' - ')[1]}" required></td>
-                                    <td><input type="time" class="form-control" name="viernesInicio2" th:value="${#strings.listSplit(solicitud.horario, '.')[9].split(': ')[1].split(' - ')[0]}" required></td>
-                                    <td><input type="time" class="form-control" name="viernesFin2" th:value="${#strings.listSplit(solicitud.horario, '.')[9].split(': ')[1].split(' - ')[1]}" required></td>
+                                    <td><input type="time" class="form-control" name="viernesInicio1" th:value="${#strings.listSplit(solicitud.horario, '.')[4].split(': ')[1].split(' - ')[0]}" readonly></td>
+                                    <td><input type="time" class="form-control" name="viernesFin1" th:value="${#strings.listSplit(solicitud.horario, '.')[4].split(': ')[1].split(' - ')[1]}" readonly></td>
+                                    <td><input type="time" class="form-control" name="viernesInicio2" th:value="${#strings.listSplit(solicitud.horario, '.')[9].split(': ')[1].split(' - ')[0]}" readonly></td>
+                                    <td><input type="time" class="form-control" name="viernesFin2" th:value="${#strings.listSplit(solicitud.horario, '.')[9].split(': ')[1].split(' - ')[1]}" readonly></td>
                                 </tr>
                                 <tr>
                                     <td colspan="5"><button type="button" class="btn btn-outline-propio1 mt-3 w-100 " id="copiarHoras">Copiar horas del lunes</button></td>
