@@ -1,6 +1,5 @@
 package com.salvaceloisma.tfg.domain;
 
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -35,7 +34,7 @@ public class Solicitud {
     @ManyToOne
     @JoinColumn(name = "id_usuario", referencedColumnName = "id", foreignKey = @ForeignKey(name = "FK_solicitud_usuario"))
     private Usuario usuario;
-    
+
     @OneToMany(mappedBy = "solicitud")
     private List<Alumno> alumnos;
 
@@ -77,15 +76,20 @@ public class Solicitud {
 
     @Column(name = "observaciones")
     private String observaciones;
-    
-//    @Column(name = "ruta_pdf")
-//    private String rutaPDF;
+
+    // @Column(name = "ruta_pdf")
+    // private String rutaPDF;
+
+    @Column(name = "ruta_solicitud")
+    private String rutaSolicitud;
 
     @Enumerated(EnumType.STRING)
     private EstadoSolicitud estado;
-    
-    public Solicitud(String numeroConvenio,String empresa, String cif, String tutorEmpresa, String direccion, String localidad, String cp, String cicloFormativo,
-     Usuario usuario, LocalDate fechaInicio, LocalDate fechaFin, int horasDia, int horasTotales, String horario, String observaciones,EstadoSolicitud estado) {
+
+    public Solicitud(String numeroConvenio, String empresa, String cif, String tutorEmpresa, String direccion,
+            String localidad, String cp, String cicloFormativo,
+            Usuario usuario, LocalDate fechaInicio, LocalDate fechaFin, int horasDia, int horasTotales, String horario,
+            String observaciones, EstadoSolicitud estado) {
         this.idSolicitud = LocalDateTime.now().toString().replaceAll("[^0-9]", "");
         this.numeroConvenio = numeroConvenio;
         this.empresa = empresa;
@@ -104,6 +108,6 @@ public class Solicitud {
         this.observaciones = observaciones;
         this.estado = estado;
         this.alumnos = new ArrayList<>(); // Inicializar la lista de alumnos
+        this.rutaSolicitud = "";
     }
 }
-

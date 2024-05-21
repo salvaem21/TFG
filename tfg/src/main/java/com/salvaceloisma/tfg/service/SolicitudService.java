@@ -131,5 +131,9 @@ public class SolicitudService {
         solicitudRepository.deleteById(idSolicitud); // Utiliza el método deleteById para eliminar una solicitud por su ID
     }
 
+    public Solicitud save(Solicitud solicitud) {
+        return solicitudRepository.save(solicitud);
+    }
+
     
 }

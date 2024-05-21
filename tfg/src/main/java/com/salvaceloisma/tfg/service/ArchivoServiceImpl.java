@@ -79,4 +79,16 @@ public class ArchivoServiceImpl implements ArchivoService {
         }
         return archivos;
     }
+
+    //AGREGAR ARCHIVO A CARPETA FUNCIONAL
+    public void guardarArchivo(MultipartFile archivo, String rutaSolicitud) throws IOException {
+        // Crear la ruta completa del archivo
+        Path rutaArchivo = Paths.get(rutaSolicitud, archivo.getOriginalFilename());
+        
+        // Crear la carpeta si no existe
+        Files.createDirectories(rutaArchivo.getParent());
+
+        // Guardar el archivo en la ruta especificada
+        Files.write(rutaArchivo, archivo.getBytes());
+    }
 }

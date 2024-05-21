@@ -21,6 +21,7 @@ import com.salvaceloisma.tfg.exception.InfoException;
 import com.salvaceloisma.tfg.helper.PRG;
 import com.salvaceloisma.tfg.service.AlumnoService;
 import com.salvaceloisma.tfg.service.ArchivoService;
+import com.salvaceloisma.tfg.service.ArchivoServiceImpl;
 import com.salvaceloisma.tfg.service.EmailService;
 import com.salvaceloisma.tfg.service.InicioSesionService;
 import com.salvaceloisma.tfg.service.MensajeService;
@@ -56,6 +57,9 @@ public class EnviarDatosController {
 
     @Autowired
     private ArchivoService archivoService;
+
+    @Autowired
+    private ArchivoServiceImpl archivoServiceImpl;
 
     @Autowired
     private MensajeService mensajeService;
@@ -154,6 +158,8 @@ public class EnviarDatosController {
                 if (!carpetaSolicitud.exists()) {
                     carpetaSolicitud.mkdirs(); // Crear la carpeta si no existe
                 }
+                solicitud.setRutaSolicitud(rutaSolicitud);
+                solicitudService.save(solicitud);
             } else {
                 // Si se está actualizando, obtener la solicitud existente y actualizar sus
                 // datos
@@ -298,33 +304,43 @@ public class EnviarDatosController {
     }
 
     // ARCHIVO Y NOTIFICACIÓN
-    @PostMapping("/corregirDatosJefaturaArchivo")
-    public String verificarDocumento(HttpServletResponse response, HttpSession session,
-            @RequestParam("idSolicitud") String idSolicitud,
-            @RequestParam("archivoPDF") MultipartFile archivo) throws Exception {
+@PostMapping("/corregirDatosJefaturaArchivo")
+public String verificarDocumento(HttpServletResponse response, HttpSession session,
+        @RequestParam("idSolicitud") String idSolicitud,
+        @RequestParam("archivoPDF") MultipartFile archivo) throws Exception {
 
-        Mensaje mensaje = mensajeService.findBySolicitudIdSolicitud(idSolicitud);
-        // Invertimos el correo devuelta
-        Usuario destinatario = mensaje.getRemitente();
-        Usuario remitente = mensaje.getDestinatario();
-        String destinatarioCorreo = destinatario.getCorreo();
-        String remitenteCorreo = destinatario.getCorreo();
-        EstadoSolicitud estadoSolicitud = EstadoSolicitud.APROBADO_JEFATURA_PDF;
-        try {
-            // AÑADIR ARCHIVO AQUI
-            archivoService.guardarArchivo(archivo);
-            mensajeService.actualizarNotificacion(idSolicitud, destinatario, remitente);
-            solicitudService.cambiarEstadoSolicitud(idSolicitud, estadoSolicitud, remitente);
-            emailService.enviarEmail(destinatarioCorreo, remitenteCorreo,
-                    "Solicitud aceptada. Revisa tu bandeja de entrada.");
+    Mensaje mensaje = mensajeService.findBySolicitudIdSolicitud(idSolicitud);
+    // Invertimos el correo devuelta
+    Usuario destinatario = mensaje.getRemitente();
+    Usuario remitente = mensaje.getDestinatario();
+    String destinatarioCorreo = destinatario.getCorreo();
+    String remitenteCorreo = destinatario.getCorreo();
+    EstadoSolicitud estadoSolicitud = EstadoSolicitud.APROBADO_JEFATURA_PDF;
 
-            PRG.info("Correción enviada correctamente.", "/home/home");
-        } catch (IOException e) {
-            PRG.error("Error al subir el archivo.", "/jefatura/corregirDatosJefatura");
+    try {
+        // Obtener la solicitud para recuperar la ruta
+        Solicitud solicitud = solicitudService.findById(idSolicitud);
+        String rutaSolicitud = solicitud.getRutaSolicitud();
 
-        }
-        return "redirect: ../";
+        // Guardar el archivo en la ruta especificada
+        archivoServiceImpl.guardarArchivo(archivo, rutaSolicitud);
+
+        // Actualizar la notificación y el estado de la solicitud
+        mensajeService.actualizarNotificacion(idSolicitud, destinatario, remitente);
+        solicitudService.cambiarEstadoSolicitud(idSolicitud, estadoSolicitud, remitente);
+
+        // Enviar el correo
+        emailService.enviarEmail(destinatarioCorreo, remitenteCorreo,
+                "Solicitud aceptada. Revisa tu bandeja de entrada.");
+
+        PRG.info("Corrección enviada correctamente.", "/home/home");
+    } catch (IOException e) {
+        PRG.error("Error al subir el archivo.", "/jefatura/corregirDatosJefatura");
     }
+
+    return "redirect: ../";
+}
+
 
     // RECHAZADOS
     @GetMapping("/correccionSolicitudListado")
