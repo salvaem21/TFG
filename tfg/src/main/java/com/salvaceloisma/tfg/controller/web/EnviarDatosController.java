@@ -210,7 +210,7 @@ public class EnviarDatosController {
         }
 
         m.put("solicitudes", allSolicitudes);
-        m.put("view", "documento/solicitudesAll");
+        m.put("view", "solicitud/solicitudesAll");
 
         return "_t/frame";
     }
