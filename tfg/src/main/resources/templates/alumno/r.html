@@ -5,7 +5,6 @@
             <th>Nombre</th>
             <th>Apellidos</th>
             <th>Dni</th>
-            <th>Fecha de nacimiento</th>
             <th>Editar</th>
             <th>Borrar</th>
         </thead>
@@ -15,7 +14,6 @@
             <td th:text="${alumno.nombre}" />
             <td th:text="${alumno.apellido}" />
             <td th:text="${alumno.dni}" />
-            <td th:text="${alumno.fechaNacimiento}" />
 
             <td>
                 <button class="btn btn-outline-propio1 mb-2 col-4 mr-2" th:onclick="|window.location.href='/alumno/u?id=${alumno.id}'|">
