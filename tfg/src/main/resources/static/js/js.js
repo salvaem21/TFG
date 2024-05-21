@@ -214,7 +214,7 @@ $(document).ready(function () {
             habilitarObservaciones();
         }
     });
-    // Selección de uno u otro endpoints
+    //------------------Selección de uno u otro endpoints--------------------
     document.getElementById('formularioAlumnos').addEventListener('submit', function(event) {
         var opcionSeleccionada = document.querySelector('input[name="opcion"]:checked').value;
         if (opcionSeleccionada === 'pdf') {
@@ -224,9 +224,19 @@ $(document).ready(function () {
             this.action = '/enviarDatos/corregirDatosJefaturaObservaciones';
         }
     });
+    //------------Corregir Datos Dirección------------------------------------ 
+    //------------------Selección de uno u otro endpoints---------------------
+    document.getElementById('solicitudFCT').addEventListener('submit', function(event) {
+        var opcionSeleccionada = document.querySelector('input[name="opcion"]:checked').value;
+        if (opcionSeleccionada === 'pdf') {
+            this.action = '/enviarDatos/solicitudAceptadaDireccion';
+            this.enctype = 'multipart/form-data'; 
+        } else if (opcionSeleccionada === 'observaciones') {
+            this.action = '/enviarDatos/corregirDatosJefaturaObservaciones';
+        }
+    });
 
-
-    //-------------------------------ARCHIVO CARGA Y DESCARGA------------------------------------------------------------
+    //-------------------------------ARCHIVO CARGA Y DESCARGA-----------------
 
             
 });

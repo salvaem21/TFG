@@ -195,7 +195,7 @@ public class EnviarDatosController {
     return "redirect:../";
     }
     //--------------------------------------------------------------------------------------------------------------------------------------------//
-    //    LISTADOS TODAS LAS SOLICITUDES  JEFATURA
+    //    LISTADOS TODAS LAS SOLICITUDES  
     @GetMapping("/listadoAllSolicitudes")
     public String allSolicitudes(ModelMap m) {
         List<Solicitud> allSolicitudes = solicitudService.findAll();
@@ -214,7 +214,9 @@ public class EnviarDatosController {
 
         return "_t/frame";
     }
-
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//                   JEFATURA                                                               ////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     @GetMapping("/recibirDatosJefatura")
     public String recibirMensajes(Model model, HttpSession session) {
         Usuario usuario = (Usuario) session.getAttribute("usuario");
@@ -311,7 +313,9 @@ public class EnviarDatosController {
         } 
         return "redirect: ../";
     }
-
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//                   PROFESOR                                                               ////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     //    RECHAZADOS
     @GetMapping("/correccionSolicitudListado")
@@ -398,7 +402,98 @@ public String solicitudADireccion(HttpServletResponse response,
         PRG.error("Error al subir el archivo.", "/profesor/solicitudesAprobados");
     }
     
+    return "redirect:/home/home";   
+    }
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//                  DIRECCION                                                               ////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    //   LISTADO PARA DIRECCIÓN
+    @GetMapping("/pendientesDireccionLista")
+    public String pendienteDeAprobarDireccion(ModelMap m, HttpSession session) 
+    {
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+        m.addAttribute("nombreUsuario", usuario.getNombre()); // Agregar nombre del usuario al modelo
+        
+        // Obtener los mensajes recibidos por el usuario
+        EstadoSolicitud estadoPendienteDireccion = EstadoSolicitud.PENDIENTE_FIRMA_DIRECCION;
+        List<Mensaje> mensajes = mensajeService.recibirMensajes(usuario);
+        m.put("estadoPendiente", estadoPendienteDireccion);
+        m.put("mensajes", mensajes);
+        m.put("view", "direccion/solicitudesPendientes");
+        
+        return "_t/frame";
+    }
+    //  SOLICITUD UNA A UNA
+    @GetMapping("/solicitudPendiente")
+    public String solicitudTratadoDireccion(ModelMap m, @RequestParam("id") String idSolicitud)      
+    {
+        Solicitud solicitud = solicitudService.findById(idSolicitud);
+        m.put("solicitud", solicitud);
+        m.put("view", "direccion/solicitudPendiente");
+        
+        return "_t/frame";
+    }
+
+  // ARCHIVO Y NOTIFICACIÓN  DIRECCIÓN PROFESOR
+    @PostMapping("/solicitudAceptadaDireccion")
+    public String solicitudFinalizacion(HttpServletResponse response, 
+        HttpSession session,
+        @RequestParam("idSolicitud") String idSolicitud,
+        @RequestParam("archivo") MultipartFile archivo) throws Exception {
+
+        // Verificar si el archivo está vacío
+        if (archivo.isEmpty()) {
+            PRG.error("Por favor, seleccione un archivo antes de enviar.", "/direccion/solicitudesPendientes");
+            return "redirect:/direccion/solicitudesPendientes";
+        }
+
+    Mensaje mensaje = mensajeService.findBySolicitudIdSolicitud(idSolicitud);
+    Usuario destinatario = mensaje.getRemitente();
+    Usuario remitente = mensaje.getDestinatario();
+    String destinatarioCorreo = destinatario.getCorreo();
+    String remitenteCorreo    = remitente.getCorreo();
+    EstadoSolicitud estadoSolicitud = EstadoSolicitud.SOLICITUD_FINALIZADA;
+
+    try {
+        // AÑADIR ARCHIVO AQUI
+        archivoService.guardarArchivo(archivo);
+        mensajeService.actualizarNotificacion(idSolicitud, destinatario, remitente);
+        solicitudService.cambiarEstadoSolicitud(idSolicitud, estadoSolicitud, remitente);
+        emailService.enviarEmail(destinatarioCorreo, remitenteCorreo, "Solicitud pendiente. Revisa tu bandeja de entrada.");
+
+        PRG.info("Correción enviada correctamente.", "/home/home");
+    } catch (IOException e) {
+        PRG.error("Error al subir el archivo.", "/direccion/solicitudesPendientes");
+    }
+    
     return "redirect:/home/home";
 }
+    // MENSAJE Y NOTIFICACIÓN
+    @PostMapping("/corregirDatosDireccionObservaciones")
+    public String enviarObservacionACorregir(HttpServletResponse response, HttpSession session,
+    @RequestParam("idSolicitud") String idSolicitud,
+    @RequestParam("observaciones") String observaciones) throws Exception {
 
+            Mensaje mensaje = mensajeService.findBySolicitudIdSolicitud(idSolicitud);
+            //Invertimos el correo devuelta
+            Usuario destinatario = mensaje.getRemitente();
+            Usuario remitente =  mensaje.getDestinatario(); 
+            String destinatarioCorreo = destinatario.getCorreo();
+            String remitenteCorreo = destinatario.getCorreo();
+            EstadoSolicitud estadoSolicitud= EstadoSolicitud.RECHAZADO_DIRECCION;
+            
+        try {
+            mensajeService.actualizarMensaje(idSolicitud,destinatario, remitente, observaciones);
+            solicitudService.cambiarEstadoSolicitud(idSolicitud, estadoSolicitud, remitente);
+            emailService.enviarEmail(destinatarioCorreo, remitenteCorreo,"Datos pendientes de ser revisados.");
+            
+            PRG.info("Correción enviada correctamente.","/home/home");
+        } catch (IOException e) {
+            PRG.error("Error al subir el archivo.","/direccion/solicitudesPendientes");
+        }
+        return "redirect: ../";
+    }
 }
