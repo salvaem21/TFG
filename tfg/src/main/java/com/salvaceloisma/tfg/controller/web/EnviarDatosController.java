@@ -322,8 +322,10 @@ public String verificarDocumento(HttpServletResponse response, HttpSession sessi
         Solicitud solicitud = solicitudService.findById(idSolicitud);
         String rutaSolicitud = solicitud.getRutaSolicitud();
 
+        String nombreArchivo = "FIRMADO_POR_JEFATURA " + idSolicitud + ".pdf";
+
         // Guardar el archivo en la ruta especificada
-        archivoServiceImpl.guardarArchivo(archivo, rutaSolicitud);
+        archivoServiceImpl.guardarArchivo(archivo, rutaSolicitud, nombreArchivo);
 
         // Actualizar la notificación y el estado de la solicitud
         mensajeService.actualizarNotificacion(idSolicitud, destinatario, remitente);
