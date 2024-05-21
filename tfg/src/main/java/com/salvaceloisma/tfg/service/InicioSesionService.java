@@ -35,20 +35,18 @@ public class InicioSesionService {
         mensaje.setNovedad(true);
         mensajeRepository.save(mensaje);
     }
-    
+
     public List<Mensaje> obtenerMensajesConNovedadParaUsuario(Usuario usuario) {
         // Obtener los mensajes con novedad para el usuario destinatario
         List<Mensaje> mensajes = mensajeRepository.findByDestinatario(usuario);
         List<Mensaje> mensajesNuevos = new ArrayList<>();
         for (Mensaje mensaje : mensajes) {
-            if(mensaje.isNovedad()){
+            if (mensaje.isNovedad()) {
                 mensajesNuevos.add(mensaje);
             }
         }
         return mensajesNuevos;
     }
-
-
 
     public List<Usuario> findAll() {
         return inicioSesionRepository.findAll();
@@ -65,15 +63,23 @@ public class InicioSesionService {
         //
         Usuario usuario = new Usuario(nombre, apellido, correo, contraseniaCifrada, rol);
         usuario = inicioSesionRepository.save(usuario);
-        
+
         // Crear la carpeta del usuario
-        String rutaCarpetaUsuario = carpetaUsuarioService.crearCarpetaUsuario(usuario.getCorreo());
-        
-        // Actualizar la ruta de la carpeta del usuario en la entidad Usuario
-        usuario.setRutaCarpeta(rutaCarpetaUsuario);
-        
-        // Guardar los cambios en la base de datos
-        return inicioSesionRepository.save(usuario);    }
+        if (rol == RolUsuario.PROFESOR) {
+            // Crear la carpeta del usuario
+            String rutaCarpetaUsuario = carpetaUsuarioService.crearCarpetaUsuario(usuario.getCorreo());
+
+            // Actualizar la ruta de la carpeta del usuario en la entidad Usuario
+            usuario.setRutaCarpeta(rutaCarpetaUsuario);
+
+            // Guardar los cambios en la base de datos
+            return inicioSesionRepository.save(usuario);
+        }
+
+        // Si el usuario no es Profesor, no se crea la carpeta y se devuelve el usuario
+        // sin cambios
+        return usuario;
+    }
 
     public Usuario findById(Long idUsuario) {
         return inicioSesionRepository.findById(idUsuario).get();
