@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.util.List;
 
 @Controller
-@RequestMapping("/documento")
+@RequestMapping("/solicitud")
 public class DescargarArchivoController {
 
     @Autowired
@@ -27,7 +27,7 @@ public class DescargarArchivoController {
     @GetMapping("/descargarArchivo")
     public String descargarArchivo(
             ModelMap m) {
-        m.put("view", "documento/descargarArchivo");
+        m.put("view", "solicitud/descargarArchivo");
         return "_t/frame";
     }
 
