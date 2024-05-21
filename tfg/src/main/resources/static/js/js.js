@@ -62,20 +62,21 @@ $(document).ready(function () {
     });
 
     function validarCicloFormativo(cicloInput) {
-        var cicloFormativo = cicloInput.val();
-        // Expresión regular para validar el ciclo formativo (letras y saltos de línea)
-        var cicloRegex = /^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\s]+$/;
-
-        if (!cicloRegex.test(cicloFormativo)) {
+        var valorSeleccionado = cicloInput.val();
+    
+        // Verificar que la selección no sea la opción predeterminada
+        if (valorSeleccionado === "") {
             cicloInput.css('border-color', 'red');
             return false;
         }
-
-        // Si el ciclo formativo es válido, eliminar el resaltado rojo
+    
+        // Si se selecciona una opción válida, eliminar el resaltado rojo
         cicloInput.css('border-color', '');
         return true;
     }
-    $("#cicloFormativoAlumno").on('blur', function () {
+    
+    // Evento para validar el ciclo formativo cuando se cambia la selección del campo desplegable
+    $("#cicloFormativoAlumno").on('change', function () {
         validarCicloFormativo($(this));
     });
 
@@ -276,12 +277,12 @@ $(document).ready(function () {
         validarFechaFin($('#fechaInicio'), $('#fechaFin'));
     });
 
-
+    
     // Validar el formulario antes de enviarlo
     $("#formularioAlumnos").submit(function (event) {
         var alumnoValido = validarDNI($("#nifAlumno"));
         var nombreTutorValido = validarNombreTutor($("#tutorAlumno"));
-        var cicloFormativoValido = validarCicloFormativo($("#cicloFormativoAlumno"));
+        var cicloValido = validarCicloFormativo($("#cicloFormativoAlumno"));        
         var numeroConvenioValido = validarNumeroConvenio($("#numeroConvenio"));
         var nombreEmpresaValido = validarNombreEmpresa($("#nombreEmpresa"));
         var tutorEmpresaValido = validarTutorEmpresa($("#tutorEmpresa"));
@@ -306,8 +307,8 @@ $(document).ready(function () {
             event.preventDefault(); 
             return;
         }
-        if (!cicloFormativoValido) {
-            alert("El ciclo formativo introducido no es válido.");
+        if (!cicloValido) {
+            alert("Seleccione un ciclo formativo.");
             event.preventDefault(); 
             return;
         }

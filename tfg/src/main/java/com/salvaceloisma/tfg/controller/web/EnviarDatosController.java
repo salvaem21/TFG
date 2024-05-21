@@ -25,10 +25,13 @@ import com.salvaceloisma.tfg.service.AlumnoService;
 import com.salvaceloisma.tfg.service.EmailService;
 import com.salvaceloisma.tfg.service.InicioSesionService;
 import com.salvaceloisma.tfg.service.SolicitudService;
+import com.salvaceloisma.tfg.enumerados.Grados;
+
 
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
+import java.net.http.HttpClient.Redirect;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -48,14 +51,16 @@ public class EnviarDatosController {
     private AlumnoService alumnoService;
 
     @Autowired
-    private SolicitudService solicitudService;
+    private SolicitudService solicitudService; 
 
     @GetMapping("/enviarDatosAJefatura")
     public String crearDocumento(ModelMap m) {
         m.put("usuariosJefatura", inicioSesionService.obtenerUsuariosPorRol(RolUsuario.JEFATURA));
+        m.put("grados", Grados.values()); // Añadir el enum Grados al modelo
         m.put("view", "profesor/enviarDatosAlumnos");
         return "_t/frame";
     }
+    
 
     @PostMapping("/enviarDatosAJefatura")
     public String crearDocumento(HttpServletResponse response, HttpSession session,
