@@ -1,10 +1,12 @@
 package com.salvaceloisma.tfg.controller.web;
 
+import org.apache.pdfbox.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -31,6 +33,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -304,45 +307,44 @@ public class EnviarDatosController {
     }
 
     // ARCHIVO Y NOTIFICACIÓN
-@PostMapping("/corregirDatosJefaturaArchivo")
-public String verificarDocumento(HttpServletResponse response, HttpSession session,
-        @RequestParam("idSolicitud") String idSolicitud,
-        @RequestParam("archivoPDF") MultipartFile archivo) throws Exception {
+    @PostMapping("/corregirDatosJefaturaArchivo")
+    public String verificarDocumento(HttpServletResponse response, HttpSession session,
+            @RequestParam("idSolicitud") String idSolicitud,
+            @RequestParam("archivoPDF") MultipartFile archivo) throws Exception {
 
-    Mensaje mensaje = mensajeService.findBySolicitudIdSolicitud(idSolicitud);
-    // Invertimos el correo devuelta
-    Usuario destinatario = mensaje.getRemitente();
-    Usuario remitente = mensaje.getDestinatario();
-    String destinatarioCorreo = destinatario.getCorreo();
-    String remitenteCorreo = destinatario.getCorreo();
-    EstadoSolicitud estadoSolicitud = EstadoSolicitud.APROBADO_JEFATURA_PDF;
+        Mensaje mensaje = mensajeService.findBySolicitudIdSolicitud(idSolicitud);
+        // Invertimos el correo devuelta
+        Usuario destinatario = mensaje.getRemitente();
+        Usuario remitente = mensaje.getDestinatario();
+        String destinatarioCorreo = destinatario.getCorreo();
+        String remitenteCorreo = destinatario.getCorreo();
+        EstadoSolicitud estadoSolicitud = EstadoSolicitud.APROBADO_JEFATURA_PDF;
 
-    try {
-        // Obtener la solicitud para recuperar la ruta
-        Solicitud solicitud = solicitudService.findById(idSolicitud);
-        String rutaSolicitud = solicitud.getRutaSolicitud();
+        try {
+            // Obtener la solicitud para recuperar la ruta
+            Solicitud solicitud = solicitudService.findById(idSolicitud);
+            String rutaSolicitud = solicitud.getRutaSolicitud();
 
-        String nombreArchivo = "FIRMADO_POR_JEFATURA " + idSolicitud + ".pdf";
+            String nombreArchivo = "FIRMADO_POR_JEFATURA " + idSolicitud + ".pdf";
 
-        // Guardar el archivo en la ruta especificada
-        archivoServiceImpl.guardarArchivo(archivo, rutaSolicitud, nombreArchivo);
+            // Guardar el archivo en la ruta especificada
+            archivoServiceImpl.guardarArchivo(archivo, rutaSolicitud, nombreArchivo);
 
-        // Actualizar la notificación y el estado de la solicitud
-        mensajeService.actualizarNotificacion(idSolicitud, destinatario, remitente);
-        solicitudService.cambiarEstadoSolicitud(idSolicitud, estadoSolicitud, remitente);
+            // Actualizar la notificación y el estado de la solicitud
+            mensajeService.actualizarNotificacion(idSolicitud, destinatario, remitente);
+            solicitudService.cambiarEstadoSolicitud(idSolicitud, estadoSolicitud, remitente);
 
-        // Enviar el correo
-        emailService.enviarEmail(destinatarioCorreo, remitenteCorreo,
-                "Solicitud aceptada. Revisa tu bandeja de entrada.");
+            // Enviar el correo
+            emailService.enviarEmail(destinatarioCorreo, remitenteCorreo,
+                    "Solicitud aceptada. Revisa tu bandeja de entrada.");
 
-        PRG.info("Corrección enviada correctamente.", "/home/home");
-    } catch (IOException e) {
-        PRG.error("Error al subir el archivo.", "/jefatura/corregirDatosJefatura");
+            PRG.info("Corrección enviada correctamente.", "/home/home");
+        } catch (IOException e) {
+            PRG.error("Error al subir el archivo.", "/jefatura/corregirDatosJefatura");
+        }
+
+        return "redirect: ../";
     }
-
-    return "redirect: ../";
-}
-
 
     // RECHAZADOS
     @GetMapping("/correccionSolicitudListado")
@@ -431,6 +433,24 @@ public String verificarDocumento(HttpServletResponse response, HttpSession sessi
         }
 
         return "redirect:/home/home";
+    }
+
+    @GetMapping("/descargarSolicitud/{idSolicitud}")
+    public void descargarSolicitud(@PathVariable String idSolicitud, HttpServletResponse response) throws IOException, DangerException {
+        Solicitud solicitud = solicitudService.findById(idSolicitud);
+        String rutaArchivo = solicitud.getRutaSolicitud() + "/FIRMADO_POR_JEFATURA " + idSolicitud + ".pdf";
+
+        File archivoPDF = new File(rutaArchivo);
+        if (archivoPDF.exists()) {
+            response.setContentType("application/pdf");
+            response.setHeader("Content-Disposition", "attachment; filename=" + archivoPDF.getName());
+            try (FileInputStream fis = new FileInputStream(archivoPDF)) {
+                IOUtils.copy(fis, response.getOutputStream());
+                response.getOutputStream().flush();
+            }
+        } else {
+            PRG.error("El archivo no existe.");
+        }
     }
 
 }
