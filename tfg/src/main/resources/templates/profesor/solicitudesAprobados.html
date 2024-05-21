@@ -22,8 +22,12 @@
                     <td class="col-1 small" th:text="${mensaje.solicitud.numeroConvenio}"></td>
                     <td class="col-1 small" th:text="${mensaje.solicitud.cicloFormativo}"></td>
                     <td class="col-1 small" th:text="${mensaje.solicitud.fechaInicio}"></td>
-                    <td class="col-3 small">Solicitud</td>
-                    <td class="col-3 small" >
+                    <td class="col-3 small">
+                        <a th:href="@{/enviarDatos/descargarSolicitud/{idSolicitud}(idSolicitud=${mensaje.solicitud.idSolicitud})}" class="btn btn-link btn-sm">
+                            Descargar PDF
+                        </a>
+                    </td>
+                    <td class="col-3 small">
                         <form action="/enviarDatos/solicitudListadoOk" method="post" enctype="multipart/form-data">
                             <input type="hidden" name="idSolicitud" th:value="${mensaje.solicitud.idSolicitud}">
                             <input type="file" class="btn btn-sm" name="archivo">

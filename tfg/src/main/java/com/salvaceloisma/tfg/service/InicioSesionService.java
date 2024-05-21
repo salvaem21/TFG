@@ -23,6 +23,9 @@ public class InicioSesionService {
     @Autowired
     private MensajeRepository mensajeRepository;
 
+    @Autowired
+    private CarpetaUsuarioService carpetaUsuarioService;
+
     public void enviarMensaje(Usuario remitente, Usuario destinatario, String contenido, Solicitud solicitud) {
         Mensaje mensaje = new Mensaje();
         mensaje.setRemitente(remitente);
@@ -32,20 +35,18 @@ public class InicioSesionService {
         mensaje.setNovedad(true);
         mensajeRepository.save(mensaje);
     }
-    
+
     public List<Mensaje> obtenerMensajesConNovedadParaUsuario(Usuario usuario) {
         // Obtener los mensajes con novedad para el usuario destinatario
         List<Mensaje> mensajes = mensajeRepository.findByDestinatario(usuario);
         List<Mensaje> mensajesNuevos = new ArrayList<>();
         for (Mensaje mensaje : mensajes) {
-            if(mensaje.isNovedad()){
+            if (mensaje.isNovedad()) {
                 mensajesNuevos.add(mensaje);
             }
         }
         return mensajesNuevos;
     }
-
-
 
     public List<Usuario> findAll() {
         return inicioSesionRepository.findAll();
@@ -61,7 +62,23 @@ public class InicioSesionService {
         String contraseniaCifrada = encoder.encode(contrasenia);
         //
         Usuario usuario = new Usuario(nombre, apellido, correo, contraseniaCifrada, rol);
-        return inicioSesionRepository.save(usuario);
+        usuario = inicioSesionRepository.save(usuario);
+
+        // Crear la carpeta del usuario
+        if (rol == RolUsuario.PROFESOR) {
+            // Crear la carpeta del usuario
+            String rutaCarpetaUsuario = carpetaUsuarioService.crearCarpetaUsuario(usuario.getCorreo());
+
+            // Actualizar la ruta de la carpeta del usuario en la entidad Usuario
+            usuario.setRutaCarpeta(rutaCarpetaUsuario);
+
+            // Guardar los cambios en la base de datos
+            return inicioSesionRepository.save(usuario);
+        }
+
+        // Si el usuario no es Profesor, no se crea la carpeta y se devuelve el usuario
+        // sin cambios
+        return usuario;
     }
 
     public Usuario findById(Long idUsuario) {
