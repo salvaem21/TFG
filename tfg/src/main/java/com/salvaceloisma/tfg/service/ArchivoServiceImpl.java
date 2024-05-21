@@ -34,11 +34,6 @@ public class ArchivoServiceImpl implements ArchivoService {
                 Files.createDirectories(directorioCarga);
             }
             
-            // Crear el directorio de descarga si no existe
-            Path directorioDescarga = Paths.get(directorioDeArchivosDescarga);
-            if (!Files.exists(directorioDescarga)) {
-                Files.createDirectories(directorioDescarga);
-            }
         } catch (IOException e) {
             throw new RuntimeException("No se pudo crear el directorio para almacenar archivos.", e);
         }
