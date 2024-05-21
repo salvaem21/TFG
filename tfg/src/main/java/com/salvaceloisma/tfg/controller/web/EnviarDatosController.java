@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.salvaceloisma.tfg.domain.Alumno;
 import com.salvaceloisma.tfg.domain.Mensaje;
@@ -22,8 +23,10 @@ import com.salvaceloisma.tfg.exception.InfoException;
 import com.salvaceloisma.tfg.helper.PRG;
 import com.salvaceloisma.tfg.repository.AlumnoRepository;
 import com.salvaceloisma.tfg.service.AlumnoService;
+import com.salvaceloisma.tfg.service.ArchivoService;
 import com.salvaceloisma.tfg.service.EmailService;
 import com.salvaceloisma.tfg.service.InicioSesionService;
+import com.salvaceloisma.tfg.service.MensajeService;
 import com.salvaceloisma.tfg.service.SolicitudService;
 import com.salvaceloisma.tfg.enumerados.Grados;
 
@@ -32,10 +35,13 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 import java.net.http.HttpClient.Redirect;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequestMapping("/enviarDatos")
 @Controller
@@ -53,6 +59,13 @@ public class EnviarDatosController {
         @Autowired
         private SolicitudService solicitudService;
 
+    @Autowired
+    private ArchivoService archivoService;
+
+    @Autowired
+    private MensajeService mensajeService;
+
+
         @Autowired
         private AlumnoRepository alumnoRepository;
 
@@ -67,6 +80,7 @@ public class EnviarDatosController {
 
         @PostMapping("/enviarDatosAJefatura")
         public String crearDocumento(HttpServletResponse response, HttpSession session,
+                @RequestParam(required = false) String idSolicitud,
                 @RequestParam String numeroConvenio,
                 @RequestParam String tutorAlumno,
                 @RequestParam String nombreEmpresa, @RequestParam String tutorEmpresa,
@@ -91,23 +105,25 @@ public class EnviarDatosController {
                 @RequestParam("rolUsuario") Long usuarioEnvio, ModelMap m)
                 throws DangerException, InfoException {
 
+        
+        boolean creandoNuevaSolicitud = (idSolicitud == null || idSolicitud.isEmpty());
         Usuario usuario = (Usuario) session.getAttribute("usuario");
         String nombre = usuario.getNombre();
 
         String correo = inicioSesionService.findById(usuarioEnvio).getCorreo();
 
         StringBuilder horarioBuilder = new StringBuilder();
-        horarioBuilder.append("Lunes: ").append(lunesInicio1).append(" - ").append(lunesFin1).append("\n")
-                .append("Martes: ").append(martesInicio1).append(" - ").append(martesFin1).append("\n")
-                .append("Miércoles: ").append(miercolesInicio1).append(" - ").append(miercolesFin1).append("\n")
-                .append("Jueves: ").append(juevesInicio1).append(" - ").append(juevesFin1).append("\n")
-                .append("Viernes: ").append(viernesInicio1).append(" - ").append(viernesFin1).append("\n")
+        horarioBuilder.append("Lunes: ").append(lunesInicio1).append(" - ").append(lunesFin1).append(".\n")
+                .append("Martes: ").append(martesInicio1).append(" - ").append(martesFin1).append(".\n")
+                .append("Miércoles: ").append(miercolesInicio1).append(" - ").append(miercolesFin1).append(".\n")
+                .append("Jueves: ").append(juevesInicio1).append(" - ").append(juevesFin1).append(".\n")
+                .append("Viernes: ").append(viernesInicio1).append(" - ").append(viernesFin1).append(".\n")
                 .append("Segundo horario: \n")
-                .append("Lunes: ").append(lunesInicio2).append(" - ").append(lunesFin2).append("\n")
-                .append("Martes: ").append(martesInicio2).append(" - ").append(martesFin2).append("\n")
-                .append("Miércoles: ").append(miercolesInicio2).append(" - ").append(miercolesFin2).append("\n")
-                .append("Jueves: ").append(juevesInicio2).append(" - ").append(juevesFin2).append("\n")
-                .append("Viernes: ").append(viernesInicio2).append(" - ").append(viernesFin2);
+                .append("Lunes: ").append(lunesInicio2).append(" - ").append(lunesFin2).append(".\n")
+                .append("Martes: ").append(martesInicio2).append(" - ").append(martesFin2).append(".\n")
+                .append("Miércoles: ").append(miercolesInicio2).append(" - ").append(miercolesFin2).append(".\n")
+                .append("Jueves: ").append(juevesInicio2).append(" - ").append(juevesFin2).append(".\n")
+                .append("Viernes: ").append(viernesInicio2).append(" - ").append(viernesFin2).append(".");
         String horario = horarioBuilder.toString();
 
         StringBuilder datos = new StringBuilder();
@@ -131,38 +147,79 @@ public class EnviarDatosController {
         Usuario destinatario = inicioSesionService.findById(usuarioEnvio);
         // Establecer el estado por defecto a PENDIENTE_JEFATURA
         EstadoSolicitud estado = EstadoSolicitud.PENDIENTE_FIRMA_JEFATURA;
+
         String observaciones = "";
-        String idSolicitud = "";
+        //String idSolicitud = "";
 
         try {
-            Solicitud solicitud = solicitudService.save(numeroConvenio, nombreEmpresa, cifEmpresa, tutorEmpresa,
-                    direccionPracticas, localidadPracticas, codigoPostalPracticas, cicloFormativoAlumno, usuario,
-                    fechaInicio, fechaFin, horasDia, horasTotales, horario, observaciones, estado);
-            idSolicitud = solicitud.getIdSolicitud();
-            
 
-            // Construir el mensaje para cada alumno
-            for (int i = 0; i < apellidosAlumno.length; i++) {
-                datos.append("Alumno ").append(i + 1).append(":\n");
-                datos.append("Apellidos alumno: ").append(apellidosAlumno[i]).append("\n");
-                datos.append("Nombre alumno: ").append(nombreAlumno[i]).append("\n");
-                datos.append("NIF alumno: ").append(nifAlumno[i]).append("\n");
-                datos.append("Ciclo formativo: ").append(cicloFormativoAlumno).append("\n");
-                datos.append("\n");
-                try {
-                    alumnoService.save(nifAlumno[i], nombreAlumno[i], apellidosAlumno[i], idSolicitud);
-                } catch (Exception e) {
+            Solicitud solicitud = null;
+            if (creandoNuevaSolicitud) {
+                solicitud = solicitudService.save(numeroConvenio, nombreEmpresa, cifEmpresa, tutorEmpresa,
+                        direccionPracticas, localidadPracticas, codigoPostalPracticas, cicloFormativoAlumno, usuario,
+                        fechaInicio, fechaFin, horasDia, horasTotales, horario, observaciones, estado);
+                idSolicitud = solicitud.getIdSolicitud();
+            } else {
+                // Si se está actualizando, obtener la solicitud existente y actualizar sus datos
+                solicitud = solicitudService.findById(idSolicitud);
+                solicitudService.update(idSolicitud, numeroConvenio, nombreEmpresa, cifEmpresa, tutorEmpresa, direccionPracticas, localidadPracticas, codigoPostalPracticas, cicloFormativoAlumno, usuario, fechaInicio, fechaFin, horasDia, horasTotales, horario, observaciones, estado);
+            }
+             // Obtener lista de alumnos actuales de la solicitud
+            List<Alumno> alumnosActuales = alumnoService.findBySolicitudIdSolicitud(idSolicitud);
+            List<String> nifAlumnosActuales = alumnosActuales.stream()
+                    .map(Alumno::getDni)
+                    .collect(Collectors.toList());
+
+            // Crear lista de NIFs recibidos en la solicitud
+            List<String> nifAlumnosRecibidos = Arrays.asList(nifAlumno);
+
+            // Determinar alumnos a eliminar
+            for (Alumno alumno : alumnosActuales) {
+                if (!nifAlumnosRecibidos.contains(alumno.getDni())) {
+                    alumnoService.deleteByDni(alumno.getDni());
+                }
+            }
+            
+        // Crear o actualizar los alumnos
+        for (int i = 0; i < apellidosAlumno.length; i++) {
+            datos.append("Alumno ").append(i + 1).append(":\n");
+            datos.append("Apellidos alumno: ").append(apellidosAlumno[i]).append("\n");
+            datos.append("Nombre alumno: ").append(nombreAlumno[i]).append("\n");
+            datos.append("NIF alumno: ").append(nifAlumno[i]).append("\n");
+            datos.append("Ciclo formativo: ").append(cicloFormativoAlumno).append("\n");            
+            datos.append("\n");
+            try {
+                alumnoService.save(nifAlumno[i], nombreAlumno[i], apellidosAlumno[i], idSolicitud);                } catch (Exception e) {
                     PRG.error("El NIF de ese alumno ya esta en uso");
                 }
             }
-            inicioSesionService.enviarMensaje(remitente, destinatario, datos.toString(), solicitud);
-            emailService.enviarEmail(correo, "Datos pendientes de ser revisados por Jefatura.",
-                    nombre + " ha enviado unos datos.");
-        } catch (Exception e) {
-            PRG.error("Los datos no pudieron enviarse correctamente.");
+        inicioSesionService.enviarMensaje(remitente, destinatario, datos.toString(), solicitud);
+        emailService.enviarEmail(correo, "Datos pendientes de ser revisados por Jefatura.",
+                nombre + " ha enviado unos datos.");
+    } catch (Exception e) {
+        PRG.error("Los datos no pudieron enviarse correctamente.");
+    }
+    return "redirect:../";
+    }
+    //--------------------------------------------------------------------------------------------------------------------------------------------//
+    //    LISTADOS TODAS LAS SOLICITUDES  JEFATURA
+    @GetMapping("/listadoAllSolicitudes")
+    public String allSolicitudes(ModelMap m) {
+        List<Solicitud> allSolicitudes = solicitudService.findAll();
+        
+        // Procesar el campo de horario de cada solicitud
+        for (Solicitud solicitud : allSolicitudes) {
+            String horarioProcesado = solicitud.getHorario().replace("Segundo horario:", "<br><strong>Segundo horario:</strong><br><br>");
+            horarioProcesado = horarioProcesado.replace(".", "<br>");
+            solicitud.setHorario(horarioProcesado);
+            // Cargar los alumnos vinculados a esta solicitud (LISTA) ya que se utilizara en la vista
+            solicitud.setAlumnos(alumnoService.findBySolicitudIdSolicitud(solicitud.getIdSolicitud()));
         }
 
-        return "redirect:../";
+        m.put("solicitudes", allSolicitudes);
+        m.put("view", "solicitud/solicitudesAll");
+
+        return "_t/frame";
     }
 
     @GetMapping("/recibirDatosJefatura")
@@ -171,7 +228,7 @@ public class EnviarDatosController {
         model.addAttribute("nombreUsuario", usuario.getNombre()); // Agregar nombre del usuario al modelo
 
         // Obtener los mensajes enviados y recibidos por el usuario
-        List<Mensaje> mensajes = inicioSesionService.recibirMensajes(usuario);
+        List<Mensaje> mensajes = mensajeService.recibirMensajes(usuario);
 
         // Extraer las solicitudes de los mensajes y agregarlas a una lista
         List<Solicitud> solicitudes = new ArrayList<>();
@@ -189,18 +246,76 @@ public class EnviarDatosController {
 
         return "_t/frame";
     }
-    
+
     @GetMapping("/corregirDatosJefatura/{idSolicitud}")
-    public String corregirDatos(@PathVariable("idSolicitud") String idSolicitud, Model model) {
-        Solicitud solicitud = solicitudService.findById(idSolicitud);
-        if (solicitud == null) {
-            
-        }
-        List<Alumno> alumnos = alumnoService.findBySolicitudIdSolicitud(idSolicitud);
-        model.addAttribute("solicitud", solicitud);
-        model.addAttribute("alumnos", alumnos);
-        model.addAttribute("view", "jefatura/corregirDatosJefatura");
-        return "_t/frame";
+    public String modificarDocumento(@RequestParam("id") String idSolicitud,ModelMap m) {
+    Solicitud solicitud = solicitudService.findById(idSolicitud);
+    String horarioSinSegundoHorario = solicitud.getHorario().replace("Segundo horario:", "");
+    solicitud.setHorario(horarioSinSegundoHorario); //ELIMINAMOS EL TEXTO PARA QUE NO DE ERROR AL RECORRER.
+    m.put("solicitud", solicitud);
+    m.put("alumnos", alumnoService.findBySolicitudIdSolicitud(idSolicitud));
+    m.put("usuariosJefatura", inicioSesionService.obtenerUsuariosPorRol(RolUsuario.JEFATURA));
+    m.put("view", "profesor/solicitudCorreccion");
+    return "_t/frame";
     }
-     
+    
+    //    APROBADOS
+    @GetMapping("/solicitudListadoOk")
+    public String aprobadosDatosDeJefatura(ModelMap m, HttpSession session) {
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+        m.addAttribute("nombreUsuario", usuario.getNombre()); // Agregar nombre del usuario al modelo
+        
+        // Obtener los mensajes recibidos por el usuario
+        EstadoSolicitud estadoAprobado = EstadoSolicitud.APROBADO_JEFATURA_PDF;
+        List<Mensaje> mensajes = mensajeService.recibirMensajes(usuario);
+        m.put("estadoAprobado", estadoAprobado);
+        m.put("mensajes", mensajes);
+        m.put("view", "profesor/solicitudesAprobados");
+        
+        return "_t/frame";
+        }
+    
+// ARCHIVO Y NOTIFICACIÓN  PROFESOR JEFATURA
+@PostMapping("/solicitudListadoOk")
+public String solicitudADireccion(HttpServletResponse response, 
+    HttpSession session,
+    @RequestParam("idSolicitud") String idSolicitud,
+    @RequestParam("archivo") MultipartFile archivo) throws Exception {
+
+    // Verificar si el archivo está vacío
+    if (archivo.isEmpty()) {
+        PRG.error("Por favor, seleccione un archivo antes de enviar.", "/profesor/solicitudesAprobados");
+        return "redirect:/profesor/solicitudesAprobados";
+    }
+
+    Mensaje mensaje = mensajeService.findBySolicitudIdSolicitud(idSolicitud);
+
+    // Obtener los usuarios con el rol de DIRECTOR
+    List<Usuario> directores = inicioSesionService.obtenerUsuariosPorRol(RolUsuario.DIRECTOR);
+    if (directores.isEmpty()) {
+        // Manejar el caso donde no hay directores encontrados
+        PRG.error("No se encontraron usuarios con el rol de DIRECTOR.", "/profesor/solicitudesAprobados");
+        return "redirect:/profesor/solicitudesAprobados";
+    }
+    // Obtener el primer director de la lista
+    Usuario destinatario = directores.get(0);
+    Usuario remitente = mensaje.getDestinatario();
+    String destinatarioCorreo = destinatario.getCorreo();
+    String remitenteCorreo = remitente.getCorreo();
+    EstadoSolicitud estadoSolicitud = EstadoSolicitud.PENDIENTE_FIRMA_DIRECCION;
+
+    try {
+        // AÑADIR ARCHIVO AQUI
+        archivoService.guardarArchivo(archivo);
+        mensajeService.actualizarNotificacion(idSolicitud, destinatario, remitente);
+        solicitudService.cambiarEstadoSolicitud(idSolicitud, estadoSolicitud, remitente);
+        emailService.enviarEmail(destinatarioCorreo, remitenteCorreo, "Solicitud pendiente. Revisa tu bandeja de entrada.");
+
+        PRG.info("Correción enviada correctamente.", "/home/home");
+    } catch (IOException e) {
+        PRG.error("Error al subir el archivo.", "/profesor/solicitudesAprobados");
+    }
+    
+    return "redirect:/home/home";
+    }
 }

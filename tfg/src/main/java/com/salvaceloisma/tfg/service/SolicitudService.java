@@ -55,7 +55,7 @@ public class SolicitudService {
         if (solicitud != null) {
             // Actualizar los atributos de la solicitud con los valores proporcionados
             solicitud.setNumeroConvenio(numeroConvenio);
-            solicitud.setEmpresa(tutorEmpresa);
+            solicitud.setEmpresa(empresa);
             solicitud.setCif(cif);
             solicitud.setTutorEmpresa(tutorEmpresa);
             solicitud.setDireccion(direccion);
@@ -90,7 +90,7 @@ public class SolicitudService {
                 if (solicitud != null) {
                     // Actualizar los atributos de la solicitud con los valores proporcionados
                     solicitud.setNumeroConvenio(numeroConvenio);
-                    solicitud.setEmpresa(tutorEmpresa);
+                    solicitud.setEmpresa(empresa);
                     solicitud.setCif(cif);
                     solicitud.setTutorEmpresa(tutorEmpresa);
                     solicitud.setDireccion(direccion);
@@ -116,11 +116,14 @@ public class SolicitudService {
     // Método para cambiar el estado de una solicitud
     public void cambiarEstadoSolicitud(String idSolicitud, EstadoSolicitud nuevoEstado, Usuario usuarioCambiadorEstado) throws Exception {
         // Verificar si el usuario que cambia el estado tiene el rol de jefatura o dirección
-        if (usuarioCambiadorEstado.getRol() != RolUsuario.JEFATURA && usuarioCambiadorEstado.getRol() != RolUsuario.DIRECTOR) {
-            throw new Exception("Solo jefatura y dirección pueden cambiar el estado de las solicitudes");
-        }
+        // if (usuarioCambiadorEstado.getRol() != RolUsuario.JEFATURA && usuarioCambiadorEstado.getRol() != RolUsuario.DIRECTOR) {
+        //     throw new Exception("Solo jefatura y dirección pueden cambiar el estado de las solicitudes");
+        // }
 
         // Lógica para cambiar el estado de la solicitud
+        Solicitud solicitud = solicitudRepository.findById(idSolicitud).orElse(null);
+        solicitud.setEstado(nuevoEstado);
+        solicitudRepository.save(solicitud);
     }
 
 

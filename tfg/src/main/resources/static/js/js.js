@@ -522,4 +522,49 @@ $(document).ready(function () {
         // Opcional: mostrar un mensaje o realizar alguna acción adicional
         alert("Horas del lunes copiadas a todos los días de la semana.");
     });
+
+    const opcionPDF = document.getElementById("opcionPDF");
+    const opcionObservaciones = document.getElementById("opcionObservaciones");
+    const campoPDF = document.getElementById("campoPDF");
+    const campoObservaciones = document.getElementById("campoObservaciones");
+
+    // Función para habilitar el campo PDF y deshabilitar Observaciones
+    function habilitarPDF() {
+        campoPDF.style.display = "block";
+        campoObservaciones.style.display = "none";
+    }
+
+    // Función para habilitar el campo Observaciones y deshabilitar PDF
+    function habilitarObservaciones() {
+        campoPDF.style.display = "none";
+        campoObservaciones.style.display = "block";
+    }
+
+    // Event listener para detectar el cambio en la selección de opción
+    opcionPDF.addEventListener("change", function() {
+        if (opcionPDF.checked) {
+            habilitarPDF();
+        }
+    });
+
+    opcionObservaciones.addEventListener("change", function() {
+        if (opcionObservaciones.checked) {
+            habilitarObservaciones();
+        }
+    });
+    // Selección de uno u otro endpoints
+    document.getElementById('formularioAlumnos').addEventListener('submit', function(event) {
+        var opcionSeleccionada = document.querySelector('input[name="opcion"]:checked').value;
+        if (opcionSeleccionada === 'pdf') {
+            this.action = '/enviarDatos/corregirDatosJefaturaArchivo';
+            this.enctype = 'multipart/form-data'; // Añadir el tipo de codificación para archivos
+        } else if (opcionSeleccionada === 'observaciones') {
+            this.action = '/enviarDatos/corregirDatosJefaturaObservaciones';
+        }
+    });
+
+
+    //-------------------------------ARCHIVO CARGA Y DESCARGA------------------------------------------------------------
+
+            
 });

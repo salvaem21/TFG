@@ -12,7 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 @Controller
-@RequestMapping("/documento")
+@RequestMapping("/solicitud")
 public class SubirArchivoController {
 
     @Autowired
@@ -21,7 +21,7 @@ public class SubirArchivoController {
     @GetMapping("/subirArchivo")
     public String subirrArchivo(
             ModelMap m) {
-        m.put("view", "documento/subirArchivo");
+        m.put("view", "solicitud/subirArchivo");
         return "_t/frame";
     }
 
@@ -31,7 +31,7 @@ public class SubirArchivoController {
             archivoService.guardarArchivo(archivo);
             PRG.info("Archivo subido correctamente.","/home/home");
         } catch (IOException e) {
-            PRG.error("Error al subir el archivo.","/documento/subirArchivo");
+            PRG.error("Error al subir el archivo.","/solicitud/subirArchivo");
             
         }
         return "redirect: ../";

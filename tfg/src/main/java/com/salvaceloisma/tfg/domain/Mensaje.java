@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -30,8 +31,17 @@ public class Mensaje {
 
     @Column(columnDefinition = "TEXT")
     private String contenido;
-    
-    public Mensaje(String contenido){
+
+    @Lob
+    private byte[] solicitudInicialPdf;
+
+    @Lob
+    private byte[] solicitudFirmadoEmpresaPdf;
+
+    @Lob
+    private byte[] solicitudFinalizadaPdf;
+
+    public Mensaje(String contenido) {
         this.contenido = contenido;
         this.novedad = true;
     }
