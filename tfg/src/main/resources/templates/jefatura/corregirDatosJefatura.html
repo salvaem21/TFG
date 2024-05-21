@@ -1,83 +1,4 @@
 <div class="container">
-<<<<<<< HEAD
-    <h2 class="text-center mb-4">Formulario de Corrección de Documento</h2>
-    <div class="mb-4 pb-2 border-bottom">
-        <h3 class="text-center">Tutor-Alumnado</h3>
-        <div class="row">
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label for="tutorAlumno">Tutor del Alumno:</label><!--No furula -->
-                    <input type="text" class="form-control" id="tutorAlumno" value="${solicitud.tutorAlumno}" readonly>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label for="cicloFormativoAlumno">Ciclo Formativo del Alumno:</label>
-                    <input type="text" class="form-control" id="cicloFormativoAlumno" th:value="${solicitud.cicloFormativo}" readonly>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Información de la empresa -->
-    <div class="mb-4 pb-2 border-bottom">
-        <h3 class="text-center">Datos de la Empresa</h3>
-        <div class="row">
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label for="numeroConvenio">Número de Convenio:</label>
-                    <input type="text" class="form-control" id="numeroConvenio" th:value="${solicitud.numeroConvenio}" readonly>
-                </div>
-                <div class="form-group">
-                    <label for="nombreEmpresa">Nombre de la Empresa:</label>
-                    <input type="text" class="form-control" id="nombreEmpresa" th:value="${solicitud.empresa}" readonly>
-                </div>
-                <div class="form-group">
-                    <label for="tutorEmpresa">Tutor de la Empresa:</label>
-                    <input type="text" class="form-control" id="tutorEmpresa" th:value="${solicitud.tutorEmpresa}" readonly>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label for="cifEmpresa">CIF de la Empresa:</label>
-                    <input type="text" class="form-control" id="cifEmpresa" th:value="${solicitud.cif}" readonly>
-                </div>
-                <div class="form-group">
-                    <label for="direccionPracticas">Dirección de las Prácticas:</label>
-                    <input type="text" class="form-control" id="direccionPracticas" th:value="${solicitud.direccion}" readonly>
-                </div>
-                <div class="form-group">
-                    <label for="localidadPracticas">Localidad de las Prácticas:</label>
-                    <input type="text" class="form-control" id="localidadPracticas" th:value="${solicitud.localidad}" readonly>
-                </div>
-                <div class="form-group">
-                    <label for="codigoPostalPracticas">Código Postal de las Prácticas:</label>
-                    <input type="text" class="form-control" id="codigoPostalPracticas" th:value="${solicitud.cp}" readonly>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Información del alumno -->
-    <div id="contenedorAlumnos">
-        <div th:each="alumno, stat : ${alumnos}">
-            <div class="mb-4 pb-2 datos-alumno">
-                <h3 class="text-center">Datos del Alumno [[${stat.count}]]</h3>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="apellidosAlumno">Apellidos del Alumno:</label>
-                            <input type="text" class="form-control" id="apellidosAlumno[[${stat.count}]]" name="apellidosAlumno" th:value="${alumno.apellido}" readonly>
-                        </div>
-                        <div class="form-group">
-                            <label for="nombreAlumno">Nombre del Alumno:</label>
-                            <input type="text" class="form-control" id="nombreAlumno[[${stat.count}]]" name="nombreAlumno" th:value="${alumno.nombre}" readonly>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="nifAlumno">NIF del Alumno:</label>
-                            <input type="text" class="form-control" id="nifAlumno[[${stat.count}]]" name="nifAlumno" th:value="${alumno.dni}" readonly>
-=======
     <h2 class="text-center mb-4">Formulario de Creación de Documento</h2>
     <form action="" method="post" id="formularioAlumnos">
         <div class="mb-4 pb-2 border-bottom">
@@ -162,47 +83,11 @@
                                 <label for="nifAlumno">NIF del Alumno:</label>
                                 <input type="text" class="form-control" id="nifAlumno" name="nifAlumno" th:value="${alumno.dni}" required>
                             </div>
->>>>>>> marcel
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-<<<<<<< HEAD
-    </div>
-
-
-    <!-- Botón para agregar más alumnos -->
-    <div class="text-center pb-2 mb-4 border-bottom">
-        <button type="button" class="btn btn-secondary" id="agregarAlumno">Agregar otro alumno</button>
-    </div>
-
-     <!-- Fechas y Horarios -->
-     <div class="mb-4 pb-2">
-        <h3 class="text-center">Fechas y Horarios</h3>
-    
-        <div class="row border-bottom">
-            <div class="col-md-5 border-right">
-                <!-- Campos de fechas y horarios -->
-                <div class="form-group">
-                    <label for="horasTotales">Horas Totales:</label>
-                    <input type="text" class="form-control" id="horasTotales" name="horasTotales" th:value="${solicitud.horasTotales}" readonly>
-                </div>
-                <div class="form-group">
-                    <label for="fechaInicio">Fecha de Inicio:</label>
-                    <input type="date" class="form-control" id="fechaInicio" name="fechaInicio"th:value="${solicitud.fechaInicio}" readonly>
-                </div>
-                <div class="form-group">
-                    <label for="fechaFin">Fecha de Fin:</label>
-                    <input type="date" class="form-control" id="fechaFin" name="fechaFin" th:value="${solicitud.fechaFin}" readonly>
-                </div>
-                <div class="form-group">
-                    <label for="horasDia">Horas por Día:</label>
-                    <input type="text" class="form-control" id="horasDia" name="horasDia" th:value="${solicitud.horasDia}" readonly>
-                </div>
-                <!-- Hacerlo -->
-                <div class="form-group">
-=======
         
 
         <!-- Botón para agregar más alumnos -->
@@ -235,90 +120,11 @@
                         <input type="text" class="form-control" id="horasDia" name="horasDia" th:value="${solicitud.horasDia}" required>
                     </div>
                     <div class="form-group">
->>>>>>> marcel
                         <label for="selectJefatura">Responsable de Jefatura:</label>
                         <select name="rolUsuario" class="form-control text-center ">
                             <option th:each="usuario : ${usuariosJefatura}" th:value="${usuario.id}"
                                 th:text="${usuario.nombre + ' (' + usuario.correo + ')'}"></option>
                         </select>
-<<<<<<< HEAD
-                </div>
-            </div>
-
-            <div class="col-md-7">
-                <!-- Tabla de horarios -->
-                <div class="form-group">
-                    <table class="table table-responsive">
-                        <thead>
-                            <tr>
-                                <th></th>
-                                <th colspan="2">Primer horario</th>
-                                <th colspan="2">Segundo horario</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td></td>
-                                <td>Inicio</td>
-                                <td>Fin</td>
-                                <td>Inicio</td>
-                                <td>Fin</td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td>Lunes</td>
-                                <td><input type="time" class="form-control" name="lunesInicio1" required></td>
-                                <td><input type="time" class="form-control" name="lunesFin1" required></td>
-                                <td><input type="time" class="form-control" name="lunesInicio2" required></td>
-                                <td><input type="time" class="form-control" name="lunesFin2" required></td>
-                            </tr>
-                            <tr>
-                                <td>Martes</td>
-                                <td><input type="time" class="form-control" name="martesInicio1" required></td>
-                                <td><input type="time" class="form-control" name="martesFin1" required></td>
-                                <td><input type="time" class="form-control" name="martesInicio2" required></td>
-                                <td><input type="time" class="form-control" name="martesFin2" required></td>
-                            </tr>
-                            <tr>
-                                <td>Miércoles</td>
-                                <td><input type="time" class="form-control" name="miercolesInicio1" required>
-                                </td>
-                                <td><input type="time" class="form-control" name="miercolesFin1" required></td>
-                                <td><input type="time" class="form-control" name="miercolesInicio2" required>
-                                </td>
-                                <td><input type="time" class="form-control" name="miercolesFin2" required></td>
-                            </tr>
-                            <tr>
-                                <td>Jueves</td>
-                                <td><input type="time" class="form-control" name="juevesInicio1" required></td>
-                                <td><input type="time" class="form-control" name="juevesFin1" required></td>
-                                <td><input type="time" class="form-control" name="juevesInicio2" required></td>
-                                <td><input type="time" class="form-control" name="juevesFin2" required></td>
-                            </tr>
-                            <tr>
-                                <td>Viernes</td>
-                                <td><input type="time" class="form-control" name="viernesInicio1" required></td>
-                                <td><input type="time" class="form-control" name="viernesFin1" required></td>
-                                <td><input type="time" class="form-control" name="viernesInicio2" required></td>
-                                <td><input type="time" class="form-control" name="viernesFin2" required></td>
-                            </tr>
-                            <tr>
-                                <td colspan="5"><button type="button" class="btn btn-outline-propio1 mt-3 w-100 " id="copiarHoras">Copiar horas del lunes</button></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Observaciones -->
-    <div class="mb-4 pb-2">
-        <div class="form-group">
-            <label for="observaciones">Observaciones:</label>
-            <textarea class="form-control" id="observaciones" rows="3" ></textarea>
-        </div>
-    </div>
-=======
                     </div>
                 </div>
                 <div class="col-md-7">
@@ -417,5 +223,4 @@
         <input type="hidden" name="idSolicitud" th:value="${solicitud.idSolicitud}">
         <button type="submit" class="btn btn-outline-propio1 mt-3 w-100 " id="boton">Enviar Datos FCTs</button>
     </form>
->>>>>>> marcel
 </div>
