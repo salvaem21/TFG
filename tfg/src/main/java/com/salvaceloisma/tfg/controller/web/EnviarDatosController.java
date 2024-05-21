@@ -401,6 +401,4 @@ public String solicitudADireccion(HttpServletResponse response,
     return "redirect:/home/home";
 }
 
-        
-
 }
