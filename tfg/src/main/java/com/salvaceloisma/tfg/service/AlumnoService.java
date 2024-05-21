@@ -43,6 +43,7 @@ public class AlumnoService {
     }
     
     public void update(Long idAlumno,String dni,String nombre, String apellido) {
+    public void update(Long idAlumno,String dni,String nombre, String apellido,LocalDate fechaNacimiento) {
         Alumno alumno = alumnoRepository.findById(idAlumno).get();
         alumno.setDni(dni);
         alumno.setNombre(nombre);

@@ -50,8 +50,11 @@ public class EnviarDatosController {
     @Autowired
     private AlumnoService alumnoService;
 
-    @Autowired
-    private SolicitudService solicitudService; 
+        @Autowired
+        private SolicitudService solicitudService;
+
+        @Autowired
+        private AlumnoRepository alumnoRepository;
 
     @GetMapping("/enviarDatosAJefatura")
     public String crearDocumento(ModelMap m) {
@@ -62,30 +65,31 @@ public class EnviarDatosController {
     }
     
 
-    @PostMapping("/enviarDatosAJefatura")
-    public String crearDocumento(HttpServletResponse response, HttpSession session,
-            @RequestParam String numeroConvenio,
-            @RequestParam String tutorAlumno,
-            @RequestParam String nombreEmpresa, @RequestParam String tutorEmpresa,
-            @RequestParam String cifEmpresa, @RequestParam String direccionPracticas,
-            @RequestParam String localidadPracticas, @RequestParam String codigoPostalPracticas,
-            @RequestParam String[] apellidosAlumno, @RequestParam String[] nombreAlumno,
-            @RequestParam String[] nifAlumno, @RequestParam String cicloFormativoAlumno,
-            @RequestParam Integer horasTotales,@RequestParam LocalDate fechaInicio, 
-            @RequestParam LocalDate fechaFin, @RequestParam LocalTime lunesInicio1,
-            @RequestParam LocalTime martesInicio1, @RequestParam LocalTime lunesFin1,
-            @RequestParam LocalTime martesFin1, @RequestParam LocalTime miercolesInicio1,
-            @RequestParam LocalTime juevesInicio1, @RequestParam LocalTime viernesInicio1,
-            @RequestParam LocalTime miercolesFin1, @RequestParam LocalTime juevesFin1,
-            @RequestParam LocalTime viernesFin1, @RequestParam LocalTime lunesInicio2,
-            @RequestParam LocalTime miercolesInicio2,
-            @RequestParam LocalTime martesInicio2, @RequestParam LocalTime juevesInicio2,
-            @RequestParam LocalTime viernesInicio2, @RequestParam LocalTime lunesFin2,
-            @RequestParam LocalTime martesFin2,
-            @RequestParam LocalTime miercolesFin2, @RequestParam LocalTime juevesFin2,
-            @RequestParam LocalTime viernesFin2, @RequestParam Integer horasDia,
-            @RequestParam("rolUsuario") Long usuarioEnvio, ModelMap m)
-            throws DangerException, InfoException {
+        @PostMapping("/enviarDatosAJefatura")
+        public String crearDocumento(HttpServletResponse response, HttpSession session,
+                @RequestParam String numeroConvenio,
+                @RequestParam String tutorAlumno,
+                @RequestParam String nombreEmpresa, @RequestParam String tutorEmpresa,
+                @RequestParam String cifEmpresa, @RequestParam String direccionPracticas,
+                @RequestParam String localidadPracticas, @RequestParam String codigoPostalPracticas,
+                @RequestParam String[] apellidosAlumno, @RequestParam String[] nombreAlumno,
+                @RequestParam String[] nifAlumno,
+                @RequestParam String cicloFormativoAlumno,
+                @RequestParam Integer horasTotales,
+                @RequestParam LocalDate fechaInicio, @RequestParam LocalDate fechaFin, @RequestParam LocalTime lunesInicio1,
+                @RequestParam LocalTime martesInicio1, @RequestParam LocalTime lunesFin1,
+                @RequestParam LocalTime martesFin1, @RequestParam LocalTime miercolesInicio1,
+                @RequestParam LocalTime juevesInicio1, @RequestParam LocalTime viernesInicio1,
+                @RequestParam LocalTime miercolesFin1, @RequestParam LocalTime juevesFin1,
+                @RequestParam LocalTime viernesFin1, @RequestParam LocalTime lunesInicio2,
+                @RequestParam LocalTime miercolesInicio2,
+                @RequestParam LocalTime martesInicio2, @RequestParam LocalTime juevesInicio2,
+                @RequestParam LocalTime viernesInicio2, @RequestParam LocalTime lunesFin2,
+                @RequestParam LocalTime martesFin2,
+                @RequestParam LocalTime miercolesFin2, @RequestParam LocalTime juevesFin2,
+                @RequestParam LocalTime viernesFin2, @RequestParam Integer horasDia,
+                @RequestParam("rolUsuario") Long usuarioEnvio, ModelMap m)
+                throws DangerException, InfoException {
 
         Usuario usuario = (Usuario) session.getAttribute("usuario");
         String nombre = usuario.getNombre();
@@ -144,7 +148,6 @@ public class EnviarDatosController {
                 datos.append("Nombre alumno: ").append(nombreAlumno[i]).append("\n");
                 datos.append("NIF alumno: ").append(nifAlumno[i]).append("\n");
                 datos.append("Ciclo formativo: ").append(cicloFormativoAlumno).append("\n");
-                datos.append("Fecha de nacimiento alumno: ").append("\n");
                 datos.append("\n");
                 try {
                     alumnoService.save(nifAlumno[i], nombreAlumno[i], apellidosAlumno[i], idSolicitud);
@@ -165,25 +168,15 @@ public class EnviarDatosController {
     @GetMapping("/recibirDatosJefatura")
     public String recibirMensajes(Model model, HttpSession session) {
         Usuario usuario = (Usuario) session.getAttribute("usuario");
-        model.addAttribute("nombreUsuario", usuario.getNombre()); // Agregar nombre del usuario al modelo
+        model.addAttribute("nombreUsuario", usuario.getNombre());  // Agregar nombre del usuario al modelo
 
-        // Obtener los mensajes enviados y recibidos por el usuario
         List<Mensaje> mensajes = inicioSesionService.recibirMensajes(usuario);
+        List<Solicitud> solicitudes = solicitudService.findAll();
 
-        // Extraer las solicitudes de los mensajes y agregarlas a una lista
-        List<Solicitud> solicitudes = new ArrayList<>();
-        for (Mensaje mensaje : mensajes) {
-            Solicitud solicitud = mensaje.getSolicitud();
-            if (solicitud != null) {
-                // Cargar los alumnos vinculados a esta solicitud
-                solicitud.setAlumnos(alumnoService.findBySolicitudIdSolicitud(solicitud.getIdSolicitud()));
-                solicitudes.add(solicitud);
-            }
-        }
-
+        model.addAttribute("mensajes", mensajes);
         model.addAttribute("solicitudes", solicitudes);
         model.addAttribute("view", "jefatura/recibirDatosJefatura");
-
+        
         return "_t/frame";
     }
     
