@@ -25,17 +25,17 @@ public class SolicitudService {
     public List<Solicitud> findByIdSolicitudes(String idSolicitud) {
         return solicitudRepository.findByIdSolicitud(idSolicitud);
     }
-    public List<Solicitud> findByNumeroConvenio(Integer numeroConvenio) {
+    public List<Solicitud> findByNumeroConvenio(String numeroConvenio) {
         return solicitudRepository.findByNumeroConvenio(numeroConvenio);
     }
 
-    public Solicitud save(Integer numeroConvenio,String empresa, String cif, String tutorEmpresa, String direccion, String localidad, String cp, String cicloFormativo, Usuario usuario, LocalDate fechaInicio, LocalDate fechaFin, int horasDia, int horasTotales, String horario, String observaciones,EstadoSolicitud estado) {
+    public Solicitud save(String numeroConvenio,String empresa, String cif, String tutorEmpresa, String direccion, String localidad, String cp, String cicloFormativo, Usuario usuario, LocalDate fechaInicio, LocalDate fechaFin, int horasDia, int horasTotales, String horario, String observaciones,EstadoSolicitud estado) {
         Solicitud solicitud = new Solicitud(numeroConvenio, empresa, cif, tutorEmpresa, direccion, localidad, cp, cicloFormativo, usuario, fechaInicio, fechaFin, horasDia, horasTotales, horario, observaciones, estado);
         return solicitudRepository.save(solicitud);
     }
 
         // Método para guardar una nueva solicitud con control de Roll
-        public Solicitud save(Integer numeroConvenio, String empresa, String cif, String tutorEmpresa, String direccion, String localidad, String cp, String cicloFormativo, Usuario usuario, LocalDate fechaInicio, LocalDate fechaFin, int horasDia, int horasTotales, String horario, String observaciones, EstadoSolicitud estado, Usuario usuarioSolicitante) throws Exception {
+        public Solicitud save(String numeroConvenio, String empresa, String cif, String tutorEmpresa, String direccion, String localidad, String cp, String cicloFormativo, Usuario usuario, LocalDate fechaInicio, LocalDate fechaFin, int horasDia, int horasTotales, String horario, String observaciones, EstadoSolicitud estado, Usuario usuarioSolicitante) throws Exception {
             // Verificar si el usuario solicitante tiene el rol de profesor
             if (usuarioSolicitante.getRol() != RolUsuario.PROFESOR) {
                 throw new Exception("Solo los profesores pueden crear solicitudes");
@@ -49,13 +49,13 @@ public class SolicitudService {
     }
     
     
-    public void update(String idSolicitud, Integer numeroConvenio,String empresa, String cif, String tutorEmpresa, String direccion, String localidad, String cp, String cicloFormativo, Usuario usuario, LocalDate fechaInicio, LocalDate fechaFin, int horasDia, int horasTotales, String horario, String observaciones,EstadoSolicitud estado) {
+    public void update(String idSolicitud, String numeroConvenio,String empresa, String cif, String tutorEmpresa, String direccion, String localidad, String cp, String cicloFormativo, Usuario usuario, LocalDate fechaInicio, LocalDate fechaFin, int horasDia, int horasTotales, String horario, String observaciones,EstadoSolicitud estado) {
         // Obtener la solicitud existente por su ID
         Solicitud solicitud = solicitudRepository.findById(idSolicitud).orElse(null);
         if (solicitud != null) {
             // Actualizar los atributos de la solicitud con los valores proporcionados
             solicitud.setNumeroConvenio(numeroConvenio);
-            solicitud.setEmpresa(tutorEmpresa);
+            solicitud.setEmpresa(empresa);
             solicitud.setCif(cif);
             solicitud.setTutorEmpresa(tutorEmpresa);
             solicitud.setDireccion(direccion);
@@ -79,7 +79,7 @@ public class SolicitudService {
     }
 
     // Método para actualizar una solicitud con Roll
-    public void update(String idSolicitud, Integer numeroConvenio, String empresa, String cif, String tutorEmpresa, String direccion, String localidad, String cp, String cicloFormativo, Usuario usuario, LocalDate fechaInicio, LocalDate fechaFin, int horasDia, int horasTotales, String horario, String observaciones, EstadoSolicitud estado, Usuario usuarioModificador) throws Exception {
+    public void update(String idSolicitud, String numeroConvenio, String empresa, String cif, String tutorEmpresa, String direccion, String localidad, String cp, String cicloFormativo, Usuario usuario, LocalDate fechaInicio, LocalDate fechaFin, int horasDia, int horasTotales, String horario, String observaciones, EstadoSolicitud estado, Usuario usuarioModificador) throws Exception {
         // Verificar si el usuario que modifica tiene el rol de profesor
         if (usuarioModificador.getRol() != RolUsuario.PROFESOR) {
             throw new Exception("Solo los profesores pueden modificar solicitudes");
@@ -90,7 +90,7 @@ public class SolicitudService {
                 if (solicitud != null) {
                     // Actualizar los atributos de la solicitud con los valores proporcionados
                     solicitud.setNumeroConvenio(numeroConvenio);
-                    solicitud.setEmpresa(tutorEmpresa);
+                    solicitud.setEmpresa(empresa);
                     solicitud.setCif(cif);
                     solicitud.setTutorEmpresa(tutorEmpresa);
                     solicitud.setDireccion(direccion);
@@ -116,11 +116,14 @@ public class SolicitudService {
     // Método para cambiar el estado de una solicitud
     public void cambiarEstadoSolicitud(String idSolicitud, EstadoSolicitud nuevoEstado, Usuario usuarioCambiadorEstado) throws Exception {
         // Verificar si el usuario que cambia el estado tiene el rol de jefatura o dirección
-        if (usuarioCambiadorEstado.getRol() != RolUsuario.JEFATURA && usuarioCambiadorEstado.getRol() != RolUsuario.DIRECTOR) {
-            throw new Exception("Solo jefatura y dirección pueden cambiar el estado de las solicitudes");
-        }
+        // if (usuarioCambiadorEstado.getRol() != RolUsuario.JEFATURA && usuarioCambiadorEstado.getRol() != RolUsuario.DIRECTOR) {
+        //     throw new Exception("Solo jefatura y dirección pueden cambiar el estado de las solicitudes");
+        // }
 
         // Lógica para cambiar el estado de la solicitud
+        Solicitud solicitud = solicitudRepository.findById(idSolicitud).orElse(null);
+        solicitud.setEstado(nuevoEstado);
+        solicitudRepository.save(solicitud);
     }
 
 

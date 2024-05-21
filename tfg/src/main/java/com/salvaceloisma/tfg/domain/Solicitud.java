@@ -30,7 +30,7 @@ public class Solicitud {
     private String idSolicitud;
 
     @Column(name = "numero_convenio")
-    private Integer numeroConvenio;
+    private String numeroConvenio;
 
     @ManyToOne
     @JoinColumn(name = "id_usuario", referencedColumnName = "id", foreignKey = @ForeignKey(name = "FK_solicitud_usuario"))
@@ -84,7 +84,7 @@ public class Solicitud {
     @Enumerated(EnumType.STRING)
     private EstadoSolicitud estado;
     
-    public Solicitud(Integer numeroConvenio,String empresa, String cif, String tutorEmpresa, String direccion, String localidad, String cp, String cicloFormativo,
+    public Solicitud(String numeroConvenio,String empresa, String cif, String tutorEmpresa, String direccion, String localidad, String cp, String cicloFormativo,
      Usuario usuario, LocalDate fechaInicio, LocalDate fechaFin, int horasDia, int horasTotales, String horario, String observaciones,EstadoSolicitud estado) {
         this.idSolicitud = LocalDateTime.now().toString().replaceAll("[^0-9]", "");
         this.numeroConvenio = numeroConvenio;

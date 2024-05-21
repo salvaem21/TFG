@@ -40,7 +40,7 @@ public class SolicitudController {
 
 @PostMapping("c")
 public String cPost(
-        @RequestParam("numeroConvenio") Integer numeroConvenio,
+        @RequestParam("numeroConvenio") String numeroConvenio,
         @RequestParam("empresa") String empresa,
         @RequestParam("cif") String cif,
         @RequestParam("tutorEmpresa") String tutorEmpresa,
@@ -79,7 +79,7 @@ public String cPost(
     @PostMapping("u")
     public String updatePost(
         @RequestParam("idSolicitud") String idSolicitud,
-        @RequestParam("numeroConvenio") Integer numeroConvenio,
+        @RequestParam("numeroConvenio") String numeroConvenio,
         @RequestParam("empresa") String empresa,
         @RequestParam("cif") String cif,
         @RequestParam("tutorEmpresa") String tutorEmpresa,

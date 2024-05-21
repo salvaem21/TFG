@@ -8,21 +8,21 @@
             <th class="col-2">Nº Solicitud</th>
             <th class="col-1">Empresa</th>
             <th class="col-1">Numero convenio</th>
-            <th class="col-2">Ciclo Formativo</th>
+            <th class="col-1">Ciclo Formativo</th>
             <th class="col-1">Fecha Inicio</th>
             <th class="col-2">Estado</th>
             <th class="col-2">Alumnos</th>
-            <th class="col-1">Gestionar</th>
+            <th class="col-2">Horarios</th>
         </tr>
     </thead>
     <tbody>
         <!-- Bucle de solicitudes -->
         <tr class="row solicitud-row" th:each="solicitud : ${solicitudes}">
             <!-- Fila de la solicitud -->
-            <td class="col-2" th:text="${solicitud.idSolicitud}"></td>
+            <td class="col-2 small" th:text="${solicitud.idSolicitud}"></td>
             <td class="col-1" th:text="${solicitud.empresa}"></td>
             <td class="col-1" th:text="${solicitud.numeroConvenio}"></td>
-            <td class="col-2" th:text="${solicitud.cicloFormativo}"></td>
+            <td class="col-1" th:text="${solicitud.cicloFormativo}"></td>
             <td class="col-1" th:text="${solicitud.fechaInicio}"></td>
             <td class="col-2" th:text="${solicitud.estado}"></td>
             <!-- Columna para los detalles de los alumnos -->
@@ -39,8 +39,12 @@
                     </div>
                 </details>
             </td>
-            <td class="col-1"><a class="btn btn-outline-propio1" th:href="@{/enviarDatos/corregirDatosJefatura(id=${solicitud.idSolicitud})}">Gestionar</a></td>
-        </tr>
+            <td class="col-2 ">
+                <details class="solicitud-details">
+                    <summary><b>Mostrar horarios</b></summary>
+                    <span th:utext="${solicitud.horario}"></span>
+                </details>
+            </td>
         </tr>
     </tbody>
 </table>

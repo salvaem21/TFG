@@ -37,27 +37,15 @@ $(document).ready(function () {
     }
 
     // Validar el DNI cuando se modifica el campo de entrada
-    $("#nifTutorAlumno, #nifAlumno").on('input', function () {
+    $("#nifAlumno").on('input', function () {
         validarDNI($(this));
     });
 
     // Validar el formulario antes de enviarlo
     $("#formularioAlumnos").submit(function (event) {
-        var tutorValido = validarDNI($("#nifTutorAlumno"));
         var alumnoValido = validarDNI($("#nifAlumno"));
 
-        // Si tanto el NIF del Tutor como del Alumno son inválidos
-        if (!tutorValido && !alumnoValido) {
-            alert("El NIF del Tutor y del Alumno introducidos no son válidos.");
-            event.preventDefault(); // Evitar que se envíe el formulario si ambos NIF no son válidos
-            return;
-        }
-        // Si solo el NIF del Tutor es inválido
-        if (!tutorValido) {
-            alert("El NIF del Tutor introducido no es válido.");
-            event.preventDefault(); // Evitar que se envíe el formulario si el NIF del Tutor no es válido
-            return;
-        }
+
         // Si solo el NIF del Alumno es inválido
         if (!alumnoValido) {
             alert("El NIF del Alumno introducido no es válido.");
@@ -85,7 +73,7 @@ $(document).ready(function () {
         // Limpiar los valores de los campos clonados para evitar confusiones
         ultimoAlumno.find("input[type=text], input[type=date]").val("");
         // Aplicar la validación del DNI a los nuevos campos de DNI
-        ultimoAlumno.find("#nifTutorAlumno, #nifAlumno").on('input', function () {
+        ultimoAlumno.find("#nifAlumno").on('input', function () {
             validarDNI($(this));
         });
         // Agregar un botón "Eliminar alumno" solo si no existe ya uno en este conjunto de campos de datos del alumno
@@ -196,4 +184,49 @@ $(document).ready(function () {
         // Opcional: mostrar un mensaje o realizar alguna acción adicional
         alert("Horas del lunes copiadas a todos los días de la semana.");
     });
+
+    const opcionPDF = document.getElementById("opcionPDF");
+    const opcionObservaciones = document.getElementById("opcionObservaciones");
+    const campoPDF = document.getElementById("campoPDF");
+    const campoObservaciones = document.getElementById("campoObservaciones");
+
+    // Función para habilitar el campo PDF y deshabilitar Observaciones
+    function habilitarPDF() {
+        campoPDF.style.display = "block";
+        campoObservaciones.style.display = "none";
+    }
+
+    // Función para habilitar el campo Observaciones y deshabilitar PDF
+    function habilitarObservaciones() {
+        campoPDF.style.display = "none";
+        campoObservaciones.style.display = "block";
+    }
+
+    // Event listener para detectar el cambio en la selección de opción
+    opcionPDF.addEventListener("change", function() {
+        if (opcionPDF.checked) {
+            habilitarPDF();
+        }
+    });
+
+    opcionObservaciones.addEventListener("change", function() {
+        if (opcionObservaciones.checked) {
+            habilitarObservaciones();
+        }
+    });
+    // Selección de uno u otro endpoints
+    document.getElementById('formularioAlumnos').addEventListener('submit', function(event) {
+        var opcionSeleccionada = document.querySelector('input[name="opcion"]:checked').value;
+        if (opcionSeleccionada === 'pdf') {
+            this.action = '/enviarDatos/corregirDatosJefaturaArchivo';
+            this.enctype = 'multipart/form-data'; // Añadir el tipo de codificación para archivos
+        } else if (opcionSeleccionada === 'observaciones') {
+            this.action = '/enviarDatos/corregirDatosJefaturaObservaciones';
+        }
+    });
+
+
+    //-------------------------------ARCHIVO CARGA Y DESCARGA------------------------------------------------------------
+
+            
 });

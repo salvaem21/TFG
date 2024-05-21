@@ -10,6 +10,6 @@ import com.salvaceloisma.tfg.domain.Solicitud;
 @Repository
 public interface SolicitudRepository extends JpaRepository<Solicitud,String> {
     List<Solicitud> findByIdSolicitud(String idSolicitud);
-    List<Solicitud> findByNumeroConvenio(Integer numeroConvenio);
+    List<Solicitud> findByNumeroConvenio(String numeroConvenio);
 }
 
