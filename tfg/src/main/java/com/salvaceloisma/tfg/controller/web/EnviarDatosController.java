@@ -11,9 +11,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+
 import com.salvaceloisma.tfg.domain.Alumno;
 import com.salvaceloisma.tfg.domain.Mensaje;
 import com.salvaceloisma.tfg.domain.Solicitud;
+import com.salvaceloisma.tfg.domain.Usuario;
 import com.salvaceloisma.tfg.domain.Usuario;
 import com.salvaceloisma.tfg.enumerados.EstadoSolicitud;
 import com.salvaceloisma.tfg.enumerados.RolUsuario;
@@ -27,6 +29,8 @@ import com.salvaceloisma.tfg.service.EmailService;
 import com.salvaceloisma.tfg.service.InicioSesionService;
 import com.salvaceloisma.tfg.service.MensajeService;
 import com.salvaceloisma.tfg.service.SolicitudService;
+import com.salvaceloisma.tfg.enumerados.Grados;
+
 
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -34,6 +38,7 @@ import jakarta.servlet.http.HttpSession;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.http.HttpClient.Redirect;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -54,13 +59,13 @@ public class EnviarDatosController {
     private AlumnoService alumnoService;
 
     @Autowired
-    private SolicitudService solicitudService;
+    private SolicitudService solicitudService; 
+
+    @Autowired
+    private MensajeService mensajeService; 
 
     @Autowired
     private ArchivoService archivoService;
-
-    @Autowired
-    private MensajeService mensajeService;
 
     @Autowired
     private ArchivoServiceImpl archivoServiceImpl;
@@ -68,6 +73,7 @@ public class EnviarDatosController {
     @GetMapping("/enviarDatosAJefatura")
     public String crearDocumento(ModelMap m) {
         m.put("usuariosJefatura", inicioSesionService.obtenerUsuariosPorRol(RolUsuario.JEFATURA));
+        m.put("grados", Grados.values()); // Añadir el enum Grados al modelo
         m.put("view", "profesor/enviarDatosAlumnos");
         return "_t/frame";
     }
@@ -106,17 +112,17 @@ public class EnviarDatosController {
         String correo = inicioSesionService.findById(usuarioEnvio).getCorreo();
 
         StringBuilder horarioBuilder = new StringBuilder();
-        horarioBuilder.append("Lunes: ").append(lunesInicio1).append(" - ").append(lunesFin1).append(".\n")
-                .append("Martes: ").append(martesInicio1).append(" - ").append(martesFin1).append(".\n")
-                .append("Miércoles: ").append(miercolesInicio1).append(" - ").append(miercolesFin1).append(".\n")
-                .append("Jueves: ").append(juevesInicio1).append(" - ").append(juevesFin1).append(".\n")
-                .append("Viernes: ").append(viernesInicio1).append(" - ").append(viernesFin1).append(".\n")
+        horarioBuilder.append("Lunes: ").append(lunesInicio1).append(" - ").append(lunesFin1).append("\n")
+                .append("Martes: ").append(martesInicio1).append(" - ").append(martesFin1).append("\n")
+                .append("Miércoles: ").append(miercolesInicio1).append(" - ").append(miercolesFin1).append("\n")
+                .append("Jueves: ").append(juevesInicio1).append(" - ").append(juevesFin1).append("\n")
+                .append("Viernes: ").append(viernesInicio1).append(" - ").append(viernesFin1).append("\n")
                 .append("Segundo horario: \n")
-                .append("Lunes: ").append(lunesInicio2).append(" - ").append(lunesFin2).append(".\n")
-                .append("Martes: ").append(martesInicio2).append(" - ").append(martesFin2).append(".\n")
-                .append("Miércoles: ").append(miercolesInicio2).append(" - ").append(miercolesFin2).append(".\n")
-                .append("Jueves: ").append(juevesInicio2).append(" - ").append(juevesFin2).append(".\n")
-                .append("Viernes: ").append(viernesInicio2).append(" - ").append(viernesFin2).append(".");
+                .append("Lunes: ").append(lunesInicio2).append(" - ").append(lunesFin2).append("\n")
+                .append("Martes: ").append(martesInicio2).append(" - ").append(martesFin2).append("\n")
+                .append("Miércoles: ").append(miercolesInicio2).append(" - ").append(miercolesFin2).append("\n")
+                .append("Jueves: ").append(juevesInicio2).append(" - ").append(juevesFin2).append("\n")
+                .append("Viernes: ").append(viernesInicio2).append(" - ").append(viernesFin2);
         String horario = horarioBuilder.toString();
 
         StringBuilder datos = new StringBuilder();
@@ -140,7 +146,6 @@ public class EnviarDatosController {
         Usuario destinatario = inicioSesionService.findById(usuarioEnvio);
         // Establecer el estado por defecto a PENDIENTE_JEFATURA
         EstadoSolicitud estado = EstadoSolicitud.PENDIENTE_FIRMA_JEFATURA;
-
         String observaciones = "";
 
         try {
@@ -285,7 +290,22 @@ public String recibirMensajes(Model model, HttpSession session) {
         m.put("view", "jefatura/corregirDatosJefatura");
         return "_t/frame";
     }
-
+/* 
+    @GetMapping("/corregirDatosJefatura/{idSolicitud}")
+    public String corregirDatos(@PathVariable("idSolicitud") String idSolicitud, Model model) {
+        Solicitud solicitud = solicitudService.findById(idSolicitud);
+        String horarioSinSegundoHorario = solicitud.getHorario().replace("Segundo horario:", "");
+        if (solicitud == null) {
+        }
+        solicitud.setHorario(horarioSinSegundoHorario); //ELIMINAMOS EL TEXTO PARA QUE NO DE ERROR AL RECORRER.
+        List<Alumno> alumnos = alumnoService.findBySolicitudIdSolicitud(idSolicitud);
+        model.addAttribute("solicitud", solicitud);
+        model.addAttribute("alumnos", alumnos);
+        model.addAttribute("usuariosJefatura", inicioSesionService.obtenerUsuariosPorRol(RolUsuario.JEFATURA));
+        model.addAttribute("view", "jefatura/corregirDatosJefatura");
+        return "_t/frame";
+    }
+     */
 
     // MENSAJE Y NOTIFICACIÓN
     @PostMapping("/corregirDatosJefaturaObservaciones")
