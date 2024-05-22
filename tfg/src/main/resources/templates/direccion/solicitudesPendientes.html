@@ -1,0 +1,29 @@
+<div class="container">
+    <h1>Solicitudes Pendientes</h1>
+    <div class="ml-3 mr-3">
+        <table class="table">
+            <thead class="thead">
+                <tr class="row">
+                    <th class="col-3">Nº Solicitud</th>
+                    <th class="col-2">Empresa</th>
+                    <th class="col-2">Numero convenio</th>
+                    <th class="col-1">Ciclo Formativo</th>
+                    <th class="col-2">Fecha Inicio</th>
+                    <th class="col-2">Gestionar</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Bucle de solicitudes -->
+                <tr class="row solicitud-row" th:each="mensaje : ${mensajes}" th:if="${mensaje.solicitud.estado == estadoPendiente}">
+                    <!-- Fila de la solicitud -->
+                    <td class="col-3" th:text="${mensaje.solicitud.idSolicitud}"></td>
+                    <td class="col-2" th:text="${mensaje.solicitud.empresa}"></td>
+                    <td class="col-2" th:text="${mensaje.solicitud.numeroConvenio}"></td>
+                    <td class="col-1" th:text="${mensaje.solicitud.cicloFormativo}"></td>
+                    <td class="col-2" th:text="${mensaje.solicitud.fechaInicio}"></td>
+                    <td class="col-2"><a class="btn btn-outline-propio1" th:href="@{/enviarDatos/solicitudPendiente(id=${mensaje.solicitud.idSolicitud})}">Gestionar</a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
