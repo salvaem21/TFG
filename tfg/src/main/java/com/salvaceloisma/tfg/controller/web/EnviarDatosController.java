@@ -112,17 +112,17 @@ public class EnviarDatosController {
         String correo = inicioSesionService.findById(usuarioEnvio).getCorreo();
 
         StringBuilder horarioBuilder = new StringBuilder();
-        horarioBuilder.append("Lunes: ").append(lunesInicio1).append(" - ").append(lunesFin1).append("\n")
-                .append("Martes: ").append(martesInicio1).append(" - ").append(martesFin1).append("\n")
-                .append("Miércoles: ").append(miercolesInicio1).append(" - ").append(miercolesFin1).append("\n")
-                .append("Jueves: ").append(juevesInicio1).append(" - ").append(juevesFin1).append("\n")
-                .append("Viernes: ").append(viernesInicio1).append(" - ").append(viernesFin1).append("\n")
+        horarioBuilder.append("Lunes: ").append(lunesInicio1).append(" - ").append(lunesFin1).append(".\n")
+                .append("Martes: ").append(martesInicio1).append(" - ").append(martesFin1).append(".\n")
+                .append("Miércoles: ").append(miercolesInicio1).append(" - ").append(miercolesFin1).append(".\n")
+                .append("Jueves: ").append(juevesInicio1).append(" - ").append(juevesFin1).append(".\n")
+                .append("Viernes: ").append(viernesInicio1).append(" - ").append(viernesFin1).append(".\n")
                 .append("Segundo horario: \n")
-                .append("Lunes: ").append(lunesInicio2).append(" - ").append(lunesFin2).append("\n")
-                .append("Martes: ").append(martesInicio2).append(" - ").append(martesFin2).append("\n")
-                .append("Miércoles: ").append(miercolesInicio2).append(" - ").append(miercolesFin2).append("\n")
-                .append("Jueves: ").append(juevesInicio2).append(" - ").append(juevesFin2).append("\n")
-                .append("Viernes: ").append(viernesInicio2).append(" - ").append(viernesFin2);
+                .append("Lunes: ").append(lunesInicio2).append(" - ").append(lunesFin2).append(".\n")
+                .append("Martes: ").append(martesInicio2).append(" - ").append(martesFin2).append(".\n")
+                .append("Miércoles: ").append(miercolesInicio2).append(" - ").append(miercolesFin2).append(".\n")
+                .append("Jueves: ").append(juevesInicio2).append(" - ").append(juevesFin2).append(".\n")
+                .append("Viernes: ").append(viernesInicio2).append(" - ").append(viernesFin2).append(".");
         String horario = horarioBuilder.toString();
 
         StringBuilder datos = new StringBuilder();
