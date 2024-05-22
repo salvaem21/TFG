@@ -158,9 +158,10 @@ public class EnviarDatosController {
                         direccionPracticas, localidadPracticas, codigoPostalPracticas, cicloFormativoAlumno, usuario,
                         fechaInicio, fechaFin, horasDia, horasTotales, horario, observaciones, estado);
                 idSolicitud = solicitud.getIdSolicitud();
+                String empresa = solicitud.getEmpresa();
 
                 String rutaUsuario = usuario.getRutaCarpeta();
-                String rutaSolicitud = rutaUsuario + "/" + idSolicitud;
+                String rutaSolicitud = rutaUsuario + "/" + empresa + "/" + idSolicitud;
                 File carpetaSolicitud = new File(rutaSolicitud);
                 if (!carpetaSolicitud.exists()) {
                     carpetaSolicitud.mkdirs(); // Crear la carpeta si no existe
@@ -170,10 +171,22 @@ public class EnviarDatosController {
             } else {
                 // Si se está actualizando, obtener la solicitud existente y actualizar sus
                 // datos
-                solicitud = solicitudService.findById(idSolicitud);
                 solicitudService.update(idSolicitud, numeroConvenio, nombreEmpresa, cifEmpresa, tutorEmpresa,
                         direccionPracticas, localidadPracticas, codigoPostalPracticas, cicloFormativoAlumno, usuario,
                         fechaInicio, fechaFin, horasDia, horasTotales, horario, observaciones, estado);
+                
+                        solicitud = solicitudService.findById(idSolicitud);
+                idSolicitud = solicitud.getIdSolicitud();
+                String empresa = solicitud.getEmpresa();
+
+                String rutaUsuario = usuario.getRutaCarpeta();
+                String rutaSolicitud = rutaUsuario + "/" + empresa + "/" + idSolicitud;
+                File carpetaSolicitud = new File(rutaSolicitud);
+                if (!carpetaSolicitud.exists()) {
+                    carpetaSolicitud.mkdirs(); // Crear la carpeta si no existe
+                }
+                solicitud.setRutaSolicitud(rutaSolicitud);
+                solicitudService.save(solicitud);
             }
             // Obtener lista de alumnos actuales de la solicitud
             List<Alumno> alumnosActuales = alumnoService.findBySolicitudIdSolicitud(idSolicitud);
