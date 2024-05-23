@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+
 import com.salvaceloisma.tfg.domain.Alumno;
 import com.salvaceloisma.tfg.domain.Mensaje;
 import com.salvaceloisma.tfg.domain.Solicitud;
@@ -27,6 +28,8 @@ import com.salvaceloisma.tfg.service.EmailService;
 import com.salvaceloisma.tfg.service.InicioSesionService;
 import com.salvaceloisma.tfg.service.MensajeService;
 import com.salvaceloisma.tfg.service.SolicitudService;
+import com.salvaceloisma.tfg.enumerados.Grados;
+
 
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -54,13 +57,13 @@ public class EnviarDatosController {
     private AlumnoService alumnoService;
 
     @Autowired
-    private SolicitudService solicitudService;
+    private SolicitudService solicitudService; 
+
+    @Autowired
+    private MensajeService mensajeService; 
 
     @Autowired
     private ArchivoService archivoService;
-
-    @Autowired
-    private MensajeService mensajeService;
 
     @Autowired
     private ArchivoServiceImpl archivoServiceImpl;
@@ -68,6 +71,7 @@ public class EnviarDatosController {
     @GetMapping("/enviarDatosAJefatura")
     public String crearDocumento(ModelMap m) {
         m.put("usuariosJefatura", inicioSesionService.obtenerUsuariosPorRol(RolUsuario.JEFATURA));
+        m.put("grados", Grados.values()); // Añadir el enum Grados al modelo
         m.put("view", "profesor/enviarDatosAlumnos");
         return "_t/frame";
     }
@@ -140,7 +144,6 @@ public class EnviarDatosController {
         Usuario destinatario = inicioSesionService.findById(usuarioEnvio);
         // Establecer el estado por defecto a PENDIENTE_JEFATURA
         EstadoSolicitud estado = EstadoSolicitud.PENDIENTE_FIRMA_JEFATURA;
-
         String observaciones = "";
 
         try {
@@ -151,9 +154,10 @@ public class EnviarDatosController {
                         direccionPracticas, localidadPracticas, codigoPostalPracticas, cicloFormativoAlumno, usuario,
                         fechaInicio, fechaFin, horasDia, horasTotales, horario, observaciones, estado);
                 idSolicitud = solicitud.getIdSolicitud();
+                String empresa = solicitud.getEmpresa();
 
                 String rutaUsuario = usuario.getRutaCarpeta();
-                String rutaSolicitud = rutaUsuario + "/" + idSolicitud;
+                String rutaSolicitud = rutaUsuario + "/" + empresa + "/" + idSolicitud;
                 File carpetaSolicitud = new File(rutaSolicitud);
                 if (!carpetaSolicitud.exists()) {
                     carpetaSolicitud.mkdirs(); // Crear la carpeta si no existe
@@ -163,10 +167,22 @@ public class EnviarDatosController {
             } else {
                 // Si se está actualizando, obtener la solicitud existente y actualizar sus
                 // datos
-                solicitud = solicitudService.findById(idSolicitud);
                 solicitudService.update(idSolicitud, numeroConvenio, nombreEmpresa, cifEmpresa, tutorEmpresa,
                         direccionPracticas, localidadPracticas, codigoPostalPracticas, cicloFormativoAlumno, usuario,
                         fechaInicio, fechaFin, horasDia, horasTotales, horario, observaciones, estado);
+                
+                        solicitud = solicitudService.findById(idSolicitud);
+                idSolicitud = solicitud.getIdSolicitud();
+                String empresa = solicitud.getEmpresa();
+
+                String rutaUsuario = usuario.getRutaCarpeta();
+                String rutaSolicitud = rutaUsuario + "/" + empresa + "/" + idSolicitud;
+                File carpetaSolicitud = new File(rutaSolicitud);
+                if (!carpetaSolicitud.exists()) {
+                    carpetaSolicitud.mkdirs(); // Crear la carpeta si no existe
+                }
+                solicitud.setRutaSolicitud(rutaSolicitud);
+                solicitudService.save(solicitud);
             }
             // Obtener lista de alumnos actuales de la solicitud
             List<Alumno> alumnosActuales = alumnoService.findBySolicitudIdSolicitud(idSolicitud);
@@ -272,7 +288,22 @@ public String recibirMensajes(Model model, HttpSession session) {
         m.put("view", "jefatura/corregirDatosJefatura");
         return "_t/frame";
     }
-
+/* 
+    @GetMapping("/corregirDatosJefatura/{idSolicitud}")
+    public String corregirDatos(@PathVariable("idSolicitud") String idSolicitud, Model model) {
+        Solicitud solicitud = solicitudService.findById(idSolicitud);
+        String horarioSinSegundoHorario = solicitud.getHorario().replace("Segundo horario:", "");
+        if (solicitud == null) {
+        }
+        solicitud.setHorario(horarioSinSegundoHorario); //ELIMINAMOS EL TEXTO PARA QUE NO DE ERROR AL RECORRER.
+        List<Alumno> alumnos = alumnoService.findBySolicitudIdSolicitud(idSolicitud);
+        model.addAttribute("solicitud", solicitud);
+        model.addAttribute("alumnos", alumnos);
+        model.addAttribute("usuariosJefatura", inicioSesionService.obtenerUsuariosPorRol(RolUsuario.JEFATURA));
+        model.addAttribute("view", "jefatura/corregirDatosJefatura");
+        return "_t/frame";
+    }
+     */
 
     // MENSAJE Y NOTIFICACIÓN
     @PostMapping("/corregirDatosJefaturaObservaciones")
@@ -319,7 +350,7 @@ public String recibirMensajes(Model model, HttpSession session) {
             Solicitud solicitud = solicitudService.findById(idSolicitud);
             String rutaSolicitud = solicitud.getRutaSolicitud();
 
-            String nombreArchivo = "FIRMADO_POR_JEFATURA " + idSolicitud + ".pdf";
+            String nombreArchivo = "APROBADO_POR_JEFATURA " + idSolicitud + ".pdf";
 
             // Guardar el archivo en la ruta especificada
             archivoServiceImpl.guardarArchivo(archivo, rutaSolicitud, nombreArchivo);
@@ -418,8 +449,14 @@ public String recibirMensajes(Model model, HttpSession session) {
         EstadoSolicitud estadoSolicitud = EstadoSolicitud.PENDIENTE_FIRMA_DIRECCION;
 
         try {
-            // AÑADIR ARCHIVO AQUI
-            archivoService.guardarArchivo(archivo);
+                // Obtener la solicitud para recuperar la ruta
+                Solicitud solicitud = solicitudService.findById(idSolicitud);
+                String rutaSolicitud = solicitud.getRutaSolicitud();
+    
+                String nombreArchivo = "FIRMADO_POR_EMPRESA " + idSolicitud + ".pdf";
+    
+                // Guardar el archivo en la ruta especificada
+                archivoServiceImpl.guardarArchivo(archivo, rutaSolicitud, nombreArchivo);
             mensajeService.actualizarNotificacion(idSolicitud, destinatario, remitente);
             solicitudService.cambiarEstadoSolicitud(idSolicitud, estadoSolicitud, remitente);
             emailService.enviarEmail(destinatarioCorreo, remitenteCorreo,
@@ -524,11 +561,47 @@ public String recibirMensajes(Model model, HttpSession session) {
         return "redirect: ../";
     }
 
-    
-    @GetMapping("/descargarSolicitud/{idSolicitud}")
-    public void descargarSolicitud(@PathVariable String idSolicitud, HttpServletResponse response) throws IOException, DangerException {
+    //ESTOS 3 METODOS SON PARA DESCARGAR LOS ARCHIVOS
+    @GetMapping("/descargarSolicitudAprobadaJefatura/{idSolicitud}")
+    public void descargarSolicitudAprobadaJefatura(@PathVariable String idSolicitud, HttpServletResponse response) throws IOException, DangerException {
         Solicitud solicitud = solicitudService.findById(idSolicitud);
-        String rutaArchivo = solicitud.getRutaSolicitud() + "/FIRMADO_POR_JEFATURA " + idSolicitud + ".pdf";
+        String rutaArchivo = solicitud.getRutaSolicitud() + "/APROBADO_POR_JEFATURA " + solicitud.getEstado() + " " + idSolicitud + ".pdf";
+
+        File archivoPDF = new File(rutaArchivo);
+        if (archivoPDF.exists()) {
+            response.setContentType("application/pdf");
+            response.setHeader("Content-Disposition", "attachment; filename=" + archivoPDF.getName());
+            try (FileInputStream fis = new FileInputStream(archivoPDF)) {
+                IOUtils.copy(fis, response.getOutputStream());
+                response.getOutputStream().flush();
+            }
+        } else {
+            PRG.error("El archivo no existe.");
+        }
+    }
+
+    @GetMapping("/descargarSolicitudFirmadaEmpresa/{idSolicitud}")
+    public void descargarSolicitudFirmadaEmpresa(@PathVariable String idSolicitud, HttpServletResponse response) throws IOException, DangerException {
+        Solicitud solicitud = solicitudService.findById(idSolicitud);
+        String rutaArchivo = solicitud.getRutaSolicitud() + "/FIRMADO_POR_EMPRESA " + idSolicitud + ".pdf";
+
+        File archivoPDF = new File(rutaArchivo);
+        if (archivoPDF.exists()) {
+            response.setContentType("application/pdf");
+            response.setHeader("Content-Disposition", "attachment; filename=" + archivoPDF.getName());
+            try (FileInputStream fis = new FileInputStream(archivoPDF)) {
+                IOUtils.copy(fis, response.getOutputStream());
+                response.getOutputStream().flush();
+            }
+        } else {
+            PRG.error("El archivo no existe.");
+        }
+    }
+
+    @GetMapping("/descargarSolicitudFirmadaDireccion/{idSolicitud}")
+    public void descargarSolicitudFirmadaDireccion(@PathVariable String idSolicitud, HttpServletResponse response) throws IOException, DangerException {
+        Solicitud solicitud = solicitudService.findById(idSolicitud);
+        String rutaArchivo = solicitud.getRutaSolicitud() + "/FIRMADO_POR_DIRECCION " + idSolicitud + ".pdf";
 
         File archivoPDF = new File(rutaArchivo);
         if (archivoPDF.exists()) {
