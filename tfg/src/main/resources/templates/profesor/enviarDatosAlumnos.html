@@ -13,9 +13,13 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="cicloFormativoAlumno">Ciclo Formativo del Alumno:</label>
-                        <input type="text" class="form-control" id="cicloFormativoAlumno" name="cicloFormativoAlumno"
-                            required>
-                    </div>
+                        <select id="cicloFormativoAlumno" name="cicloFormativoAlumno" class="form-control" required>
+                            <option value="">Seleccione un grado</option>
+                            <th:block th:each="grado : ${grados}">
+                                <option th:value="${grado}" th:text="${grado}"></option>
+                            </th:block>
+                        </select>
+                    </div>  
                 </div>
             </div>
         </div>

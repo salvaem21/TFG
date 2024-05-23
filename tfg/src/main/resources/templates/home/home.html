@@ -12,7 +12,7 @@
         <a th:if="${session.usuario != null and session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).JEFATURA}" class="btn btn-outline-propio1 mb-2 col-4 mr-2" href="/enviarDatos/listadoAllSolicitudes">Historial de Solicitudes</a>
 
     <!------------------------            DIRECCIÓN                    ------------------------------>
-        <a th:if="${session.usuario != null and session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).DIRECTOR}" class="btn btn-outline-propio1 mb-2 col-4 mr-2" href="/enviarDatos/subirArchivo">Documentos Pendientes De Firmar(profesorado)</a>
+        <a th:if="${session.usuario != null and session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).DIRECTOR}" class="btn btn-outline-propio1 mb-2 col-4 mr-2" href="/enviarDatos/pendientesDireccionLista">Documentos Pendientes De Firmar(profesorado)</a>
         <a th:if="${session.usuario != null and session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).DIRECTOR}" class="btn btn-outline-propio1 mb-2 col-4 mr-2" href="/enviarDatos/listadoAllSolicitudes">Historial de Solicitudes</a>
     </div>
 </div>

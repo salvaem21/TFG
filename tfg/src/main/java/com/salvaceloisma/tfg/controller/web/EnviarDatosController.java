@@ -28,6 +28,8 @@ import com.salvaceloisma.tfg.service.EmailService;
 import com.salvaceloisma.tfg.service.InicioSesionService;
 import com.salvaceloisma.tfg.service.MensajeService;
 import com.salvaceloisma.tfg.service.SolicitudService;
+import com.salvaceloisma.tfg.enumerados.Grados;
+
 
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -45,7 +47,6 @@ import java.util.stream.Collectors;
 @RequestMapping("/enviarDatos")
 @Controller
 public class EnviarDatosController {
-
     @Autowired
     private EmailService emailService;
 
@@ -56,7 +57,10 @@ public class EnviarDatosController {
     private AlumnoService alumnoService;
 
     @Autowired
-    private SolicitudService solicitudService;
+    private SolicitudService solicitudService; 
+
+    @Autowired
+    private MensajeService mensajeService; 
 
     @Autowired
     private ArchivoService archivoService;
@@ -64,16 +68,13 @@ public class EnviarDatosController {
     @Autowired
     private ArchivoServiceImpl archivoServiceImpl;
 
-    @Autowired
-    private MensajeService mensajeService;
-
     @GetMapping("/enviarDatosAJefatura")
     public String crearDocumento(ModelMap m) {
         m.put("usuariosJefatura", inicioSesionService.obtenerUsuariosPorRol(RolUsuario.JEFATURA));
+        m.put("grados", Grados.values()); // Añadir el enum Grados al modelo
         m.put("view", "profesor/enviarDatosAlumnos");
         return "_t/frame";
     }
-
     @PostMapping("/enviarDatosAJefatura")
     public String crearDocumento(HttpServletResponse response, HttpSession session,
             @RequestParam(required = false) String idSolicitud, // Nuevo parámetro para identificar si se está creando o
@@ -143,7 +144,6 @@ public class EnviarDatosController {
         Usuario destinatario = inicioSesionService.findById(usuarioEnvio);
         // Establecer el estado por defecto a PENDIENTE_JEFATURA
         EstadoSolicitud estado = EstadoSolicitud.PENDIENTE_FIRMA_JEFATURA;
-
         String observaciones = "";
 
         try {
@@ -228,54 +228,52 @@ public class EnviarDatosController {
         }
         return "redirect:../";
     }
-
-    // --------------------------------------------------------------------------------------------------------------------------------------------//
-    // LISTADOS TODAS LAS SOLICITUDES JEFATURA
+    //--------------------------------------------------------------------------------------------------------------------------------------------//
+    //    LISTADOS TODAS LAS SOLICITUDES  
     @GetMapping("/listadoAllSolicitudes")
     public String allSolicitudes(ModelMap m) {
         List<Solicitud> allSolicitudes = solicitudService.findAll();
-
+        
         // Procesar el campo de horario de cada solicitud
         for (Solicitud solicitud : allSolicitudes) {
-            String horarioProcesado = solicitud.getHorario().replace("Segundo horario:",
-                    "<br><strong>Segundo horario:</strong><br><br>");
+            String horarioProcesado = solicitud.getHorario().replace("Segundo horario:", "<br><strong>Segundo horario:</strong><br><br>");
             horarioProcesado = horarioProcesado.replace(".", "<br>");
             solicitud.setHorario(horarioProcesado);
-            // Cargar los alumnos vinculados a esta solicitud (LISTA) ya que se utilizara en
-            // la vista
+            // Cargar los alumnos vinculados a esta solicitud (LISTA) ya que se utilizara en la vista
             solicitud.setAlumnos(alumnoService.findBySolicitudIdSolicitud(solicitud.getIdSolicitud()));
         }
-
         m.put("solicitudes", allSolicitudes);
         m.put("view", "solicitud/solicitudesAll");
 
         return "_t/frame";
     }
+//---------------JEFATURA------------------------/////////////////////////////////
 
-    @GetMapping("/recibirDatosJefatura")
-    public String recibirMensajes(Model model, HttpSession session) {
-        Usuario usuario = (Usuario) session.getAttribute("usuario");
-        model.addAttribute("nombreUsuario", usuario.getNombre()); // Agregar nombre del usuario al modelo
+@GetMapping("/recibirDatosJefatura")
+public String recibirMensajes(Model model, HttpSession session) {
+    Usuario usuario = (Usuario) session.getAttribute("usuario");
+    model.addAttribute("nombreUsuario", usuario.getNombre()); // Agregar nombre del usuario al modelo
 
-        // Obtener los mensajes enviados y recibidos por el usuario
-        List<Mensaje> mensajes = mensajeService.recibirMensajes(usuario);
+    // Obtener los mensajes enviados y recibidos por el usuario
+    List<Mensaje> mensajes = mensajeService.recibirMensajes(usuario);
 
-        // Extraer las solicitudes de los mensajes y agregarlas a una lista
-        List<Solicitud> solicitudes = new ArrayList<>();
-        for (Mensaje mensaje : mensajes) {
-            Solicitud solicitud = mensaje.getSolicitud();
-            if (solicitud != null) {
-                // Cargar los alumnos vinculados a esta solicitud
-                solicitud.setAlumnos(alumnoService.findBySolicitudIdSolicitud(solicitud.getIdSolicitud()));
-                solicitudes.add(solicitud);
-            }
+    // Extraer las solicitudes de los mensajes y agregarlas a una lista
+    List<Solicitud> solicitudes = new ArrayList<>();
+    for (Mensaje mensaje : mensajes) {
+        Solicitud solicitud = mensaje.getSolicitud();
+        if (solicitud != null) {
+            // Cargar los alumnos vinculados a esta solicitud
+            solicitud.setAlumnos(alumnoService.findBySolicitudIdSolicitud(solicitud.getIdSolicitud()));
+            solicitudes.add(solicitud);
         }
-
-        model.addAttribute("solicitudes", solicitudes);
-        model.addAttribute("view", "jefatura/recibirDatosJefatura");
-
-        return "_t/frame";
     }
+
+    model.addAttribute("solicitudes", solicitudes);
+    model.addAttribute("view", "jefatura/recibirDatosJefatura");
+
+    return "_t/frame";
+}
+
 
     @GetMapping("/corregirDatosJefatura")
     public String verificarDocumento(
@@ -290,6 +288,22 @@ public class EnviarDatosController {
         m.put("view", "jefatura/corregirDatosJefatura");
         return "_t/frame";
     }
+/* 
+    @GetMapping("/corregirDatosJefatura/{idSolicitud}")
+    public String corregirDatos(@PathVariable("idSolicitud") String idSolicitud, Model model) {
+        Solicitud solicitud = solicitudService.findById(idSolicitud);
+        String horarioSinSegundoHorario = solicitud.getHorario().replace("Segundo horario:", "");
+        if (solicitud == null) {
+        }
+        solicitud.setHorario(horarioSinSegundoHorario); //ELIMINAMOS EL TEXTO PARA QUE NO DE ERROR AL RECORRER.
+        List<Alumno> alumnos = alumnoService.findBySolicitudIdSolicitud(idSolicitud);
+        model.addAttribute("solicitud", solicitud);
+        model.addAttribute("alumnos", alumnos);
+        model.addAttribute("usuariosJefatura", inicioSesionService.obtenerUsuariosPorRol(RolUsuario.JEFATURA));
+        model.addAttribute("view", "jefatura/corregirDatosJefatura");
+        return "_t/frame";
+    }
+     */
 
     // MENSAJE Y NOTIFICACIÓN
     @PostMapping("/corregirDatosJefaturaObservaciones")
@@ -318,27 +332,25 @@ public class EnviarDatosController {
 
         return "redirect: ../";
     }
-
     // ARCHIVO Y NOTIFICACIÓN
     @PostMapping("/corregirDatosJefaturaArchivo")
     public String verificarDocumento(HttpServletResponse response, HttpSession session,
-            @RequestParam("idSolicitud") String idSolicitud,
-            @RequestParam("archivoPDF") MultipartFile archivo) throws Exception {
-
-        Mensaje mensaje = mensajeService.findBySolicitudIdSolicitud(idSolicitud);
-        // Invertimos el correo devuelta
-        Usuario destinatario = mensaje.getRemitente();
-        Usuario remitente = mensaje.getDestinatario();
-        String destinatarioCorreo = destinatario.getCorreo();
-        String remitenteCorreo = destinatario.getCorreo();
-        EstadoSolicitud estadoSolicitud = EstadoSolicitud.APROBADO_JEFATURA_PDF;
-
+    @RequestParam("idSolicitud") String idSolicitud,
+    @RequestParam("archivoPDF") MultipartFile archivo) throws Exception {
+            
+            Mensaje mensaje = mensajeService.findBySolicitudIdSolicitud(idSolicitud);
+            //Invertimos el correo devuelta
+            Usuario destinatario = mensaje.getRemitente();
+            Usuario remitente =  mensaje.getDestinatario(); 
+            String destinatarioCorreo = destinatario.getCorreo();
+            String remitenteCorreo = destinatario.getCorreo();
+            EstadoSolicitud estadoSolicitud= EstadoSolicitud.APROBADO_JEFATURA_PDF;
         try {
             // Obtener la solicitud para recuperar la ruta
             Solicitud solicitud = solicitudService.findById(idSolicitud);
             String rutaSolicitud = solicitud.getRutaSolicitud();
 
-            String nombreArchivo = "FIRMADO_POR_JEFATURA " + idSolicitud + ".pdf";
+            String nombreArchivo = "APROBADO_POR_JEFATURA " + idSolicitud + ".pdf";
 
             // Guardar el archivo en la ruta especificada
             archivoServiceImpl.guardarArchivo(archivo, rutaSolicitud, nombreArchivo);
@@ -350,14 +362,17 @@ public class EnviarDatosController {
             // Enviar el correo
             emailService.enviarEmail(destinatarioCorreo, remitenteCorreo,
                     "Solicitud aceptada. Revisa tu bandeja de entrada.");
-
+                    
             PRG.info("Corrección enviada correctamente.", "/home/home");
         } catch (IOException e) {
-            PRG.error("Error al subir el archivo.", "/jefatura/corregirDatosJefatura");
-        }
-
+            PRG.error("Error al subir el archivo.","/jefatura/corregirDatosJefatura");
+            
+        } 
         return "redirect: ../";
     }
+
+    //----------------PROFESOR---------------------------//////////////////////////////////////////////
+
 
     // RECHAZADOS
     @GetMapping("/correccionSolicitudListado")
@@ -375,34 +390,35 @@ public class EnviarDatosController {
         return "_t/frame";
     }
 
+    
     @GetMapping("/correccionSolicitud")
-    public String modificarDocumento(@RequestParam("id") String idSolicitud, ModelMap m) {
-        Solicitud solicitud = solicitudService.findById(idSolicitud);
-        String horarioSinSegundoHorario = solicitud.getHorario().replace("Segundo horario:", "");
-        solicitud.setHorario(horarioSinSegundoHorario); // ELIMINAMOS EL TEXTO PARA QUE NO DE ERROR AL RECORRER.
-        m.put("solicitud", solicitud);
-        m.put("alumnos", alumnoService.findBySolicitudIdSolicitud(idSolicitud));
-        m.put("usuariosJefatura", inicioSesionService.obtenerUsuariosPorRol(RolUsuario.JEFATURA));
-        m.put("view", "profesor/solicitudCorreccion");
-        return "_t/frame";
+    public String modificarDocumento(@RequestParam("id") String idSolicitud,ModelMap m) {
+    Solicitud solicitud = solicitudService.findById(idSolicitud);
+    String horarioSinSegundoHorario = solicitud.getHorario().replace("Segundo horario:", "");
+    solicitud.setHorario(horarioSinSegundoHorario); //ELIMINAMOS EL TEXTO PARA QUE NO DE ERROR AL RECORRER.
+    m.put("solicitud", solicitud);
+    m.put("alumnos", alumnoService.findBySolicitudIdSolicitud(idSolicitud));
+    m.put("usuariosJefatura", inicioSesionService.obtenerUsuariosPorRol(RolUsuario.JEFATURA));
+    m.put("view", "profesor/solicitudCorreccion");
+    return "_t/frame";
     }
-
-    // APROBADOS
+    
+    //    APROBADOS
     @GetMapping("/solicitudListadoOk")
     public String aprobadosDatosDeJefatura(ModelMap m, HttpSession session) {
         Usuario usuario = (Usuario) session.getAttribute("usuario");
         m.addAttribute("nombreUsuario", usuario.getNombre()); // Agregar nombre del usuario al modelo
-
+        
         // Obtener los mensajes recibidos por el usuario
         EstadoSolicitud estadoAprobado = EstadoSolicitud.APROBADO_JEFATURA_PDF;
         List<Mensaje> mensajes = mensajeService.recibirMensajes(usuario);
         m.put("estadoAprobado", estadoAprobado);
         m.put("mensajes", mensajes);
         m.put("view", "profesor/solicitudesAprobados");
-
+        
         return "_t/frame";
-    }
-
+        }
+    
     // ARCHIVO Y NOTIFICACIÓN PROFESOR JEFATURA
     @PostMapping("/solicitudListadoOk")
     public String solicitudADireccion(HttpServletResponse response,
@@ -433,8 +449,14 @@ public class EnviarDatosController {
         EstadoSolicitud estadoSolicitud = EstadoSolicitud.PENDIENTE_FIRMA_DIRECCION;
 
         try {
-            // AÑADIR ARCHIVO AQUI
-            archivoService.guardarArchivo(archivo);
+                // Obtener la solicitud para recuperar la ruta
+                Solicitud solicitud = solicitudService.findById(idSolicitud);
+                String rutaSolicitud = solicitud.getRutaSolicitud();
+    
+                String nombreArchivo = "FIRMADO_POR_EMPRESA " + idSolicitud + ".pdf";
+    
+                // Guardar el archivo en la ruta especificada
+                archivoServiceImpl.guardarArchivo(archivo, rutaSolicitud, nombreArchivo);
             mensajeService.actualizarNotificacion(idSolicitud, destinatario, remitente);
             solicitudService.cambiarEstadoSolicitud(idSolicitud, estadoSolicitud, remitente);
             emailService.enviarEmail(destinatarioCorreo, remitenteCorreo,
@@ -448,10 +470,102 @@ public class EnviarDatosController {
         return "redirect:/home/home";
     }
 
-    @GetMapping("/descargarSolicitud/{idSolicitud}")
-    public void descargarSolicitud(@PathVariable String idSolicitud, HttpServletResponse response) throws IOException, DangerException {
+
+
+//---------------------------DIRECCION          /////////////////
+
+    //   LISTADO PARA DIRECCIÓN
+    @GetMapping("/pendientesDireccionLista")
+    public String pendienteDeAprobarDireccion(ModelMap m, HttpSession session) 
+    {
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+        m.addAttribute("nombreUsuario", usuario.getNombre()); // Agregar nombre del usuario al modelo
+
+        // Obtener los mensajes recibidos por el usuario
+        EstadoSolicitud estadoPendienteDireccion = EstadoSolicitud.PENDIENTE_FIRMA_DIRECCION;
+        List<Mensaje> mensajes = mensajeService.recibirMensajes(usuario);
+        m.put("estadoPendiente", estadoPendienteDireccion);
+        m.put("mensajes", mensajes);
+        m.put("view", "direccion/solicitudesPendientes");
+
+        return "_t/frame";
+    }
+    //  SOLICITUD UNA A UNA
+    @GetMapping("/solicitudPendiente")
+    public String solicitudTratadoDireccion(ModelMap m, @RequestParam("id") String idSolicitud)      
+    {
         Solicitud solicitud = solicitudService.findById(idSolicitud);
-        String rutaArchivo = solicitud.getRutaSolicitud() + "/FIRMADO_POR_JEFATURA " + idSolicitud + ".pdf";
+        m.put("solicitud", solicitud);
+        m.put("view", "direccion/solicitudPendiente");
+
+        return "_t/frame";
+    }
+
+  // ARCHIVO Y NOTIFICACIÓN  DIRECCIÓN PROFESOR
+    @PostMapping("/solicitudAceptadaDireccion")
+    public String solicitudFinalizacion(HttpServletResponse response, 
+        HttpSession session,
+        @RequestParam("idSolicitud") String idSolicitud,
+        @RequestParam("archivo") MultipartFile archivo) throws Exception {
+
+        // Verificar si el archivo está vacío
+        if (archivo.isEmpty()) {
+            PRG.error("Por favor, seleccione un archivo antes de enviar.", "/direccion/solicitudesPendientes");
+            return "redirect:/direccion/solicitudesPendientes";
+        }
+
+    Mensaje mensaje = mensajeService.findBySolicitudIdSolicitud(idSolicitud);
+    Usuario destinatario = mensaje.getRemitente();
+    Usuario remitente = mensaje.getDestinatario();
+    String destinatarioCorreo = destinatario.getCorreo();
+    String remitenteCorreo    = remitente.getCorreo();
+    EstadoSolicitud estadoSolicitud = EstadoSolicitud.SOLICITUD_FINALIZADA;
+
+    try {
+        // AÑADIR ARCHIVO AQUI
+        archivoService.guardarArchivo(archivo);
+        mensajeService.actualizarNotificacion(idSolicitud, destinatario, remitente);
+        solicitudService.cambiarEstadoSolicitud(idSolicitud, estadoSolicitud, remitente);
+        emailService.enviarEmail(destinatarioCorreo, remitenteCorreo, "Solicitud pendiente. Revisa tu bandeja de entrada.");
+
+        PRG.info("Correción enviada correctamente.", "/home/home");
+    } catch (IOException e) {
+        PRG.error("Error al subir el archivo.", "/direccion/solicitudesPendientes");
+    }
+
+    return "redirect:/home/home";
+}
+    // MENSAJE Y NOTIFICACIÓN
+    @PostMapping("/corregirDatosDireccionObservaciones")
+    public String enviarObservacionACorregir(HttpServletResponse response, HttpSession session,
+    @RequestParam("idSolicitud") String idSolicitud,
+    @RequestParam("observaciones") String observaciones) throws Exception {
+
+            Mensaje mensaje = mensajeService.findBySolicitudIdSolicitud(idSolicitud);
+            //Invertimos el correo devuelta
+            Usuario destinatario = mensaje.getRemitente();
+            Usuario remitente =  mensaje.getDestinatario(); 
+            String destinatarioCorreo = destinatario.getCorreo();
+            String remitenteCorreo = destinatario.getCorreo();
+            EstadoSolicitud estadoSolicitud= EstadoSolicitud.RECHAZADO_DIRECCION;
+
+        try {
+            mensajeService.actualizarMensaje(idSolicitud,destinatario, remitente, observaciones);
+            solicitudService.cambiarEstadoSolicitud(idSolicitud, estadoSolicitud, remitente);
+            emailService.enviarEmail(destinatarioCorreo, remitenteCorreo,"Datos pendientes de ser revisados.");
+
+            PRG.info("Correción enviada correctamente.","/home/home");
+        } catch (IOException e) {
+            PRG.error("Error al subir el archivo.","/direccion/solicitudesPendientes");
+        }
+        return "redirect: ../";
+    }
+
+    //ESTOS 3 METODOS SON PARA DESCARGAR LOS ARCHIVOS
+    @GetMapping("/descargarSolicitudAprobadaJefatura/{idSolicitud}")
+    public void descargarSolicitudAprobadaJefatura(@PathVariable String idSolicitud, HttpServletResponse response) throws IOException, DangerException {
+        Solicitud solicitud = solicitudService.findById(idSolicitud);
+        String rutaArchivo = solicitud.getRutaSolicitud() + "/APROBADO_POR_JEFATURA " + solicitud.getEstado() + " " + idSolicitud + ".pdf";
 
         File archivoPDF = new File(rutaArchivo);
         if (archivoPDF.exists()) {
@@ -466,4 +580,39 @@ public class EnviarDatosController {
         }
     }
 
+    @GetMapping("/descargarSolicitudFirmadaEmpresa/{idSolicitud}")
+    public void descargarSolicitudFirmadaEmpresa(@PathVariable String idSolicitud, HttpServletResponse response) throws IOException, DangerException {
+        Solicitud solicitud = solicitudService.findById(idSolicitud);
+        String rutaArchivo = solicitud.getRutaSolicitud() + "/FIRMADO_POR_EMPRESA " + idSolicitud + ".pdf";
+
+        File archivoPDF = new File(rutaArchivo);
+        if (archivoPDF.exists()) {
+            response.setContentType("application/pdf");
+            response.setHeader("Content-Disposition", "attachment; filename=" + archivoPDF.getName());
+            try (FileInputStream fis = new FileInputStream(archivoPDF)) {
+                IOUtils.copy(fis, response.getOutputStream());
+                response.getOutputStream().flush();
+            }
+        } else {
+            PRG.error("El archivo no existe.");
+        }
+    }
+
+    @GetMapping("/descargarSolicitudFirmadaDireccion/{idSolicitud}")
+    public void descargarSolicitudFirmadaDireccion(@PathVariable String idSolicitud, HttpServletResponse response) throws IOException, DangerException {
+        Solicitud solicitud = solicitudService.findById(idSolicitud);
+        String rutaArchivo = solicitud.getRutaSolicitud() + "/FIRMADO_POR_DIRECCION " + idSolicitud + ".pdf";
+
+        File archivoPDF = new File(rutaArchivo);
+        if (archivoPDF.exists()) {
+            response.setContentType("application/pdf");
+            response.setHeader("Content-Disposition", "attachment; filename=" + archivoPDF.getName());
+            try (FileInputStream fis = new FileInputStream(archivoPDF)) {
+                IOUtils.copy(fis, response.getOutputStream());
+                response.getOutputStream().flush();
+            }
+        } else {
+            PRG.error("El archivo no existe.");
+        }
+    }
 }
