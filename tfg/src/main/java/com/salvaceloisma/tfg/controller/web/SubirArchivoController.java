@@ -29,7 +29,7 @@ public class SubirArchivoController {
     public String  subirArchivo(@RequestParam("archivo") MultipartFile archivo) throws InfoException, DangerException {
         try {
             archivoService.guardarArchivo(archivo);
-            PRG.info("Archivo subido correctamente.","/home/home");
+            PRG.info("Archivo subido correctamente.");
         } catch (IOException e) {
             PRG.error("Error al subir el archivo.","/solicitud/subirArchivo");
             
