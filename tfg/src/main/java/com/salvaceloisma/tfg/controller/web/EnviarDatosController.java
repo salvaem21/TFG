@@ -506,29 +506,40 @@ public String recibirMensajes(Model model, HttpSession session) {
     public String solicitudFinalizacion(HttpServletResponse response, 
         HttpSession session,
         @RequestParam("idSolicitud") String idSolicitud,
-        @RequestParam("archivo") MultipartFile archivo) throws Exception {
+        @RequestParam("archivoPDF") MultipartFile archivo) throws Exception {
 
-        // Verificar si el archivo está vacío
-        if (archivo.isEmpty()) {
-            PRG.error("Por favor, seleccione un archivo antes de enviar.", "/direccion/solicitudesPendientes");
-            return "redirect:/direccion/solicitudesPendientes";
-        }
+        // // Verificar si el archivo está vacío
+        // if (archivo.isEmpty()) {
+        //     PRG.error("Por favor, seleccione un archivo antes de enviar.", "/direccion/solicitudesPendientes");
+        //     return "redirect:/direccion/solicitudesPendientes";
+        // }
 
-    Mensaje mensaje = mensajeService.findBySolicitudIdSolicitud(idSolicitud);
-    Usuario destinatario = mensaje.getRemitente();
-    Usuario remitente = mensaje.getDestinatario();
-    String destinatarioCorreo = destinatario.getCorreo();
-    String remitenteCorreo    = remitente.getCorreo();
-    EstadoSolicitud estadoSolicitud = EstadoSolicitud.SOLICITUD_FINALIZADA;
+        Mensaje mensaje = mensajeService.findBySolicitudIdSolicitud(idSolicitud);
+        Usuario destinatario = mensaje.getRemitente();
+        Usuario remitente = mensaje.getDestinatario();
+        String destinatarioCorreo = destinatario.getCorreo();
+        String remitenteCorreo    = remitente.getCorreo();
+        EstadoSolicitud estadoSolicitud = EstadoSolicitud.SOLICITUD_FINALIZADA;
 
     try {
-        // AÑADIR ARCHIVO AQUI
-        archivoService.guardarArchivo(archivo);
-        mensajeService.actualizarNotificacion(idSolicitud, destinatario, remitente);
-        solicitudService.cambiarEstadoSolicitud(idSolicitud, estadoSolicitud, remitente);
-        emailService.enviarEmail(destinatarioCorreo, remitenteCorreo, "Solicitud pendiente. Revisa tu bandeja de entrada.");
+            // Obtener la solicitud para recuperar la ruta
+            Solicitud solicitud = solicitudService.findById(idSolicitud);
+            String rutaSolicitud = solicitud.getRutaSolicitud();
 
-        PRG.info("Correción enviada correctamente.");
+            String nombreArchivo = "SOLICITUD_FINALIZADA " + idSolicitud + ".pdf";
+
+            // Guardar el archivo en la ruta especificada
+            archivoServiceImpl.guardarArchivo(archivo, rutaSolicitud, nombreArchivo);
+
+            // Actualizar la notificación y el estado de la solicitud
+            mensajeService.actualizarNotificacion(idSolicitud, destinatario, remitente);
+            solicitudService.cambiarEstadoSolicitud(idSolicitud, estadoSolicitud, remitente);
+
+            // Enviar el correo
+            emailService.enviarEmail(destinatarioCorreo, remitenteCorreo,
+                    "Solicitud aceptada. Revisa tu bandeja de entrada.");
+                    
+            PRG.info("Corrección enviada correctamente.");
     } catch (IOException e) {
         PRG.error("Error al subir el archivo.", "/direccion/solicitudesPendientes");
     }
