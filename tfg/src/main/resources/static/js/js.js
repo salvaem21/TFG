@@ -570,7 +570,7 @@ $(document).ready(function () {
             this.action = '/enviarDatos/solicitudAceptadaDireccion';
             this.enctype = 'multipart/form-data'; 
         } else if (opcionSeleccionada === 'observaciones') {
-            this.action = '/enviarDatos/corregirDatosJefaturaObservaciones';
+            this.action = '/enviarDatos/corregirDatosDireccionObservaciones';
         }
     });
 
