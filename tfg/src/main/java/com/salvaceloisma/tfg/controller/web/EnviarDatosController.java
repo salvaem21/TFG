@@ -324,7 +324,7 @@ public String recibirMensajes(Model model, HttpSession session) {
             solicitudService.cambiarEstadoSolicitud(idSolicitud, estadoSolicitud, remitente);
             emailService.enviarEmail(destinatarioCorreo, remitenteCorreo, "Datos pendientes de ser revisados.");
 
-            PRG.info("Correción enviada correctamente.", "/home/home");
+            PRG.info("Correción enviada correctamente.");
         } catch (IOException e) {
             PRG.error("Error al subir el archivo.", "/jefatura/corregirDatosJefatura");
 
@@ -363,7 +363,7 @@ public String recibirMensajes(Model model, HttpSession session) {
             emailService.enviarEmail(destinatarioCorreo, remitenteCorreo,
                     "Solicitud aceptada. Revisa tu bandeja de entrada.");
                     
-            PRG.info("Corrección enviada correctamente.", "/home/home");
+            PRG.info("Corrección enviada correctamente.");
         } catch (IOException e) {
             PRG.error("Error al subir el archivo.","/jefatura/corregirDatosJefatura");
             
@@ -462,12 +462,12 @@ public String recibirMensajes(Model model, HttpSession session) {
             emailService.enviarEmail(destinatarioCorreo, remitenteCorreo,
                     "Solicitud pendiente. Revisa tu bandeja de entrada.");
 
-            PRG.info("Correción enviada correctamente.", "/home/home");
+            PRG.info("Correción enviada correctamente.");
         } catch (IOException e) {
             PRG.error("Error al subir el archivo.", "/profesor/solicitudesAprobados");
         }
 
-        return "redirect:/home/home";
+        return "redirect: ../";
     }
 
 
@@ -528,12 +528,12 @@ public String recibirMensajes(Model model, HttpSession session) {
         solicitudService.cambiarEstadoSolicitud(idSolicitud, estadoSolicitud, remitente);
         emailService.enviarEmail(destinatarioCorreo, remitenteCorreo, "Solicitud pendiente. Revisa tu bandeja de entrada.");
 
-        PRG.info("Correción enviada correctamente.", "/home/home");
+        PRG.info("Correción enviada correctamente.");
     } catch (IOException e) {
         PRG.error("Error al subir el archivo.", "/direccion/solicitudesPendientes");
     }
 
-    return "redirect:/home/home";
+    return "redirect: ../";
 }
     // MENSAJE Y NOTIFICACIÓN
     @PostMapping("/corregirDatosDireccionObservaciones")
@@ -554,7 +554,7 @@ public String recibirMensajes(Model model, HttpSession session) {
             solicitudService.cambiarEstadoSolicitud(idSolicitud, estadoSolicitud, remitente);
             emailService.enviarEmail(destinatarioCorreo, remitenteCorreo,"Datos pendientes de ser revisados.");
 
-            PRG.info("Correción enviada correctamente.","/home/home");
+            PRG.info("Correción enviada correctamente.");
         } catch (IOException e) {
             PRG.error("Error al subir el archivo.","/direccion/solicitudesPendientes");
         }
@@ -565,7 +565,7 @@ public String recibirMensajes(Model model, HttpSession session) {
     @GetMapping("/descargarSolicitudAprobadaJefatura/{idSolicitud}")
     public void descargarSolicitudAprobadaJefatura(@PathVariable String idSolicitud, HttpServletResponse response) throws IOException, DangerException {
         Solicitud solicitud = solicitudService.findById(idSolicitud);
-        String rutaArchivo = solicitud.getRutaSolicitud() + "/APROBADO_POR_JEFATURA " + solicitud.getEstado() + " " + idSolicitud + ".pdf";
+        String rutaArchivo = solicitud.getRutaSolicitud() + "/APROBADO_POR_JEFATURA " + idSolicitud + ".pdf";
 
         File archivoPDF = new File(rutaArchivo);
         if (archivoPDF.exists()) {

@@ -122,4 +122,8 @@ public class InicioSesionService {
         }
         mensajeRepository.saveAll(mensajes); // Guardar los cambios en la base de datos
     }
+
+    public long count() {
+        return inicioSesionRepository.count();
+    }
 }
