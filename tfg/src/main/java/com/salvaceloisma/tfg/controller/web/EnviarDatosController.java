@@ -16,7 +16,6 @@ import com.salvaceloisma.tfg.domain.Alumno;
 import com.salvaceloisma.tfg.domain.Mensaje;
 import com.salvaceloisma.tfg.domain.Solicitud;
 import com.salvaceloisma.tfg.domain.Usuario;
-import com.salvaceloisma.tfg.domain.Usuario;
 import com.salvaceloisma.tfg.enumerados.EstadoSolicitud;
 import com.salvaceloisma.tfg.enumerados.RolUsuario;
 import com.salvaceloisma.tfg.exception.DangerException;
@@ -38,7 +37,6 @@ import jakarta.servlet.http.HttpSession;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.net.http.HttpClient.Redirect;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -352,7 +350,7 @@ public String recibirMensajes(Model model, HttpSession session) {
             Solicitud solicitud = solicitudService.findById(idSolicitud);
             String rutaSolicitud = solicitud.getRutaSolicitud();
 
-            String nombreArchivo = "FIRMADO_POR_JEFATURA " + idSolicitud + ".pdf";
+            String nombreArchivo = "APROBADO_POR_JEFATURA " + idSolicitud + ".pdf";
 
             // Guardar el archivo en la ruta especificada
             archivoServiceImpl.guardarArchivo(archivo, rutaSolicitud, nombreArchivo);
@@ -451,8 +449,14 @@ public String recibirMensajes(Model model, HttpSession session) {
         EstadoSolicitud estadoSolicitud = EstadoSolicitud.PENDIENTE_FIRMA_DIRECCION;
 
         try {
-            // AÑADIR ARCHIVO AQUI
-            archivoService.guardarArchivo(archivo);
+                // Obtener la solicitud para recuperar la ruta
+                Solicitud solicitud = solicitudService.findById(idSolicitud);
+                String rutaSolicitud = solicitud.getRutaSolicitud();
+    
+                String nombreArchivo = "FIRMADO_POR_EMPRESA " + idSolicitud + ".pdf";
+    
+                // Guardar el archivo en la ruta especificada
+                archivoServiceImpl.guardarArchivo(archivo, rutaSolicitud, nombreArchivo);
             mensajeService.actualizarNotificacion(idSolicitud, destinatario, remitente);
             solicitudService.cambiarEstadoSolicitud(idSolicitud, estadoSolicitud, remitente);
             emailService.enviarEmail(destinatarioCorreo, remitenteCorreo,
@@ -557,11 +561,47 @@ public String recibirMensajes(Model model, HttpSession session) {
         return "redirect: ../";
     }
 
-    
-    @GetMapping("/descargarSolicitud/{idSolicitud}")
-    public void descargarSolicitud(@PathVariable String idSolicitud, HttpServletResponse response) throws IOException, DangerException {
+    //ESTOS 3 METODOS SON PARA DESCARGAR LOS ARCHIVOS
+    @GetMapping("/descargarSolicitudAprobadaJefatura/{idSolicitud}")
+    public void descargarSolicitudAprobadaJefatura(@PathVariable String idSolicitud, HttpServletResponse response) throws IOException, DangerException {
         Solicitud solicitud = solicitudService.findById(idSolicitud);
-        String rutaArchivo = solicitud.getRutaSolicitud() + "/FIRMADO_POR_JEFATURA " + idSolicitud + ".pdf";
+        String rutaArchivo = solicitud.getRutaSolicitud() + "/APROBADO_POR_JEFATURA " + solicitud.getEstado() + " " + idSolicitud + ".pdf";
+
+        File archivoPDF = new File(rutaArchivo);
+        if (archivoPDF.exists()) {
+            response.setContentType("application/pdf");
+            response.setHeader("Content-Disposition", "attachment; filename=" + archivoPDF.getName());
+            try (FileInputStream fis = new FileInputStream(archivoPDF)) {
+                IOUtils.copy(fis, response.getOutputStream());
+                response.getOutputStream().flush();
+            }
+        } else {
+            PRG.error("El archivo no existe.");
+        }
+    }
+
+    @GetMapping("/descargarSolicitudFirmadaEmpresa/{idSolicitud}")
+    public void descargarSolicitudFirmadaEmpresa(@PathVariable String idSolicitud, HttpServletResponse response) throws IOException, DangerException {
+        Solicitud solicitud = solicitudService.findById(idSolicitud);
+        String rutaArchivo = solicitud.getRutaSolicitud() + "/FIRMADO_POR_EMPRESA " + idSolicitud + ".pdf";
+
+        File archivoPDF = new File(rutaArchivo);
+        if (archivoPDF.exists()) {
+            response.setContentType("application/pdf");
+            response.setHeader("Content-Disposition", "attachment; filename=" + archivoPDF.getName());
+            try (FileInputStream fis = new FileInputStream(archivoPDF)) {
+                IOUtils.copy(fis, response.getOutputStream());
+                response.getOutputStream().flush();
+            }
+        } else {
+            PRG.error("El archivo no existe.");
+        }
+    }
+
+    @GetMapping("/descargarSolicitudFirmadaDireccion/{idSolicitud}")
+    public void descargarSolicitudFirmadaDireccion(@PathVariable String idSolicitud, HttpServletResponse response) throws IOException, DangerException {
+        Solicitud solicitud = solicitudService.findById(idSolicitud);
+        String rutaArchivo = solicitud.getRutaSolicitud() + "/FIRMADO_POR_DIRECCION " + idSolicitud + ".pdf";
 
         File archivoPDF = new File(rutaArchivo);
         if (archivoPDF.exists()) {
