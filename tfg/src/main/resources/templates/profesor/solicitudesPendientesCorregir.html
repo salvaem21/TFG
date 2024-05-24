@@ -7,11 +7,11 @@
             <tr class="row">
                 <th class="col-2">Nº Solicitud</th>
                 <th class="col-1">Empresa</th>
-                <th class="col-1">Numero convenio</th>
+                <th class="col-2">Numero convenio</th>
                 <th class="col-1">Ciclo Formativo</th>
                 <th class="col-1">Fecha Inicio</th>
                 <th class="col-2">Estado</th>
-                <th class="col-3">Observaciones</th>
+                <th class="col-2">Observaciones</th>
                 <th class="col-1">Gestionar</th>
             </tr>
         </thead>
@@ -21,12 +21,12 @@
                 <!-- Fila de la solicitud -->
                 <td class="col-2" th:text="${mensaje.solicitud.idSolicitud}"></td>
                 <td class="col-1" th:text="${mensaje.solicitud.empresa}"></td>
-                <td class="col-1" th:text="${mensaje.solicitud.numeroConvenio}"></td>
+                <td class="col-2" th:text="${mensaje.solicitud.numeroConvenio}"></td>
                 <td class="col-1" th:text="${mensaje.solicitud.cicloFormativo}"></td>
                 <td class="col-1" th:text="${mensaje.solicitud.fechaInicio}"></td>
                 <td class="col-2" th:text="${mensaje.solicitud.estado}"></td>
                 <!-- Columna para las observaciones -->
-                <td class="col-3" th:text="${mensaje.contenido}"></td>
+                <td class="col-2" th:text="${mensaje.contenido}"></td>
                 <td class="col-1"><a class="btn btn-outline-propio1" th:href="@{/enviarDatos/correccionSolicitud(id=${mensaje.solicitud.idSolicitud})}">Gestionar</a></td>
             </tr>
             </tr>

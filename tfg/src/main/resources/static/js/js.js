@@ -57,7 +57,7 @@ $(document).ready(function () {
     }
 
     // Evento para validar el nombre cuando se modifica el campo de entrada
-    $("#tutorAlumno").on('blur', function () {
+    $("#tutorAlumno").on('input', function () {
         validarNombreTutor($(this));
     });
 
@@ -76,7 +76,7 @@ $(document).ready(function () {
     }
 
     // Evento para validar el ciclo formativo cuando se cambia la selección del campo desplegable
-    $("#cicloFormativoAlumno").on('change', function () {
+    $("#cicloFormativoAlumno").on('input', function () {
         validarCicloFormativo($(this));
     });
 
@@ -96,7 +96,7 @@ $(document).ready(function () {
     }
 
     // Evento para validar el número de convenio cuando se modifica el campo de entrada
-    $("#numeroConvenio").on('blur', function () {
+    $("#numeroConvenio").on('input', function () {
         validarNumeroConvenio($(this));
     });
 
@@ -116,7 +116,7 @@ $(document).ready(function () {
     }
 
     // Evento para validar el nombre de la empresa cuando se modifica el campo de entrada
-    $("#nombreEmpresa").on('blur', function () {
+    $("#nombreEmpresa").on('input', function () {
         validarNombreEmpresa($(this));
     });
 
@@ -136,7 +136,7 @@ $(document).ready(function () {
     }
 
     // Evento para validar el nombre cuando se modifica el campo de entrada
-    $("#tutorEmpresa").on('blur', function () {
+    $("#tutorEmpresa").on('input', function () {
         validarTutorEmpresa($(this));
     });
 
@@ -156,7 +156,7 @@ $(document).ready(function () {
     }
 
     // Evento para validar el CIF de la empresa cuando se modifica el campo de entrada
-    $("#cifEmpresa").on('blur', function () {
+    $("#cifEmpresa").on('input', function () {
         validarCIFEmpresa($(this));
     });
 
@@ -171,7 +171,7 @@ $(document).ready(function () {
         return true;
     }
 
-    $("#direccionPracticas").on('blur', function () {
+    $("#direccionPracticas").on('input', function () {
         validarDireccionPracticas($(this));
     });
 
@@ -187,7 +187,7 @@ $(document).ready(function () {
         return true;
     }
 
-    $("#localidadPracticas").on('blur', function () {
+    $("#localidadPracticas").on('input', function () {
         validarLocalidadPracticas($(this));
     });
 
@@ -203,7 +203,7 @@ $(document).ready(function () {
         return true;
     }
 
-    $("#codigoPostalPracticas").on('blur', function () {
+    $("#codigoPostalPracticas").on('input', function () {
         validarCodigoPostalPracticas($(this));
     });
 
@@ -220,12 +220,12 @@ $(document).ready(function () {
     }
 
     // Evento para validar el nombre y apellidos cuando se modifica el campo de entrada
-    $("#apellidosAlumno, #nombreAlumno").on('blur', function () {
+    $("#apellidosAlumno, #nombreAlumno").on('input', function () {
         validarNombreApellidos($(this));
     });
 
     // Asegurarse de aplicar la validación a campos dinámicos
-    $(document).on('blur', '.datos-alumno #apellidosAlumno, .datos-alumno #nombreAlumno', function () {
+    $(document).on('input', '.datos-alumno #apellidosAlumno, .datos-alumno #nombreAlumno', function () {
         validarNombreApellidos($(this));
     });
 
@@ -246,14 +246,6 @@ $(document).ready(function () {
     });
 
     function validarFechaInicio(fechaInicioInput) {
-        var fechaInicio = new Date(fechaInicioInput.val());
-        var hoy = new Date();
-        hoy.setHours(0, 0, 0, 0); // Asegura comparar solo la fecha sin tiempo
-
-        if (fechaInicio <= hoy) {
-            fechaInicioInput.css('border-color', 'red');
-            return false;
-        }
         fechaInicioInput.css('border-color', '');
         return true;
     }
