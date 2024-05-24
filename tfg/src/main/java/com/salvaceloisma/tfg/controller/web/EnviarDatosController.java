@@ -450,7 +450,7 @@ public class EnviarDatosController {
             }
             m.put("estadoFinalizado", estadoFinalizado);
             m.put("solicitudes", allSolicitudes);
-            m.put("view", "profesor/solicitudesAprobados");
+            m.put("view", "profesor/solicitudesFinalizadas");
     
             return "_t/frame";
         }
