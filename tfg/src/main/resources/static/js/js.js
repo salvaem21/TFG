@@ -63,18 +63,18 @@ $(document).ready(function () {
 
     function validarCicloFormativo(cicloInput) {
         var valorSeleccionado = cicloInput.val();
-    
+
         // Verificar que la selección no sea la opción predeterminada
         if (valorSeleccionado === "") {
             cicloInput.css('border-color', 'red');
             return false;
         }
-    
+
         // Si se selecciona una opción válida, eliminar el resaltado rojo
         cicloInput.css('border-color', '');
         return true;
     }
-    
+
     // Evento para validar el ciclo formativo cuando se cambia la selección del campo desplegable
     $("#cicloFormativoAlumno").on('change', function () {
         validarCicloFormativo($(this));
@@ -277,12 +277,12 @@ $(document).ready(function () {
         validarFechaFin($('#fechaInicio'), $('#fechaFin'));
     });
 
-    
+
     // Validar el formulario antes de enviarlo
     $("#formularioAlumnos").submit(function (event) {
         var alumnoValido = validarDNI($("#nifAlumno"));
         var nombreTutorValido = validarNombreTutor($("#tutorAlumno"));
-        var cicloValido = validarCicloFormativo($("#cicloFormativoAlumno"));        
+        var cicloValido = validarCicloFormativo($("#cicloFormativoAlumno"));
         var numeroConvenioValido = validarNumeroConvenio($("#numeroConvenio"));
         var nombreEmpresaValido = validarNombreEmpresa($("#nombreEmpresa"));
         var tutorEmpresaValido = validarTutorEmpresa($("#tutorEmpresa"));
@@ -290,8 +290,8 @@ $(document).ready(function () {
         var direccionValida = validarDireccionPracticas($("#direccionPracticas"));
         var localidadValida = validarLocalidadPracticas($("#localidadPracticas"));
         var codigoPostalValido = validarCodigoPostalPracticas($("#codigoPostalPracticas"));
-        var validarNombreAlumno=validarNombreApellidos($("#nombreAlumno"));
-        var validarApellidoAlumno=validarNombreApellidos($("#apellidosAlumno"));
+        var validarNombreAlumno = validarNombreApellidos($("#nombreAlumno"));
+        var validarApellidoAlumno = validarNombreApellidos($("#apellidosAlumno"));
         var horasValidas = validarHorasTotales($("#horasTotales"));
         var fechaInicioValida = validarFechaInicio($("#fechaInicio"));
         var fechaFinValida = validarFechaFin($("#fechaInicio"), $("#fechaFin"));
@@ -304,57 +304,57 @@ $(document).ready(function () {
         }
         if (!nombreTutorValido) {
             alert("El nombre del tutor introducido no es válido.");
-            event.preventDefault(); 
+            event.preventDefault();
             return;
         }
         if (!cicloValido) {
             alert("Seleccione un ciclo formativo.");
-            event.preventDefault(); 
+            event.preventDefault();
             return;
         }
         if (!numeroConvenioValido) {
             alert("El numero de convenio introducido no es válido.");
-            event.preventDefault(); 
+            event.preventDefault();
             return;
         }
         if (!nombreEmpresaValido) {
             alert("El nombre de empresa introducido no es válido.");
-            event.preventDefault(); 
+            event.preventDefault();
             return;
         }
         if (!tutorEmpresaValido) {
             alert("El nombre del tutor de la empresa introducido no es válido.");
-            event.preventDefault(); 
+            event.preventDefault();
             return;
         }
         if (!cifEmpresaValido) {
             alert("El cif de la empresa introducido no es válido.");
-            event.preventDefault(); 
+            event.preventDefault();
             return;
         }
         if (!direccionValida) {
             alert("La direccion de la empresa introducido no es válido.");
-            event.preventDefault(); 
+            event.preventDefault();
             return;
         }
         if (!localidadValida) {
             alert("La localidad de la empresa introducido no es válido.");
-            event.preventDefault(); 
+            event.preventDefault();
             return;
         }
         if (!codigoPostalValido) {
             alert("El codigo postal de la empresa introducido no es válido.");
-            event.preventDefault(); 
+            event.preventDefault();
             return;
         }
         if (!validarNombreAlumno) {
             alert("El nombre del Alumno introducido no es válido.");
-            event.preventDefault(); 
+            event.preventDefault();
             return;
         }
         if (!validarApellidoAlumno) {
             alert("El apellido del alumno introducido no es válido.");
-            event.preventDefault(); 
+            event.preventDefault();
             return;
         }
         if (!horasValidas) {
@@ -364,7 +364,7 @@ $(document).ready(function () {
         }
         if (!fechaInicioValida) {
             alert("la fecha de inicio tiene que ser posterior a hoy.");
-            event.preventDefault(); 
+            event.preventDefault();
             return;
         }
         if (!fechaFinValida) {
@@ -382,20 +382,20 @@ $(document).ready(function () {
                 return false; // Romper el bucle si se encuentra un NIF inválido
             }
             // Validar Apellidos del alumno
-        if (!validarNombreApellidos($(this).find("#apellidosAlumno"))) {
-            alert("Los apellidos de uno o más alumnos introducidos no son válidos.");
-            alumnosExtraValidos = false;
-            event.preventDefault();
-            return false; // Romper el bucle si se encuentra un apellido inválido
-        }
+            if (!validarNombreApellidos($(this).find("#apellidosAlumno"))) {
+                alert("Los apellidos de uno o más alumnos introducidos no son válidos.");
+                alumnosExtraValidos = false;
+                event.preventDefault();
+                return false; // Romper el bucle si se encuentra un apellido inválido
+            }
 
-        // Validar Nombre del alumno
-        if (!validarNombreApellidos($(this).find("#nombreAlumno"))) {
-            alert("El nombre de uno o más alumnos introducidos no es válido.");
-            alumnosExtraValidos = false;
-            event.preventDefault();
-            return false; // Romper el bucle si se encuentra un nombre inválido
-        }
+            // Validar Nombre del alumno
+            if (!validarNombreApellidos($(this).find("#nombreAlumno"))) {
+                alert("El nombre de uno o más alumnos introducidos no es válido.");
+                alumnosExtraValidos = false;
+                event.preventDefault();
+                return false; // Romper el bucle si se encuentra un nombre inválido
+            }
         });
         if (!alumnosExtraValidos) {
             alert("El nombre,apellido o NIF del alumno extra es invalido.");
@@ -541,20 +541,20 @@ $(document).ready(function () {
     }
 
     // Event listener para detectar el cambio en la selección de opción
-    opcionPDF.addEventListener("change", function() {
+    opcionPDF.addEventListener("change", function () {
         if (opcionPDF.checked) {
             habilitarPDF();
         }
     });
 
-    opcionObservaciones.addEventListener("change", function() {
+    opcionObservaciones.addEventListener("change", function () {
         if (opcionObservaciones.checked) {
             habilitarObservaciones();
         }
     });
-    //------------------Selección de uno u otro endpoints--------------------
-    document.getElementById('formularioAlumnos').addEventListener('submit', function(event) {
-        var opcionSeleccionada = document.querySelector('input[name="opcion"]:checked').value;
+
+    $('#formularioAlumnos').submit(function (event) {
+        var opcionSeleccionada = $('input[name="opcion"]:checked').val();
         if (opcionSeleccionada === 'pdf') {
             this.action = '/enviarDatos/corregirDatosJefaturaArchivo';
             this.enctype = 'multipart/form-data'; // Añadir el tipo de codificación para archivos
@@ -562,21 +562,26 @@ $(document).ready(function () {
             this.action = '/enviarDatos/corregirDatosJefaturaObservaciones';
         }
     });
+    
     //------------Corregir Datos Dirección------------------------------------ 
     //------------------Selección de uno u otro endpoints---------------------
-    $('#solicitudFCT').submit(function(event) {
+    $('#solicitudFCT').submit(function (event) {
         event.preventDefault(); // Evitar el envío predeterminado del formulario
         var opcionSeleccionada = $('input[name="opcion"]:checked').val();
         if (opcionSeleccionada === 'pdf') {
             this.action = '/enviarDatos/solicitudAceptadaDireccion';
-            this.enctype = 'multipart/form-data'; 
+            this.enctype = 'multipart/form-data';
         } else if (opcionSeleccionada === 'observaciones') {
             this.action = '/enviarDatos/corregirDatosDireccionObservaciones';
         }
         this.submit(); // Envía el formulario después de actualizar el action y enctype
     });
+    //------------------Selección de uno u otro endpoints--------------------
+    
+
+
 
     //-------------------------------ARCHIVO CARGA Y DESCARGA-----------------
-    
-            
+
+
 });
