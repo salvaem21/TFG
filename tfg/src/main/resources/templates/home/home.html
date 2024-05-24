@@ -6,6 +6,8 @@
         <a th:if="${session.usuario != null and session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).PROFESOR}" class="btn btn-outline-propio1 mb-2 col-4 mr-2" href="/enviarDatos/enviarDatosAJefatura">Enviar Formulario A Jefatura A Revision</a>
         <a th:if="${session.usuario != null and session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).PROFESOR}" class="btn btn-outline-propio1 mb-2 col-4 mr-2" href="/enviarDatos/correccionSolicitudListado">Documentos Pendientes De Corregir Por Profesor</a>
         <a th:if="${session.usuario != null and session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).PROFESOR}" class="btn btn-outline-propio1 mb-2 col-4 mr-2" href="/enviarDatos/solicitudListadoOk">Documentos Pendientes De Notificar A Empresa/Enviar A Direccion</a>
+        <a th:if="${session.usuario != null and session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).PROFESOR}" class="btn btn-outline-propio1 mb-2 col-4 mr-2" href="/enviarDatos/solicitudesFinalizadas">Solicitudes Finalizadas</a>
+        <a th:if="${session.usuario != null and session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).PROFESOR}" class="btn btn-outline-propio1 mb-2 col-4 mr-2" href="/enviarDatos/solicitudAllProfesor">¿Como van mis solicitudes?</a>
         
     <!------------------------            JEFATURA                    ------------------------------>
         <a th:if="${session.usuario != null and session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).JEFATURA}" class="btn btn-outline-propio1 mb-2 col-4 mr-2" href="/enviarDatos/recibirDatosJefatura">Revision de Datos de Alumnos</a>

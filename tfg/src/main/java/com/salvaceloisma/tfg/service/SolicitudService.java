@@ -135,5 +135,9 @@ public class SolicitudService {
         return solicitudRepository.save(solicitud);
     }
 
+    public List<Solicitud> findAllByUsuario(Usuario usuario) {
+        return solicitudRepository.findAllByUsuario(usuario);
+    }
+
     
 }

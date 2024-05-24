@@ -418,6 +418,33 @@ public String recibirMensajes(Model model, HttpSession session) {
         
         return "_t/frame";
         }
+
+    //  FINALIZADOS
+    @GetMapping("/solicitudesFinalizadas")
+    public String aprobadosPorDireccion(ModelMap m, HttpSession session) {
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+       // m.addAttribute("nombreUsuario", usuario.getNombre()); // Agregar nombre del usuario al modelo
+    
+        // Obtener los mensajes recibidos por el usuario
+        EstadoSolicitud estadoFinalizado = EstadoSolicitud.SOLICITUD_FINALIZADA;
+
+            List<Solicitud> allSolicitudes = solicitudService.findAllByUsuario(usuario);
+            
+            // Procesar el campo de horario de cada solicitud
+            for (Solicitud solicitud : allSolicitudes) {
+                String horarioProcesado = solicitud.getHorario().replace("Segundo horario:", "<br><strong>Segundo horario:</strong><br><br>");
+                horarioProcesado = horarioProcesado.replace(".", "<br>");
+                solicitud.setHorario(horarioProcesado);
+                // Cargar los alumnos vinculados a esta solicitud (LISTA) ya que se utilizara en la vista
+                solicitud.setAlumnos(alumnoService.findBySolicitudIdSolicitud(solicitud.getIdSolicitud()));
+            }
+            m.put("estadoFinalizado", estadoFinalizado);
+            m.put("solicitudes", allSolicitudes);
+            m.put("view", "profesor/solicitudesAprobados");
+    
+            return "_t/frame";
+        }
+
     
     // ARCHIVO Y NOTIFICACIÓN PROFESOR JEFATURA
     @PostMapping("/solicitudListadoOk")
