@@ -454,7 +454,26 @@ public class EnviarDatosController {
     
             return "_t/frame";
         }
-
+    // TODAS LAS SOLICITUDES DEL PROFESOR
+        @GetMapping("/solicitudesAllProfesor")
+        public String todasLasSolicitudesProfesor(ModelMap m, HttpSession session) {
+            Usuario usuario = (Usuario) session.getAttribute("usuario");
+    
+                List<Solicitud> allSolicitudesProfesor = solicitudService.findAllByUsuario(usuario);
+                
+                // Procesar el campo de horario de cada solicitud
+                for (Solicitud solicitud : allSolicitudesProfesor) {
+                    String horarioProcesado = solicitud.getHorario().replace("Segundo horario:", "<br><strong>Segundo horario:</strong><br><br>");
+                    horarioProcesado = horarioProcesado.replace(".", "<br>");
+                    solicitud.setHorario(horarioProcesado);
+                    // Cargar los alumnos vinculados a esta solicitud (LISTA) ya que se utilizara en la vista
+                    solicitud.setAlumnos(alumnoService.findBySolicitudIdSolicitud(solicitud.getIdSolicitud()));
+                }
+                m.put("solicitudes", allSolicitudesProfesor);
+                m.put("view", "profesor/solicitudesAllProfesor");
+        
+                return "_t/frame";
+            }
     
     // ARCHIVO Y NOTIFICACIÓN PROFESOR JEFATURA
     @PostMapping("/solicitudListadoOk")
