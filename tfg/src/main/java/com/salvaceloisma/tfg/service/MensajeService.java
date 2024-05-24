@@ -50,6 +50,8 @@ public class MensajeService {
         mensaje.setRemitente(remitente);
         mensaje.setDestinatario(destinatario);
         mensaje.setSolicitud(solicitud);
+        mensaje.setNovedad(true);
+
     } else {
         // El mensaje ya existe, actualizar su contenido y establecer novedad a true
         mensaje.setContenido(contenido);

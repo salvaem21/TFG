@@ -13,9 +13,9 @@
             th:if="${session.usuario.rol != T(com.salvaceloisma.tfg.enumerados.RolUsuario).ALUMNO}">
             <span class="badge badge-pill badge-danger mr-2" th:if="${#lists.size(session.mensajesConNovedad) >= 1}" th:text="${#lists.size(session.mensajesConNovedad)}"
                 style="font-size: 0.8rem;"></span>
-            <i class="fa-regular fa-bell fa-shake fa-2x mr-2" th:if="${#lists.size(session.mensajesConNovedad) >= 1}"
+            <i class="fa-regular fa-bell fa-shake fa-2x mr-2" th:if="${#lists.size(session.mensajesConNovedad) >= 1 && session.usuario.rol != T(com.salvaceloisma.tfg.enumerados.RolUsuario).ADMIN}"
                 style="color: #fafad2; cursor: pointer;" onclick="toggleCanvas()"></i>
-            <i class="fa-regular fa-bell fa-2xl mr-2" th:if="${#lists.size(session.mensajesConNovedad) == 0}"
+            <i class="fa-regular fa-bell fa-2xl mr-2" th:if="${#lists.size(session.mensajesConNovedad) == 0 && session.usuario.rol != T(com.salvaceloisma.tfg.enumerados.RolUsuario).ADMIN}"
                 style="color: #fafad2; cursor: pointer;" onclick="toggleCanvas()"></i>
         </li>
         <li class="nav-item"
@@ -28,8 +28,7 @@
             <a class="nav-link btn btn-outline-light mr-2" th:if="${session.usuario!=null}"
                 href="/inicioSesion/gestionarAlumnos" id="registrarse">GESTIONAR ALUMNOS</a>
         </li>
-        <li class="nav-item"
-            th:if="${session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).PROFESOR || session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).ALUMNO}">
+        <li class="nav-item">
             <a class="nav-link btn btn-outline-light mr-2" th:if="${session.usuario!=null}"
                 href="/inicioSesion/cambiarContrasenia" id="registrarse">CAMBIAR CONTRASEÑA</a>
         </li>
