@@ -420,9 +420,12 @@ public class EnviarDatosController {
         m.addAttribute("nombreUsuario", usuario.getNombre()); // Agregar nombre del usuario al modelo
 
         // Obtener los mensajes recibidos por el usuario
-        EstadoSolicitud estadoAprobado = EstadoSolicitud.APROBADO_JEFATURA_PDF;
+        EstadoSolicitud estadoAprobado1 = EstadoSolicitud.APROBADO_JEFATURA_PDF;
+        EstadoSolicitud estadoAprobado2 = EstadoSolicitud.RECHAZADO_DIRECCION;
+
         List<Mensaje> mensajes = mensajeService.recibirMensajes(usuario);
-        m.put("estadoAprobado", estadoAprobado);
+        m.put("estadoAprobado1", estadoAprobado1);
+        m.put("estadoAprobado2", estadoAprobado2);
         m.put("mensajes", mensajes);
         m.put("view", "profesor/solicitudesAprobados");
 
