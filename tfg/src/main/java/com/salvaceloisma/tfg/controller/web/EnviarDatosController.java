@@ -22,7 +22,7 @@ import com.salvaceloisma.tfg.exception.DangerException;
 import com.salvaceloisma.tfg.exception.InfoException;
 import com.salvaceloisma.tfg.helper.PRG;
 import com.salvaceloisma.tfg.service.AlumnoService;
-import com.salvaceloisma.tfg.service.ArchivoService;
+// import com.salvaceloisma.tfg.service.ArchivoService;
 import com.salvaceloisma.tfg.service.ArchivoServiceImpl;
 import com.salvaceloisma.tfg.service.EmailService;
 import com.salvaceloisma.tfg.service.InicioSesionService;
@@ -62,8 +62,8 @@ public class EnviarDatosController {
     @Autowired
     private MensajeService mensajeService; 
 
-    @Autowired
-    private ArchivoService archivoService;
+    // @Autowired
+    // private ArchivoService archivoService;
 
     @Autowired
     private ArchivoServiceImpl archivoServiceImpl;
@@ -503,8 +503,7 @@ public String recibirMensajes(Model model, HttpSession session) {
 
   // ARCHIVO Y NOTIFICACIÓN  DIRECCIÓN PROFESOR
     @PostMapping("/solicitudAceptadaDireccion")
-    public String solicitudFinalizacion(HttpServletResponse response, 
-        HttpSession session,
+    public String solicitudFinalizacion(
         @RequestParam("idSolicitud") String idSolicitud,
         @RequestParam("archivoPDF") MultipartFile archivo) throws Exception {
 
@@ -548,29 +547,29 @@ public String recibirMensajes(Model model, HttpSession session) {
 }
     // MENSAJE Y NOTIFICACIÓN
     @PostMapping("/corregirDatosDireccionObservaciones")
-    public String enviarObservacionACorregir(HttpServletResponse response, HttpSession session,
-    @RequestParam("idSolicitud") String idSolicitud,
-    @RequestParam("observaciones") String observaciones) throws Exception {
-
-            Mensaje mensaje = mensajeService.findBySolicitudIdSolicitud(idSolicitud);
-            //Invertimos el correo devuelta
-            Usuario destinatario = mensaje.getRemitente();
-            Usuario remitente =  mensaje.getDestinatario(); 
-            String destinatarioCorreo = destinatario.getCorreo();
-            String remitenteCorreo = destinatario.getCorreo();
-            EstadoSolicitud estadoSolicitud= EstadoSolicitud.RECHAZADO_DIRECCION;
-
+    public String enviarObservacionACorregir(
+        @RequestParam("idSolicitud") String idSolicitud,
+        @RequestParam("observaciones") String observaciones) throws Exception {
+    
+        Mensaje mensaje = mensajeService.findBySolicitudIdSolicitud(idSolicitud);
+        // Invertimos el correo de vuelta
+        Usuario destinatario = mensaje.getRemitente();
+        Usuario remitente = mensaje.getDestinatario();
+        String destinatarioCorreo = destinatario.getCorreo();
+        String remitenteCorreo = remitente.getCorreo();
+        EstadoSolicitud estadoSolicitud = EstadoSolicitud.RECHAZADO_DIRECCION;
+    
         try {
-            mensajeService.actualizarMensaje(idSolicitud,destinatario, remitente, observaciones);
+            mensajeService.actualizarMensaje(idSolicitud, destinatario, remitente, observaciones);
             solicitudService.cambiarEstadoSolicitud(idSolicitud, estadoSolicitud, remitente);
-            emailService.enviarEmail(destinatarioCorreo, remitenteCorreo,"Datos pendientes de ser revisados.");
-
-            PRG.info("Correción enviada correctamente.");
+            emailService.enviarEmail(destinatarioCorreo, remitenteCorreo, "Datos pendientes de ser revisados.");
+            PRG.info("Corrección enviada correctamente.");
         } catch (IOException e) {
-            PRG.error("Error al subir el archivo.","/direccion/solicitudesPendientes");
+            PRG.error("Error al subir el archivo.", "/direccion/solicitudesPendientes");
         }
-        return "redirect: ../";
+        return "redirect:/";
     }
+    
 
     //ESTOS 3 METODOS SON PARA DESCARGAR LOS ARCHIVOS
     @GetMapping("/descargarSolicitudAprobadaJefatura/{idSolicitud}")

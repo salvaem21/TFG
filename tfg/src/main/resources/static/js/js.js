@@ -564,17 +564,19 @@ $(document).ready(function () {
     });
     //------------Corregir Datos Dirección------------------------------------ 
     //------------------Selección de uno u otro endpoints---------------------
-    document.getElementById('solicitudFCT').addEventListener('submit', function(event) {
-        var opcionSeleccionada = document.querySelector('input[name="opcion"]:checked').value;
+    $('#solicitudFCT').submit(function(event) {
+        event.preventDefault(); // Evitar el envío predeterminado del formulario
+        var opcionSeleccionada = $('input[name="opcion"]:checked').val();
         if (opcionSeleccionada === 'pdf') {
             this.action = '/enviarDatos/solicitudAceptadaDireccion';
             this.enctype = 'multipart/form-data'; 
         } else if (opcionSeleccionada === 'observaciones') {
             this.action = '/enviarDatos/corregirDatosDireccionObservaciones';
         }
+        this.submit(); // Envía el formulario después de actualizar el action y enctype
     });
 
     //-------------------------------ARCHIVO CARGA Y DESCARGA-----------------
-
+    
             
 });
