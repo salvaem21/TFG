@@ -678,7 +678,7 @@ public class EnviarDatosController {
     public void descargarSolicitudFirmadaDireccion(@PathVariable String idSolicitud, HttpServletResponse response)
             throws IOException, DangerException {
         Solicitud solicitud = solicitudService.findById(idSolicitud);
-        String rutaArchivo = solicitud.getRutaSolicitud() + "/FIRMADO_POR_DIRECCION " + idSolicitud + ".pdf";
+        String rutaArchivo = solicitud.getRutaSolicitud() + "/SOLICITUD_FINALIZADA " + idSolicitud + ".pdf";
 
         File archivoPDF = new File(rutaArchivo);
         if (archivoPDF.exists()) {

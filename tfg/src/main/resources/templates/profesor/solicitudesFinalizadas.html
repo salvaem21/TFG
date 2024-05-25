@@ -12,7 +12,7 @@
                 <th class="col-1">Fecha Inicio</th>
                 <th class="col-2">Estado</th>
                 <th class="col-2">Alumnos</th>
-                <th class="col-2">Horarios</th>
+                <th class="col-1">Solicitud</th>
             </tr>
         </thead>
         <tbody>
@@ -40,10 +40,9 @@
                     </details>
                 </td>
                 <td class="col-2 ">
-                    <details class="solicitud-details">
-                        <summary><b>Mostrar horarios</b></summary>
-                        <span th:utext="${solicitud.horario}"></span>
-                    </details>
+                    <a th:href="@{/enviarDatos/descargarSolicitudFirmadaDireccion/{idSolicitud}(idSolicitud=${solicitud.idSolicitud})}" class="btn btn-link btn-sm">
+                        Descargar PDF
+                    </a>
                 </td>
             </tr>
         </tbody>
