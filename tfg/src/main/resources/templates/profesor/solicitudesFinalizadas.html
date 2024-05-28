@@ -20,11 +20,11 @@
             <tr class="row solicitud-row" th:each="solicitud : ${solicitudes}" th:if="${solicitud.estado == estadoFinalizado}">
                 <!-- Fila de la solicitud -->
                 <td class="col-2 small" th:text="${solicitud.idSolicitud}"></td>
-                <td class="col-1" th:text="${solicitud.empresa}"></td>
-                <td class="col-1" th:text="${solicitud.numeroConvenio}"></td>
-                <td class="col-1" th:text="${solicitud.cicloFormativo}"></td>
-                <td class="col-1" th:text="${solicitud.fechaInicio}"></td>
-                <td class="col-2" th:text="${solicitud.estado}"></td>
+                <td class="col-1 small" th:text="${solicitud.empresa}"></td>
+                <td class="col-1 small" th:text="${solicitud.numeroConvenio}"></td>
+                <td class="col-1 small" th:text="${solicitud.cicloFormativo}"></td>
+                <td class="col-1 small" th:text="${solicitud.fechaInicio}"></td>
+                <td class="col-2 small" th:text="${solicitud.estado}"></td>
                 <!-- Columna para los detalles de los alumnos -->
                 <td class="col-2">
                     <!-- Detalles de los alumnos -->
