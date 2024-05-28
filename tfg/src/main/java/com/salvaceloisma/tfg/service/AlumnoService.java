@@ -76,5 +76,8 @@ public class AlumnoService {
        alumnoRepository.deleteByDni(dni);
     }
 
+    public Alumno findByDniAndSolicitudIdSolicitud(String dni, String idSolicitud) {
+        return alumnoRepository.findByDniAndSolicitudIdSolicitud(dni, idSolicitud);
+    }
 
 }

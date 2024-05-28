@@ -553,6 +553,9 @@ $(document).ready(function () {
         } else if (opcionSeleccionada === 'observaciones') {
             this.action = '/enviarDatos/corregirDatosJefaturaObservaciones';
         }
+        else{
+            this.action = '/enviarDatos/errorSinSeleccionarJeftura';
+        }
     });
     
     //------------Corregir Datos Dirección------------------------------------ 
@@ -565,6 +568,9 @@ $(document).ready(function () {
             this.enctype = 'multipart/form-data';
         } else if (opcionSeleccionada === 'observaciones') {
             this.action = '/enviarDatos/corregirDatosDireccionObservaciones';
+        }
+        else{
+            this.action = '/enviarDatos/errorSinSeleccionarDireccion';
         }
         this.submit(); // Envía el formulario después de actualizar el action y enctype
     });

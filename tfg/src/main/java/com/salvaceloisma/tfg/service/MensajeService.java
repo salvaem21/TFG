@@ -91,35 +91,10 @@ public class MensajeService {
      public void savePdfFiles(Long id, MultipartFile solicitudInicial, MultipartFile solicitudFirmadoEmpresa, MultipartFile solicitudFinalizada) throws IOException {
         Mensaje mensaje = mensajeRepository.findById(id).orElseThrow(() -> new RuntimeException("Mensaje no encontrado"));
 
-        if (solicitudInicial != null && !solicitudInicial.isEmpty()) {
-            mensaje.setSolicitudInicialPdf(solicitudInicial.getBytes());
-        }
-
-        if (solicitudFirmadoEmpresa != null && !solicitudFirmadoEmpresa.isEmpty()) {
-            mensaje.setSolicitudFirmadoEmpresaPdf(solicitudFirmadoEmpresa.getBytes());
-        }
-
-        if (solicitudFinalizada != null && !solicitudFinalizada.isEmpty()) {
-            mensaje.setSolicitudFinalizadaPdf(solicitudFinalizada.getBytes());
-        }
-
         mensajeRepository.save(mensaje);
     }
 
     public Mensaje getMensajeById(Long id) {
         return mensajeRepository.findById(id).orElseThrow(() -> new RuntimeException("Mensaje no encontrado"));
-    }
-
-    public byte[] getPdfData(Mensaje mensaje, String type) {
-        switch (type) {
-            case "solicitudInicial":
-                return mensaje.getSolicitudInicialPdf();
-            case "solicitudFirmadoEmpresa":
-                return mensaje.getSolicitudFirmadoEmpresaPdf();
-            case "solicitudFinalizada":
-                return mensaje.getSolicitudFinalizadaPdf();
-            default:
-                throw new IllegalArgumentException("Tipo de archivo no válido");
-        }
     }
 }
