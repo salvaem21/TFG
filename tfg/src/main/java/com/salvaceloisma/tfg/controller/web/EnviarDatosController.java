@@ -105,7 +105,6 @@ public class EnviarDatosController {
         // Verificar si se está creando una nueva solicitud o actualizando una existente
         boolean creandoNuevaSolicitud = (idSolicitud == null || idSolicitud.isEmpty());
         Usuario usuario = (Usuario) session.getAttribute("usuario");
-        String nombre = usuario.getNombre();
 
         String correo = inicioSesionService.findById(usuarioEnvio).getCorreo();
 
@@ -221,8 +220,8 @@ public class EnviarDatosController {
             }
 
             mensajeService.enviarMensaje(remitente, destinatario, observaciones, solicitud);
-            emailService.enviarEmail(correo, "Datos pendientes de ser revisados por Jefatura.",
-                    nombre + " ha enviado unos datos.");
+            emailService.enviarEmail(correo, "Datos pendientes de ser revisados.",
+                    "Un profesor ha enviado unos datos. Revisa tu bandeja de entrada.");
         } catch (Exception e) {
             PRG.error("Los datos no pudieron enviarse correctamente.");
         }
@@ -324,13 +323,12 @@ public class EnviarDatosController {
         Usuario destinatario = mensaje.getRemitente();
         Usuario remitente = mensaje.getDestinatario();
         String destinatarioCorreo = destinatario.getCorreo();
-        String remitenteCorreo = destinatario.getCorreo();
         EstadoSolicitud estadoSolicitud = EstadoSolicitud.RECHAZADO_JEFATURA;
 
         try {
             mensajeService.actualizarMensaje(idSolicitud, destinatario, remitente, observaciones);
             solicitudService.cambiarEstadoSolicitud(idSolicitud, estadoSolicitud, remitente);
-            emailService.enviarEmail(destinatarioCorreo, remitenteCorreo, "Datos pendientes de ser revisados.");
+            emailService.enviarEmail(destinatarioCorreo, "Datos pendientes de ser corregidos.", "Jefatura ha enviado datos para corregir. Revisa tu bandeja de entrada.");
 
             PRG.info("Correción enviada correctamente.");
         } catch (IOException e) {
@@ -432,8 +430,8 @@ public class EnviarDatosController {
             solicitudService.cambiarEstadoSolicitud(idSolicitud, estadoSolicitud, remitente);
 
             // Enviar el correo
-            emailService.enviarEmail(destinatario.getCorreo(), remitente.getCorreo(),
-                    "Solicitud aceptada. Revisa tu bandeja de entrada.");
+            emailService.enviarEmail(destinatario.getCorreo(),
+                    "Solicitud aceptada por Jefatura.", "Jefatura ha aceptado tu solicitud y podras descargar el PDF. Revisa tu bandeja de entrada.");
 
             PRG.info("Corrección enviada correctamente.");
         } catch (IOException e) {
@@ -570,7 +568,6 @@ public class EnviarDatosController {
         Usuario destinatario = directores.get(0);
         Usuario remitente = mensaje.getDestinatario();
         String destinatarioCorreo = destinatario.getCorreo();
-        String remitenteCorreo = remitente.getCorreo();
         EstadoSolicitud estadoSolicitud = EstadoSolicitud.PENDIENTE_FIRMA_DIRECCION;
 
         try {
@@ -584,8 +581,8 @@ public class EnviarDatosController {
             archivoServiceImpl.guardarArchivo(archivo, rutaSolicitud, nombreArchivo);
             mensajeService.actualizarNotificacion(idSolicitud, destinatario, remitente);
             solicitudService.cambiarEstadoSolicitud(idSolicitud, estadoSolicitud, remitente);
-            emailService.enviarEmail(destinatarioCorreo, remitenteCorreo,
-                    "Solicitud pendiente. Revisa tu bandeja de entrada.");
+            emailService.enviarEmail(destinatarioCorreo,
+                    "Documento pendiente de ser revisado.", "Un profesor ha enviado un documento para firmar. Revisa tu bandeja de entrada.");
 
             PRG.info("Correción enviada correctamente.");
         } catch (IOException e) {
@@ -644,7 +641,6 @@ public class EnviarDatosController {
         Usuario destinatario = mensaje.getRemitente();
         Usuario remitente = mensaje.getDestinatario();
         String destinatarioCorreo = destinatario.getCorreo();
-        String remitenteCorreo = remitente.getCorreo();
         EstadoSolicitud estadoSolicitud = EstadoSolicitud.SOLICITUD_FINALIZADA;
 
         try {
@@ -662,8 +658,8 @@ public class EnviarDatosController {
             solicitudService.cambiarEstadoSolicitud(idSolicitud, estadoSolicitud, remitente);
 
             // Enviar el correo
-            emailService.enviarEmail(destinatarioCorreo, remitenteCorreo,
-                    "Solicitud aceptada. Revisa tu bandeja de entrada.");
+            emailService.enviarEmail(destinatarioCorreo,
+                    "Solicitud firmada por Direccion y finalizada.", "Direccion ha firmado tu solicitud y podras descargar todos los PDFs.Revisa tu bandeja de entrada.");
 
             PRG.info("Corrección enviada correctamente.");
         } catch (IOException e) {
@@ -687,13 +683,12 @@ public class EnviarDatosController {
         Usuario destinatario = mensaje.getRemitente();
         Usuario remitente = mensaje.getDestinatario();
         String destinatarioCorreo = destinatario.getCorreo();
-        String remitenteCorreo = remitente.getCorreo();
         EstadoSolicitud estadoSolicitud = EstadoSolicitud.RECHAZADO_DIRECCION;
 
         try {
             mensajeService.actualizarMensaje(idSolicitud, destinatario, remitente, observaciones);
             solicitudService.cambiarEstadoSolicitud(idSolicitud, estadoSolicitud, remitente);
-            emailService.enviarEmail(destinatarioCorreo, remitenteCorreo, "Datos pendientes de ser revisados.");
+            emailService.enviarEmail(destinatarioCorreo, "Solicitud denegada por Direccion.", "Direccion ha rechazado tu solicitud. Envia de nuevo el documento. Revisa tu bandeja de entrada.");
             PRG.info("Corrección enviada correctamente.");
         } catch (IOException e) {
             PRG.error("Error al subir el archivo.", "/direccion/solicitudesPendientes");
