@@ -553,7 +553,7 @@ public class EnviarDatosController {
 
         // Verificar si el archivo está vacío
         if (archivo.isEmpty()) {
-            PRG.error("Por favor, seleccione un archivo antes de enviar.", "/profesor/solicitudesAprobados");
+            PRG.error("Por favor, seleccione un archivo antes de enviar.", "/enviarDatos/solicitudListadoOk");
             return "redirect:/profesor/solicitudesAprobados";
         }
 
