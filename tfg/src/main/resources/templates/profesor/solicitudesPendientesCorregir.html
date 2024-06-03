@@ -5,12 +5,11 @@
     <table class="table">
         <thead class="thead">
             <tr class="row">
-                <th class="col-2">Nº Solicitud</th>
+                <th class="col-3">Nº Solicitud</th>
                 <th class="col-1">Empresa</th>
                 <th class="col-2">Numero convenio</th>
-                <th class="col-1">Ciclo Formativo</th>
+                <th class="col-2">Ciclo Formativo</th>
                 <th class="col-1">Fecha Inicio</th>
-                <th class="col-2">Estado</th>
                 <th class="col-2">Observaciones</th>
                 <th class="col-1">Gestionar</th>
             </tr>
@@ -19,18 +18,18 @@
             <!-- Bucle de solicitudes -->
             <tr class="row solicitud-row" th:each="mensaje : ${mensajes}" th:if= "${mensaje.solicitud.estado == estadoRechazado}">
                 <!-- Fila de la solicitud -->
-                <td class="col-2" th:text="${mensaje.solicitud.idSolicitud}"></td>
-                <td class="col-1" th:text="${mensaje.solicitud.empresa}"></td>
-                <td class="col-2" th:text="${mensaje.solicitud.numeroConvenio}"></td>
-                <td class="col-1" th:text="${mensaje.solicitud.cicloFormativo}"></td>
-                <td class="col-1" th:text="${mensaje.solicitud.fechaInicio}"></td>
-                <td class="col-2" th:text="${mensaje.solicitud.estado}"></td>
+                <td class="col-3 small" th:text="${mensaje.solicitud.idSolicitud}"></td>
+                <td class="col-1 small" th:text="${mensaje.solicitud.empresa}"></td>
+                <td class="col-2 small" th:text="${mensaje.solicitud.numeroConvenio}"></td>
+                <td class="col-2 small" th:text="${mensaje.solicitud.cicloFormativo}"></td>
+                <td class="col-1 small" th:text="${mensaje.solicitud.fechaInicio}"></td>
                 <!-- Columna para las observaciones -->
-                <td class="col-2" th:text="${mensaje.contenido}"></td>
+                <td class="col-2 small" th:text="${mensaje.contenido}"></td>
                 <td class="col-1"><a class="btn btn-outline-propio1" th:href="@{/enviarDatos/correccionSolicitud(id=${mensaje.solicitud.idSolicitud})}">Gestionar</a></td>
             </tr>
             </tr>
         </tbody>
     </table>
+    <a class="btn btn-outline-propio1 mb-2 col-2 mr-2" href="../">Volver</a>
 </div>
 

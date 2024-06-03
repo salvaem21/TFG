@@ -82,7 +82,11 @@ public class InicioSesionService {
     }
 
     public Usuario findById(Long idUsuario) {
-        return inicioSesionRepository.findById(idUsuario).get();
+        if (idUsuario == null) {
+            return null;
+        }
+        return inicioSesionRepository.findById(idUsuario)
+                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado con id: " + idUsuario));
     }
 
     public List<Usuario> obtenerUsuariosPorRol(RolUsuario rol) {

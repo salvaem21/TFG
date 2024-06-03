@@ -7,14 +7,18 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="tutorAlumno">Tutor del Alumno:</label>
-                        <input type="text" class="form-control" id="tutorAlumno" name="tutorAlumno" th:value="${solicitud.usuario.nombre}" required>
+                        <input type="text" class="form-control" id="tutorAlumno" name="tutorAlumno" th:value="${solicitud.usuario.nombre}" required disabled>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="cicloFormativoAlumno">Ciclo Formativo del Alumno:</label>
-                        <input type="text" class="form-control" id="cicloFormativoAlumno" name="cicloFormativoAlumno" th:value="${solicitud.cicloFormativo}"
-                            required>
+                        <select id="cicloFormativoAlumno" name="cicloFormativoAlumno" class="form-control" required>
+                            <option value="">Seleccione un grado</option>
+                            <th:block th:each="grado : ${grados}">
+                                <option th:value="${grado}" th:text="${grado}" th:selected="${grado.toString().equals(solicitud.cicloFormativo)}"></option>
+                            </th:block>
+                        </select>
                     </div>
                 </div>
             </div>
@@ -119,13 +123,6 @@
                         <label for="horasDia">Horas por Día:</label>
                         <input type="text" class="form-control" id="horasDia" name="horasDia" th:value="${solicitud.horasDia}" required>
                     </div>
-                    <div class="form-group">
-                        <label for="selectJefatura">Responsable de Jefatura:</label>
-                        <select name="rolUsuario" class="form-control text-center ">
-                            <option th:each="usuario : ${usuariosJefatura}" th:value="${usuario.id}"
-                                th:text="${usuario.nombre + ' (' + usuario.correo + ')'}"></option>
-                        </select>
-                    </div>
                 </div>
                 <div class="col-md-7">
                     <!-- Tabla de horarios -->
@@ -221,6 +218,9 @@
             <textarea class="form-control" id="observaciones" name="observaciones" rows="3"></textarea>
         </div>
         <input type="hidden" name="idSolicitud" th:value="${solicitud.idSolicitud}">
-        <button type="submit" class="btn btn-outline-propio1 mt-3 w-100 " id="boton">Enviar Datos FCTs</button>
+        <div class="row">
+        <button type="submit" class="btn btn-outline-propio1 mt-3 w-100 col-6" id="boton">Enviar Datos FCTs</button>
+        <a class="btn btn-outline-propio1 mt-3 col-6" href="../">Volver</a>
+        </div>
     </form>
 </div>

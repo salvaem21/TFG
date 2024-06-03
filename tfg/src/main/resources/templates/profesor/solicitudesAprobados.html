@@ -1,16 +1,16 @@
 <div class="container">
     <h1>Solicitudes aprobadas</h1>
+</div>
     <div class="ml-3 mr-3">
         <table class="table">
             <thead class="thead">
                 <tr class="row">
                     <th class="col-2">Nº Solicitud</th>
                     <th class="col-1">Empresa</th>
-                    <th class="col-1">Ciclo Formativo</th>
-                    <th class="col-2">Estado</th>
+                    <th class="col-2">Ciclo Formativo</th>
                     <th class="col-2">Observaciones</th>
                     <th class="col-1">Solicitud</th>
-                    <th class="col-3">Enviar</th>
+                    <th class="col-4">Enviar</th>
                 </tr>
             </thead>
             <tbody>
@@ -19,15 +19,14 @@
                     <!-- Fila de la solicitud -->
                     <td class="col-2 small" th:text="${mensaje.solicitud.idSolicitud}"></td>
                     <td class="col-1 small" th:text="${mensaje.solicitud.empresa}"></td>
-                    <td class="col-1 small" th:text="${mensaje.solicitud.cicloFormativo}"></td>
-                    <td class="col-2 small" th:text="${mensaje.solicitud.estado}"></td>
+                    <td class="col-2 small" th:text="${mensaje.solicitud.cicloFormativo}"></td>
                     <td class="col-2 small" th:text="${mensaje.contenido}"></td>
                     <td class="col-1 small">
                         <a th:href="@{/enviarDatos/descargarSolicitudAprobadaJefatura/{idSolicitud}(idSolicitud=${mensaje.solicitud.idSolicitud})}" class="btn btn-link btn-sm">
                             Descargar PDF
                         </a>
                     </td>
-                    <td class="col-3 small">
+                    <td class="col-4 small">
                         <form action="/enviarDatos/solicitudListadoOk" method="post" enctype="multipart/form-data">
                             <input type="hidden" name="idSolicitud" th:value="${mensaje.solicitud.idSolicitud}">
                             <input type="file" class="btn btn-sm" name="archivo">
@@ -37,5 +36,5 @@
                 </tr>
             </tbody>
         </table>
+        <a class="btn btn-outline-propio1 mb-2 col-2 mr-2" href="../">Volver</a>
     </div>
-</div>

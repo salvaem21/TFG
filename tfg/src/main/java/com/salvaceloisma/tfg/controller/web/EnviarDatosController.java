@@ -80,7 +80,6 @@ public class EnviarDatosController {
             @RequestParam(required = false) String idSolicitud, // Nuevo parámetro para identificar si se está creando o
                                                                 // actualizando
             @RequestParam String numeroConvenio,
-            @RequestParam String tutorAlumno,
             @RequestParam String nombreEmpresa, @RequestParam String tutorEmpresa,
             @RequestParam String cifEmpresa, @RequestParam String direccionPracticas,
             @RequestParam String localidadPracticas, @RequestParam String codigoPostalPracticas,
@@ -99,14 +98,14 @@ public class EnviarDatosController {
             @RequestParam LocalTime martesFin2,
             @RequestParam LocalTime miercolesFin2, @RequestParam LocalTime juevesFin2,
             @RequestParam LocalTime viernesFin2, @RequestParam Integer horasDia,
-            @RequestParam("rolUsuario") Long usuarioEnvio, ModelMap m)
+            @RequestParam(name = "rolUsuario", required = false) Long usuarioEnvio, ModelMap m)
             throws DangerException, InfoException {
 
         // Verificar si se está creando una nueva solicitud o actualizando una existente
         boolean creandoNuevaSolicitud = (idSolicitud == null || idSolicitud.isEmpty());
         Usuario usuario = (Usuario) session.getAttribute("usuario");
 
-        String correo = inicioSesionService.findById(usuarioEnvio).getCorreo();
+        
 
         StringBuilder horarioBuilder = new StringBuilder();
         horarioBuilder.append("Lunes: ").append(lunesInicio1).append(" - ").append(lunesFin1).append(".\n")
@@ -126,7 +125,6 @@ public class EnviarDatosController {
 
         // Agregar los datos comunes al final
         datos.append("Datos comunes:\n");
-        datos.append("Tutor alumno: ").append(tutorAlumno).append("\n");
         datos.append("Numero Convenio: ").append(numeroConvenio).append("\n");
         datos.append("Nombre empresa: ").append(nombreEmpresa).append("\n");
         datos.append("Tutor empresa: ").append(tutorEmpresa).append("\n");
@@ -141,6 +139,10 @@ public class EnviarDatosController {
 
         Usuario remitente = (Usuario) session.getAttribute("usuario");
         Usuario destinatario = inicioSesionService.findById(usuarioEnvio);
+        Mensaje mensaje = mensajeService.findBySolicitudIdSolicitud(idSolicitud);
+        if (destinatario == null) {
+            destinatario = mensaje.getRemitente();
+        }
         // Establecer el estado por defecto a PENDIENTE_JEFATURA
         EstadoSolicitud estado = EstadoSolicitud.PENDIENTE_FIRMA_JEFATURA;
         String observaciones = "";
@@ -157,7 +159,7 @@ public class EnviarDatosController {
 
                 String rutaUsuario = usuario.getRutaCarpeta();
                 String rutaSolicitud = rutaUsuario + "/" + empresa + "/" + idSolicitud;
-                File carpetaSolicitud = new File(rutaSolicitud);
+                File carpetaSolicitud = new File(rutaUsuario);
                 if (!carpetaSolicitud.exists()) {
                     carpetaSolicitud.mkdirs(); // Crear la carpeta si no existe
                 }
@@ -176,7 +178,7 @@ public class EnviarDatosController {
 
                 String rutaUsuario = usuario.getRutaCarpeta();
                 String rutaSolicitud = rutaUsuario + "/" + empresa + "/" + idSolicitud;
-                File carpetaSolicitud = new File(rutaSolicitud);
+                File carpetaSolicitud = new File(rutaUsuario);
                 if (!carpetaSolicitud.exists()) {
                     carpetaSolicitud.mkdirs(); // Crear la carpeta si no existe
                 }
@@ -218,13 +220,21 @@ public class EnviarDatosController {
                     PRG.error("Los alumnos no pueden ser creados o actualizados.");
                 }
             }
-
+            String correo;
+        if (usuarioEnvio != null) {
+            Usuario usuarioDestinatario = inicioSesionService.findById(usuarioEnvio);
+            correo = usuarioDestinatario != null ? usuarioDestinatario.getCorreo() : "default@example.com";
+        } else {
+            correo = destinatario.getCorreo();
+        }
             mensajeService.enviarMensaje(remitente, destinatario, observaciones, solicitud);
             emailService.enviarEmail(correo, "Datos pendientes de ser revisados.",
                     "Un profesor ha enviado unos datos. Revisa tu bandeja de entrada.");
+
         } catch (Exception e) {
             PRG.error("Los datos no pudieron enviarse correctamente.");
         }
+        PRG.info("Los datos se enviaron correctamente.");
         return "redirect:../";
     }
 
@@ -286,6 +296,7 @@ public class EnviarDatosController {
         m.put("solicitud", solicitud);
         m.put("alumnos", alumnoService.findBySolicitudIdSolicitud(idSolicitud));
         m.put("usuariosJefatura", inicioSesionService.obtenerUsuariosPorRol(RolUsuario.JEFATURA));
+        m.put("grados", Grados.values()); // Añadir el enum Grados al modelo
         m.put("view", "jefatura/corregirDatosJefatura");
         return "_t/frame";
     }
@@ -328,7 +339,8 @@ public class EnviarDatosController {
         try {
             mensajeService.actualizarMensaje(idSolicitud, destinatario, remitente, observaciones);
             solicitudService.cambiarEstadoSolicitud(idSolicitud, estadoSolicitud, remitente);
-            emailService.enviarEmail(destinatarioCorreo, "Datos pendientes de ser corregidos.", "Jefatura ha enviado datos para corregir. Revisa tu bandeja de entrada.");
+            emailService.enviarEmail(destinatarioCorreo, "Datos pendientes de ser corregidos.",
+                    "Jefatura ha enviado datos para corregir. Revisa tu bandeja de entrada.");
 
             PRG.info("Correción enviada correctamente.");
         } catch (IOException e) {
@@ -345,7 +357,6 @@ public class EnviarDatosController {
             @RequestParam("idSolicitud") String idSolicitud,
             @RequestParam("archivoPDF") MultipartFile archivo,
             @RequestParam String numeroConvenio,
-            @RequestParam String tutorAlumno,
             @RequestParam String nombreEmpresa, @RequestParam String tutorEmpresa,
             @RequestParam String cifEmpresa, @RequestParam String direccionPracticas,
             @RequestParam String localidadPracticas, @RequestParam String codigoPostalPracticas,
@@ -388,10 +399,10 @@ public class EnviarDatosController {
                     .append("Viernes: ").append(viernesInicio2).append(" - ").append(viernesFin2).append(".");
             String horario = horarioBuilder.toString();
 
-
             solicitudService.update(idSolicitud, numeroConvenio, nombreEmpresa, cifEmpresa, tutorEmpresa,
                     direccionPracticas,
-                    localidadPracticas, codigoPostalPracticas, cicloFormativoAlumno, solicitud.getUsuario(), fechaInicio, fechaFin,
+                    localidadPracticas, codigoPostalPracticas, cicloFormativoAlumno, solicitud.getUsuario(),
+                    fechaInicio, fechaFin,
                     horasDia, horasTotales, horario, null, solicitud.getEstado());
 
             // Actualizar o crear los alumnos
@@ -420,7 +431,6 @@ public class EnviarDatosController {
             // Guardar el archivo en la ruta especificada
             archivoServiceImpl.guardarArchivo(archivo, solicitud.getRutaSolicitud(), nombreArchivo);
 
-
             // Actualizar la notificación y el estado de la solicitud
             EstadoSolicitud estadoSolicitud = EstadoSolicitud.APROBADO_JEFATURA_PDF;
 
@@ -431,7 +441,8 @@ public class EnviarDatosController {
 
             // Enviar el correo
             emailService.enviarEmail(destinatario.getCorreo(),
-                    "Solicitud aceptada por Jefatura.", "Jefatura ha aceptado tu solicitud y podras descargar el PDF. Revisa tu bandeja de entrada.");
+                    "Solicitud aceptada por Jefatura.",
+                    "Jefatura ha aceptado tu solicitud y podras descargar el PDF. Revisa tu bandeja de entrada.");
 
             PRG.info("Corrección enviada correctamente.");
         } catch (IOException e) {
@@ -465,6 +476,7 @@ public class EnviarDatosController {
         String horarioSinSegundoHorario = solicitud.getHorario().replace("Segundo horario:", "");
         solicitud.setHorario(horarioSinSegundoHorario); // ELIMINAMOS EL TEXTO PARA QUE NO DE ERROR AL RECORRER.
         m.put("solicitud", solicitud);
+        m.put("grados", Grados.values()); // Añadir el enum Grados al modelo
         m.put("alumnos", alumnoService.findBySolicitudIdSolicitud(idSolicitud));
         m.put("usuariosJefatura", inicioSesionService.obtenerUsuariosPorRol(RolUsuario.JEFATURA));
         m.put("view", "profesor/solicitudCorreccion");
@@ -582,7 +594,8 @@ public class EnviarDatosController {
             mensajeService.actualizarNotificacion(idSolicitud, destinatario, remitente);
             solicitudService.cambiarEstadoSolicitud(idSolicitud, estadoSolicitud, remitente);
             emailService.enviarEmail(destinatarioCorreo,
-                    "Documento pendiente de ser revisado.", "Un profesor ha enviado un documento para firmar. Revisa tu bandeja de entrada.");
+                    "Documento pendiente de ser revisado.",
+                    "Un profesor ha enviado un documento para firmar. Revisa tu bandeja de entrada.");
 
             PRG.info("Correción enviada correctamente.");
         } catch (IOException e) {
@@ -659,7 +672,8 @@ public class EnviarDatosController {
 
             // Enviar el correo
             emailService.enviarEmail(destinatarioCorreo,
-                    "Solicitud firmada por Direccion y finalizada.", "Direccion ha firmado tu solicitud y podras descargar todos los PDFs.Revisa tu bandeja de entrada.");
+                    "Solicitud firmada por Direccion y finalizada.",
+                    "Direccion ha firmado tu solicitud y podras descargar todos los PDFs.Revisa tu bandeja de entrada.");
 
             PRG.info("Corrección enviada correctamente.");
         } catch (IOException e) {
@@ -688,7 +702,8 @@ public class EnviarDatosController {
         try {
             mensajeService.actualizarMensaje(idSolicitud, destinatario, remitente, observaciones);
             solicitudService.cambiarEstadoSolicitud(idSolicitud, estadoSolicitud, remitente);
-            emailService.enviarEmail(destinatarioCorreo, "Solicitud denegada por Direccion.", "Direccion ha rechazado tu solicitud. Envia de nuevo el documento. Revisa tu bandeja de entrada.");
+            emailService.enviarEmail(destinatarioCorreo, "Solicitud denegada por Direccion.",
+                    "Direccion ha rechazado tu solicitud. Envia de nuevo el documento. Revisa tu bandeja de entrada.");
             PRG.info("Corrección enviada correctamente.");
         } catch (IOException e) {
             PRG.error("Error al subir el archivo.", "/direccion/solicitudesPendientes");
