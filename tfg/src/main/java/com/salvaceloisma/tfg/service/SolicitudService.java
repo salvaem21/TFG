@@ -4,7 +4,9 @@ import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.salvaceloisma.tfg.domain.Solicitud;
 import com.salvaceloisma.tfg.domain.Usuario;
@@ -20,6 +22,11 @@ public class SolicitudService {
 
     public List<Solicitud> findAll() {
         return solicitudRepository.findAll();
+    }
+
+    @Transactional(readOnly = true)
+    public List<Solicitud> findAll(Sort sort) {
+        return solicitudRepository.findAll(sort);
     }
 
     public List<Solicitud> findByIdSolicitudes(String idSolicitud) {

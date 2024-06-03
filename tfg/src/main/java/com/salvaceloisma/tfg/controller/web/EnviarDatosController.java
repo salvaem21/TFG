@@ -105,8 +105,6 @@ public class EnviarDatosController {
         boolean creandoNuevaSolicitud = (idSolicitud == null || idSolicitud.isEmpty());
         Usuario usuario = (Usuario) session.getAttribute("usuario");
 
-        
-
         StringBuilder horarioBuilder = new StringBuilder();
         horarioBuilder.append("Lunes: ").append(lunesInicio1).append(" - ").append(lunesFin1).append(".\n")
                 .append("Martes: ").append(martesInicio1).append(" - ").append(martesFin1).append(".\n")
@@ -221,12 +219,12 @@ public class EnviarDatosController {
                 }
             }
             String correo;
-        if (usuarioEnvio != null) {
-            Usuario usuarioDestinatario = inicioSesionService.findById(usuarioEnvio);
-            correo = usuarioDestinatario != null ? usuarioDestinatario.getCorreo() : "default@example.com";
-        } else {
-            correo = destinatario.getCorreo();
-        }
+            if (usuarioEnvio != null) {
+                Usuario usuarioDestinatario = inicioSesionService.findById(usuarioEnvio);
+                correo = usuarioDestinatario != null ? usuarioDestinatario.getCorreo() : "default@example.com";
+            } else {
+                correo = destinatario.getCorreo();
+            }
             mensajeService.enviarMensaje(remitente, destinatario, observaciones, solicitud);
             emailService.enviarEmail(correo, "Datos pendientes de ser revisados.",
                     "Un profesor ha enviado unos datos. Revisa tu bandeja de entrada.");
@@ -262,7 +260,9 @@ public class EnviarDatosController {
     // ---------------JEFATURA------------------------/////////////////////////////////
 
     @GetMapping("/recibirDatosJefatura")
-    public String recibirMensajes(Model model, HttpSession session) {
+    public String recibirMensajes(Model model, HttpSession session,
+            @RequestParam(name = "sort", required = false, defaultValue = "idSolicitud") String sortField,
+            @RequestParam(name = "dir", required = false, defaultValue = "asc") String sortDir) {
         Usuario usuario = (Usuario) session.getAttribute("usuario");
         model.addAttribute("nombreUsuario", usuario.getNombre()); // Agregar nombre del usuario al modelo
 
@@ -280,7 +280,32 @@ public class EnviarDatosController {
             }
         }
 
+        // Ordenar las solicitudes
+        solicitudes.sort((s1, s2) -> {
+            int result;
+            switch (sortField) {
+                case "empresa":
+                    result = s1.getEmpresa().compareTo(s2.getEmpresa());
+                    break;
+                case "numeroConvenio":
+                    result = s1.getNumeroConvenio().compareTo(s2.getNumeroConvenio());
+                    break;
+                case "cicloFormativo":
+                    result = s1.getCicloFormativo().compareTo(s2.getCicloFormativo());
+                    break;
+                case "fechaInicio":
+                    result = s1.getFechaInicio().compareTo(s2.getFechaInicio());
+                    break;
+                default:
+                    result = s1.getIdSolicitud().compareTo(s2.getIdSolicitud());
+                    break;
+            }
+            return "asc".equals(sortDir) ? result : -result;
+        });
+
         model.addAttribute("solicitudes", solicitudes);
+        model.addAttribute("sortField", sortField);
+        model.addAttribute("sortDir", sortDir);
         model.addAttribute("view", "jefatura/recibirDatosJefatura");
 
         return "_t/frame";
@@ -456,16 +481,53 @@ public class EnviarDatosController {
 
     // RECHAZADOS
     @GetMapping("/correccionSolicitudListado")
-    public String recibirCorrecionDatosDeJefatura(ModelMap m, HttpSession session) {
+    public String recibirCorreccionDatosDeJefatura(Model model, HttpSession session,
+            @RequestParam(name = "sort", required = false, defaultValue = "idSolicitud") String sortField,
+            @RequestParam(name = "dir", required = false, defaultValue = "asc") String sortDir) {
         Usuario usuario = (Usuario) session.getAttribute("usuario");
-        m.addAttribute("nombreUsuario", usuario.getNombre()); // Agregar nombre del usuario al modelo
+        model.addAttribute("nombreUsuario", usuario.getNombre()); // Agregar nombre del usuario al modelo
 
         // Obtener los mensajes recibidos por el usuario
         EstadoSolicitud estadoRechazado = EstadoSolicitud.RECHAZADO_JEFATURA;
         List<Mensaje> mensajes = mensajeService.recibirMensajes(usuario);
-        m.put("estadoRechazado", estadoRechazado);
-        m.put("mensajes", mensajes);
-        m.put("view", "profesor/solicitudesPendientesCorregir");
+        List<Mensaje> mensajesPendientesCorreccion = mensajes.stream()
+                .filter(mensaje -> mensaje.getSolicitud() != null
+                        && mensaje.getSolicitud().getEstado() == estadoRechazado)
+                .collect(Collectors.toList());
+
+        // Ordenar las solicitudes pendientes de corrección
+        mensajesPendientesCorreccion.sort((m1, m2) -> {
+            Solicitud s1 = m1.getSolicitud();
+            Solicitud s2 = m2.getSolicitud();
+            int result;
+            switch (sortField) {
+                case "empresa":
+                    result = s1.getEmpresa().compareTo(s2.getEmpresa());
+                    break;
+                case "numeroConvenio":
+                    result = s1.getNumeroConvenio().compareTo(s2.getNumeroConvenio());
+                    break;
+                case "cicloFormativo":
+                    result = s1.getCicloFormativo().compareTo(s2.getCicloFormativo());
+                    break;
+                case "fechaInicio":
+                    result = s1.getFechaInicio().compareTo(s2.getFechaInicio());
+                    break;
+                case "observaciones":
+                    result = m1.getContenido().compareTo(m2.getContenido());
+                    break;
+                default:
+                    result = s1.getIdSolicitud().compareTo(s2.getIdSolicitud());
+                    break;
+            }
+            return "asc".equals(sortDir) ? result : -result;
+        });
+
+        model.addAttribute("estadoRechazado", estadoRechazado);
+        model.addAttribute("mensajes", mensajesPendientesCorreccion);
+        model.addAttribute("sortField", sortField);
+        model.addAttribute("sortDir", sortDir);
+        model.addAttribute("view", "profesor/solicitudesPendientesCorregir");
 
         return "_t/frame";
     }
@@ -485,31 +547,64 @@ public class EnviarDatosController {
 
     // APROBADOS
     @GetMapping("/solicitudListadoOk")
-    public String aprobadosDatosDeJefatura(ModelMap m, HttpSession session) {
+    public String aprobadosDatosDeJefatura(ModelMap model, HttpSession session,
+            @RequestParam(name = "sort", required = false, defaultValue = "idSolicitud") String sortField,
+            @RequestParam(name = "dir", required = false, defaultValue = "asc") String sortDir) {
         Usuario usuario = (Usuario) session.getAttribute("usuario");
-        m.addAttribute("nombreUsuario", usuario.getNombre()); // Agregar nombre del usuario al modelo
+        model.addAttribute("nombreUsuario", usuario.getNombre()); // Agregar nombre del usuario al modelo
 
         // Obtener los mensajes recibidos por el usuario
         EstadoSolicitud estadoAprobado1 = EstadoSolicitud.APROBADO_JEFATURA_PDF;
         EstadoSolicitud estadoAprobado2 = EstadoSolicitud.RECHAZADO_DIRECCION;
 
         List<Mensaje> mensajes = mensajeService.recibirMensajes(usuario);
-        m.put("estadoAprobado1", estadoAprobado1);
-        m.put("estadoAprobado2", estadoAprobado2);
-        m.put("mensajes", mensajes);
-        m.put("view", "profesor/solicitudesAprobados");
+
+        // Filtrar y ordenar las solicitudes aprobadas
+        List<Mensaje> mensajesAprobados = mensajes.stream()
+                .filter(mensaje -> mensaje.getSolicitud() != null &&
+                        (mensaje.getSolicitud().getEstado() == estadoAprobado1
+                                || mensaje.getSolicitud().getEstado() == estadoAprobado2))
+                .collect(Collectors.toList());
+
+        // Ordenar las solicitudes aprobadas
+        mensajesAprobados.sort((m1, m2) -> {
+            Solicitud s1 = m1.getSolicitud();
+            Solicitud s2 = m2.getSolicitud();
+            int result;
+            switch (sortField) {
+                case "empresa":
+                    result = s1.getEmpresa().compareTo(s2.getEmpresa());
+                    break;
+                case "cicloFormativo":
+                    result = s1.getCicloFormativo().compareTo(s2.getCicloFormativo());
+                    break;
+                case "observaciones":
+                    result = m1.getContenido().compareTo(m2.getContenido());
+                    break;
+                default:
+                    result = s1.getIdSolicitud().compareTo(s2.getIdSolicitud());
+                    break;
+            }
+            return "asc".equals(sortDir) ? result : -result;
+        });
+
+        model.put("estadoAprobado1", estadoAprobado1);
+        model.put("estadoAprobado2", estadoAprobado2);
+        model.put("mensajes", mensajesAprobados);
+        model.put("sortField", sortField);
+        model.put("sortDir", sortDir);
+        model.put("view", "profesor/solicitudesAprobados");
 
         return "_t/frame";
     }
 
     // FINALIZADOS
     @GetMapping("/solicitudesFinalizadas")
-    public String aprobadosPorDireccion(ModelMap m, HttpSession session) {
+    public String solicitudesFinalizadas(ModelMap model, HttpSession session,
+            @RequestParam(name = "sort", required = false, defaultValue = "idSolicitud") String sortField,
+            @RequestParam(name = "dir", required = false, defaultValue = "asc") String sortDir) {
         Usuario usuario = (Usuario) session.getAttribute("usuario");
-        // m.addAttribute("nombreUsuario", usuario.getNombre()); // Agregar nombre del
-        // usuario al modelo
 
-        // Obtener los mensajes recibidos por el usuario
         EstadoSolicitud estadoFinalizado = EstadoSolicitud.SOLICITUD_FINALIZADA;
 
         List<Solicitud> allSolicitudes = solicitudService.findAllByUsuario(usuario);
@@ -524,16 +619,47 @@ public class EnviarDatosController {
             // la vista
             solicitud.setAlumnos(alumnoService.findBySolicitudIdSolicitud(solicitud.getIdSolicitud()));
         }
-        m.put("estadoFinalizado", estadoFinalizado);
-        m.put("solicitudes", allSolicitudes);
-        m.put("view", "profesor/solicitudesFinalizadas");
+
+        // Ordenar las solicitudes finalizadas
+        allSolicitudes.sort((s1, s2) -> {
+            int result;
+            switch (sortField) {
+                case "empresa":
+                    result = s1.getEmpresa().compareTo(s2.getEmpresa());
+                    break;
+                case "numeroConvenio":
+                    result = s1.getNumeroConvenio().compareTo(s2.getNumeroConvenio());
+                    break;
+                case "cicloFormativo":
+                    result = s1.getCicloFormativo().compareTo(s2.getCicloFormativo());
+                    break;
+                case "fechaInicio":
+                    result = s1.getFechaInicio().compareTo(s2.getFechaInicio());
+                    break;
+                case "estado":
+                    result = s1.getEstado().compareTo(s2.getEstado());
+                    break;
+                default:
+                    result = s1.getIdSolicitud().compareTo(s2.getIdSolicitud());
+                    break;
+            }
+            return "asc".equals(sortDir) ? result : -result;
+        });
+
+        model.put("estadoFinalizado", estadoFinalizado);
+        model.put("solicitudes", allSolicitudes);
+        model.put("sortField", sortField);
+        model.put("sortDir", sortDir);
+        model.put("view", "profesor/solicitudesFinalizadas");
 
         return "_t/frame";
     }
 
     // TODAS LAS SOLICITUDES DEL PROFESOR
     @GetMapping("/solicitudesAllProfesor")
-    public String todasLasSolicitudesProfesor(ModelMap m, HttpSession session) {
+    public String todasLasSolicitudesProfesor(ModelMap model, HttpSession session,
+            @RequestParam(name = "sort", required = false, defaultValue = "idSolicitud") String sortField,
+            @RequestParam(name = "dir", required = false, defaultValue = "asc") String sortDir) {
         Usuario usuario = (Usuario) session.getAttribute("usuario");
 
         List<Solicitud> allSolicitudesProfesor = solicitudService.findAllByUsuario(usuario);
@@ -548,8 +674,37 @@ public class EnviarDatosController {
             // la vista
             solicitud.setAlumnos(alumnoService.findBySolicitudIdSolicitud(solicitud.getIdSolicitud()));
         }
-        m.put("solicitudes", allSolicitudesProfesor);
-        m.put("view", "profesor/solicitudesAllProfesor");
+
+        // Ordenar las solicitudes según el campo especificado
+        allSolicitudesProfesor.sort((s1, s2) -> {
+            int result;
+            switch (sortField) {
+                case "empresa":
+                    result = s1.getEmpresa().compareTo(s2.getEmpresa());
+                    break;
+                case "numeroConvenio":
+                    result = s1.getNumeroConvenio().compareTo(s2.getNumeroConvenio());
+                    break;
+                case "cicloFormativo":
+                    result = s1.getCicloFormativo().compareTo(s2.getCicloFormativo());
+                    break;
+                case "fechaInicio":
+                    result = s1.getFechaInicio().compareTo(s2.getFechaInicio());
+                    break;
+                case "estado":
+                    result = s1.getEstado().compareTo(s2.getEstado());
+                    break;
+                default:
+                    result = s1.getIdSolicitud().compareTo(s2.getIdSolicitud());
+                    break;
+            }
+            return "asc".equals(sortDir) ? result : -result;
+        });
+
+        model.put("solicitudes", allSolicitudesProfesor);
+        model.put("sortField", sortField);
+        model.put("sortDir", sortDir);
+        model.put("view", "profesor/solicitudesAllProfesor");
 
         return "_t/frame";
     }
@@ -609,16 +764,46 @@ public class EnviarDatosController {
 
     // LISTADO PARA DIRECCIÓN
     @GetMapping("/pendientesDireccionLista")
-    public String pendienteDeAprobarDireccion(ModelMap m, HttpSession session) {
+    public String pendienteDeAprobarDireccion(ModelMap model, HttpSession session,
+            @RequestParam(name = "sort", required = false, defaultValue = "idSolicitud") String sortField,
+            @RequestParam(name = "dir", required = false, defaultValue = "asc") String sortDir) {
         Usuario usuario = (Usuario) session.getAttribute("usuario");
-        m.addAttribute("nombreUsuario", usuario.getNombre()); // Agregar nombre del usuario al modelo
+        model.addAttribute("nombreUsuario", usuario.getNombre()); // Agregar nombre del usuario al modelo
 
         // Obtener los mensajes recibidos por el usuario
         EstadoSolicitud estadoPendienteDireccion = EstadoSolicitud.PENDIENTE_FIRMA_DIRECCION;
         List<Mensaje> mensajes = mensajeService.recibirMensajes(usuario);
-        m.put("estadoPendiente", estadoPendienteDireccion);
-        m.put("mensajes", mensajes);
-        m.put("view", "direccion/solicitudesPendientes");
+
+        // Ordenar las solicitudes pendientes según el campo especificado
+        mensajes.sort((m1, m2) -> {
+            Solicitud solicitud1 = m1.getSolicitud();
+            Solicitud solicitud2 = m2.getSolicitud();
+            switch (sortField) {
+                case "empresa":
+                    return sortDir.equals("asc") ? solicitud1.getEmpresa().compareTo(solicitud2.getEmpresa())
+                            : solicitud2.getEmpresa().compareTo(solicitud1.getEmpresa());
+                case "numeroConvenio":
+                    return sortDir.equals("asc")
+                            ? solicitud1.getNumeroConvenio().compareTo(solicitud2.getNumeroConvenio())
+                            : solicitud2.getNumeroConvenio().compareTo(solicitud1.getNumeroConvenio());
+                case "cicloFormativo":
+                    return sortDir.equals("asc")
+                            ? solicitud1.getCicloFormativo().compareTo(solicitud2.getCicloFormativo())
+                            : solicitud2.getCicloFormativo().compareTo(solicitud1.getCicloFormativo());
+                case "fechaInicio":
+                    return sortDir.equals("asc") ? solicitud1.getFechaInicio().compareTo(solicitud2.getFechaInicio())
+                            : solicitud2.getFechaInicio().compareTo(solicitud1.getFechaInicio());
+                default:
+                    return sortDir.equals("asc") ? solicitud1.getIdSolicitud().compareTo(solicitud2.getIdSolicitud())
+                            : solicitud2.getIdSolicitud().compareTo(solicitud1.getIdSolicitud());
+            }
+        });
+
+        model.put("estadoPendiente", estadoPendienteDireccion);
+        model.put("mensajes", mensajes);
+        model.put("sortField", sortField);
+        model.put("sortDir", sortDir);
+        model.put("view", "direccion/solicitudesPendientes");
 
         return "_t/frame";
     }
