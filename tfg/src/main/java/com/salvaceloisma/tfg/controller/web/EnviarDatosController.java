@@ -68,7 +68,11 @@ public class EnviarDatosController {
     private ArchivoServiceImpl archivoServiceImpl;
 
     @GetMapping("/enviarDatosAJefatura")
-    public String crearDocumento(ModelMap m) {
+    public String crearDocumento(ModelMap m, HttpSession session) throws DangerException {
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+        if (usuario == null || usuario.getRol() != RolUsuario.PROFESOR) {
+            PRG.error("Debes logearte con un usuario con permisos para acceder aqui.");
+        }
         m.put("usuariosJefatura", inicioSesionService.obtenerUsuariosPorRol(RolUsuario.JEFATURA));
         m.put("grados", Grados.values()); // Añadir el enum Grados al modelo
         m.put("view", "profesor/enviarDatosAlumnos");
@@ -263,10 +267,15 @@ public class EnviarDatosController {
     @GetMapping("/recibirDatosJefatura")
     public String recibirMensajes(Model model, HttpSession session,
             @RequestParam(name = "sort", required = false, defaultValue = "idSolicitud") String sortField,
-            @RequestParam(name = "dir", required = false, defaultValue = "asc") String sortDir) {
-        Usuario usuario = (Usuario) session.getAttribute("usuario");
-        model.addAttribute("nombreUsuario", usuario.getNombre()); // Agregar nombre del usuario al modelo
+            @RequestParam(name = "dir", required = false, defaultValue = "asc") String sortDir) throws DangerException {
 
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+        if (usuario == null || usuario.getRol() != RolUsuario.JEFATURA) {
+            PRG.error("Debes logearte con un usuario con permisos para acceder aqui.");
+        }
+        else{
+            model.addAttribute("nombreUsuario", usuario.getNombre()); // Agregar nombre del usuario al modelo
+        }
         // Obtener los mensajes enviados y recibidos por el usuario
         List<Mensaje> mensajes = mensajeService.recibirMensajes(usuario);
 
@@ -314,8 +323,12 @@ public class EnviarDatosController {
 
     @GetMapping("/corregirDatosJefatura")
     public String verificarDocumento(
-            @RequestParam("id") String idSolicitud,
-            ModelMap m) {
+            @RequestParam("id") String idSolicitud, HttpSession session,
+            ModelMap m) throws DangerException {
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+        if (usuario == null || usuario.getRol() != RolUsuario.JEFATURA) {
+            PRG.error("Debes logearte con un usuario con permisos para acceder aqui.");
+        }
         Solicitud solicitud = solicitudService.findById(idSolicitud);
         String horarioSinSegundoHorario = solicitud.getHorario().replace("Segundo horario:", "");
         solicitud.setHorario(horarioSinSegundoHorario); // ELIMINAMOS EL TEXTO PARA QUE NO DE ERROR AL RECORRER.
@@ -484,10 +497,14 @@ public class EnviarDatosController {
     @GetMapping("/correccionSolicitudListado")
     public String recibirCorreccionDatosDeJefatura(Model model, HttpSession session,
             @RequestParam(name = "sort", required = false, defaultValue = "idSolicitud") String sortField,
-            @RequestParam(name = "dir", required = false, defaultValue = "asc") String sortDir) {
+            @RequestParam(name = "dir", required = false, defaultValue = "asc") String sortDir) throws DangerException {
         Usuario usuario = (Usuario) session.getAttribute("usuario");
-        model.addAttribute("nombreUsuario", usuario.getNombre()); // Agregar nombre del usuario al modelo
-
+        if (usuario == null || usuario.getRol() != RolUsuario.PROFESOR) {
+            PRG.error("Debes logearte con un usuario con permisos para acceder aqui.");
+        }
+        else{
+            model.addAttribute("nombreUsuario", usuario.getNombre()); // Agregar nombre del usuario al modelo
+        }
         // Obtener los mensajes recibidos por el usuario
         EstadoSolicitud estadoRechazado = EstadoSolicitud.RECHAZADO_JEFATURA;
         List<Mensaje> mensajes = mensajeService.recibirMensajes(usuario);
@@ -534,7 +551,12 @@ public class EnviarDatosController {
     }
 
     @GetMapping("/correccionSolicitud")
-    public String modificarDocumento(@RequestParam("id") String idSolicitud, ModelMap m) {
+    public String modificarDocumento(@RequestParam("id") String idSolicitud, ModelMap m, HttpSession session)
+            throws DangerException {
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+        if (usuario == null || usuario.getRol() != RolUsuario.PROFESOR) {
+            PRG.error("Debes logearte con un usuario con permisos para acceder aqui.");
+        }
         Solicitud solicitud = solicitudService.findById(idSolicitud);
         String horarioSinSegundoHorario = solicitud.getHorario().replace("Segundo horario:", "");
         solicitud.setHorario(horarioSinSegundoHorario); // ELIMINAMOS EL TEXTO PARA QUE NO DE ERROR AL RECORRER.
@@ -550,10 +572,14 @@ public class EnviarDatosController {
     @GetMapping("/solicitudListadoOk")
     public String aprobadosDatosDeJefatura(ModelMap model, HttpSession session,
             @RequestParam(name = "sort", required = false, defaultValue = "idSolicitud") String sortField,
-            @RequestParam(name = "dir", required = false, defaultValue = "asc") String sortDir) {
+            @RequestParam(name = "dir", required = false, defaultValue = "asc") String sortDir) throws DangerException {
         Usuario usuario = (Usuario) session.getAttribute("usuario");
-        model.addAttribute("nombreUsuario", usuario.getNombre()); // Agregar nombre del usuario al modelo
-
+        if (usuario == null || usuario.getRol() != RolUsuario.PROFESOR) {
+            PRG.error("Debes logearte con un usuario con permisos para acceder aqui.");
+        }
+        else{
+            model.addAttribute("nombreUsuario", usuario.getNombre()); // Agregar nombre del usuario al modelo
+        }
         // Obtener los mensajes recibidos por el usuario
         EstadoSolicitud estadoAprobado1 = EstadoSolicitud.APROBADO_JEFATURA_PDF;
         EstadoSolicitud estadoAprobado2 = EstadoSolicitud.RECHAZADO_DIRECCION;
@@ -603,8 +629,11 @@ public class EnviarDatosController {
     @GetMapping("/solicitudesFinalizadas")
     public String solicitudesFinalizadas(ModelMap model, HttpSession session,
             @RequestParam(name = "sort", required = false, defaultValue = "idSolicitud") String sortField,
-            @RequestParam(name = "dir", required = false, defaultValue = "asc") String sortDir) {
+            @RequestParam(name = "dir", required = false, defaultValue = "asc") String sortDir) throws DangerException {
         Usuario usuario = (Usuario) session.getAttribute("usuario");
+        if (usuario == null || usuario.getRol() != RolUsuario.PROFESOR) {
+            PRG.error("Debes logearte con un usuario con permisos para acceder aqui.");
+        }
 
         EstadoSolicitud estadoFinalizado = EstadoSolicitud.SOLICITUD_FINALIZADA;
 
@@ -660,8 +689,11 @@ public class EnviarDatosController {
     @GetMapping("/solicitudesAllProfesor")
     public String todasLasSolicitudesProfesor(ModelMap model, HttpSession session,
             @RequestParam(name = "sort", required = false, defaultValue = "idSolicitud") String sortField,
-            @RequestParam(name = "dir", required = false, defaultValue = "asc") String sortDir) {
+            @RequestParam(name = "dir", required = false, defaultValue = "asc") String sortDir) throws DangerException {
         Usuario usuario = (Usuario) session.getAttribute("usuario");
+        if (usuario == null || usuario.getRol() != RolUsuario.PROFESOR) {
+            PRG.error("Debes logearte con un usuario con permisos para acceder aqui.");
+        }
 
         List<Solicitud> allSolicitudesProfesor = solicitudService.findAllByUsuario(usuario);
 
@@ -714,8 +746,11 @@ public class EnviarDatosController {
     @GetMapping("/solicitudesAllJefatura")
     public String todasLasSolicitudesJefatura(ModelMap model, HttpSession session,
             @RequestParam(name = "sort", required = false, defaultValue = "idSolicitud") String sortField,
-            @RequestParam(name = "dir", required = false, defaultValue = "asc") String sortDir) {
+            @RequestParam(name = "dir", required = false, defaultValue = "asc") String sortDir) throws DangerException {
         Usuario usuario = (Usuario) session.getAttribute("usuario");
+        if (usuario == null || usuario.getRol() != RolUsuario.JEFATURA) {
+            PRG.error("Debes logearte con un usuario con permisos para acceder aqui.");
+        }
 
         List<Solicitud> allSolicitudesJefatura = solicitudService.findAllByUsuarioJefatura(usuario);
 
@@ -821,9 +856,14 @@ public class EnviarDatosController {
     @GetMapping("/pendientesDireccionLista")
     public String pendienteDeAprobarDireccion(ModelMap model, HttpSession session,
             @RequestParam(name = "sort", required = false, defaultValue = "idSolicitud") String sortField,
-            @RequestParam(name = "dir", required = false, defaultValue = "asc") String sortDir) {
+            @RequestParam(name = "dir", required = false, defaultValue = "asc") String sortDir) throws DangerException {
         Usuario usuario = (Usuario) session.getAttribute("usuario");
-        model.addAttribute("nombreUsuario", usuario.getNombre()); // Agregar nombre del usuario al modelo
+        if (usuario == null || usuario.getRol() != RolUsuario.DIRECTOR) {
+            PRG.error("Debes logearte con un usuario con permisos para acceder aqui.");
+        }
+        else{
+            model.addAttribute("nombreUsuario", usuario.getNombre()); // Agregar nombre del usuario al modelo
+        }
 
         // Obtener los mensajes recibidos por el usuario
         EstadoSolicitud estadoPendienteDireccion = EstadoSolicitud.PENDIENTE_FIRMA_DIRECCION;
@@ -865,7 +905,12 @@ public class EnviarDatosController {
 
     // SOLICITUD UNA A UNA
     @GetMapping("/solicitudPendiente")
-    public String solicitudTratadoDireccion(ModelMap m, @RequestParam("id") String idSolicitud) {
+    public String solicitudTratadoDireccion(ModelMap m, HttpSession session, @RequestParam("id") String idSolicitud)
+            throws DangerException {
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+        if (usuario == null || usuario.getRol() != RolUsuario.DIRECTOR) {
+            PRG.error("Debes logearte con un usuario con permisos para acceder aqui.");
+        }
         Solicitud solicitud = solicitudService.findById(idSolicitud);
         m.put("solicitud", solicitud);
         m.put("view", "direccion/solicitudPendiente");
@@ -953,8 +998,13 @@ public class EnviarDatosController {
 
     // ESTOS 3 METODOS SON PARA DESCARGAR LOS ARCHIVOS
     @GetMapping("/descargarSolicitudAprobadaJefatura/{idSolicitud}")
-    public void descargarSolicitudAprobadaJefatura(@PathVariable String idSolicitud, HttpServletResponse response)
+    public void descargarSolicitudAprobadaJefatura(@PathVariable String idSolicitud, HttpSession session,
+            HttpServletResponse response)
             throws IOException, DangerException {
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+        if (usuario == null) {
+            PRG.error("Debes logearte con un usuario con permisos para acceder aqui.");
+        }
         Solicitud solicitud = solicitudService.findById(idSolicitud);
         String rutaArchivo = solicitud.getRutaSolicitud() + "/APROBADO_POR_JEFATURA " + idSolicitud + ".pdf";
 
@@ -972,8 +1022,13 @@ public class EnviarDatosController {
     }
 
     @GetMapping("/descargarSolicitudFirmadaEmpresa/{idSolicitud}")
-    public void descargarSolicitudFirmadaEmpresa(@PathVariable String idSolicitud, HttpServletResponse response)
+    public void descargarSolicitudFirmadaEmpresa(@PathVariable String idSolicitud, HttpSession session,
+            HttpServletResponse response)
             throws IOException, DangerException {
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+        if (usuario == null) {
+            PRG.error("Debes logearte con un usuario con permisos para acceder aqui.");
+        }
         Solicitud solicitud = solicitudService.findById(idSolicitud);
         String rutaArchivo = solicitud.getRutaSolicitud() + "/FIRMADO_POR_EMPRESA " + idSolicitud + ".pdf";
 
@@ -991,8 +1046,13 @@ public class EnviarDatosController {
     }
 
     @GetMapping("/descargarSolicitudFirmadaDireccion/{idSolicitud}")
-    public void descargarSolicitudFirmadaDireccion(@PathVariable String idSolicitud, HttpServletResponse response)
+    public void descargarSolicitudFirmadaDireccion(@PathVariable String idSolicitud, HttpSession session,
+            HttpServletResponse response)
             throws IOException, DangerException {
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+        if (usuario == null) {
+            PRG.error("Debes logearte con un usuario con permisos para acceder aqui.");
+        }
         Solicitud solicitud = solicitudService.findById(idSolicitud);
         String rutaArchivo = solicitud.getRutaSolicitud() + "/SOLICITUD_FINALIZADA " + idSolicitud + ".pdf";
 
