@@ -13,5 +13,6 @@ public interface SolicitudRepository extends JpaRepository<Solicitud,String> {
     List<Solicitud> findByIdSolicitud(String idSolicitud);
     List<Solicitud> findByNumeroConvenio(String numeroConvenio);
     List<Solicitud> findAllByUsuario(Usuario usuario);
+    List<Solicitud> findAllByUsuarioJefatura(Usuario usuario);
 }
 
