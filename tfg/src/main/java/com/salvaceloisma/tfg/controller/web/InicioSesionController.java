@@ -76,8 +76,8 @@ public class InicioSesionController {
     @GetMapping("/crearUsuario")
     public String crearUsuario(
             ModelMap m, HttpSession session) throws DangerException {
-                Usuario usuario = (Usuario) session.getAttribute("usuario");
-        if (usuario == null || usuario.getRol() != RolUsuario.DIRECTOR || usuario.getRol() != RolUsuario.ADMIN) {
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+        if (usuario == null) {
             PRG.error("Debes logearte con un usuario con permisos para acceder aqui.");
         }
         m.put("view", "inicioSesion/crearUsuario");
@@ -104,8 +104,9 @@ public class InicioSesionController {
     @GetMapping("/gestionarAlumnos")
     public String gestionarAlumnos(
             ModelMap m, HttpSession session) throws DangerException {
-                Usuario usuario = (Usuario) session.getAttribute("usuario");
-        if (usuario == null || usuario.getRol() != RolUsuario.DIRECTOR || usuario.getRol() != RolUsuario.ADMIN) {
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+        if (usuario == null) {
+
             PRG.error("Debes logearte con un usuario con permisos para acceder aqui.");
         }
         m.put("alumnos", alumnoService.findAll());
@@ -116,8 +117,8 @@ public class InicioSesionController {
     @GetMapping("/cambiarContrasenia")
     public String cambiarContrasenia(
             ModelMap m, HttpSession session) throws DangerException {
-                Usuario usuario = (Usuario) session.getAttribute("usuario");
-        if (usuario == null || usuario.getRol() != RolUsuario.DIRECTOR || usuario.getRol() != RolUsuario.ADMIN) {
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+        if (usuario == null) {
             PRG.error("Debes logearte con un usuario con permisos para acceder aqui.");
         }
         m.put("view", "inicioSesion/cambiarContrasenia");
