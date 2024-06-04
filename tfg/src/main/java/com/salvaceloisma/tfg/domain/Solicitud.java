@@ -35,6 +35,10 @@ public class Solicitud {
     @JoinColumn(name = "id_usuario", referencedColumnName = "id", foreignKey = @ForeignKey(name = "FK_solicitud_usuario"))
     private Usuario usuario;
 
+    @ManyToOne
+    @JoinColumn(name = "id_usuarioJefatura", referencedColumnName = "id", foreignKey = @ForeignKey(name = "FK_solicitud_usuarioJefatura"))
+    private Usuario usuarioJefatura;
+
     @OneToMany(mappedBy = "solicitud")
     private List<Alumno> alumnos;
 
@@ -109,5 +113,6 @@ public class Solicitud {
         this.estado = estado;
         this.alumnos = new ArrayList<>(); // Inicializar la lista de alumnos
         this.rutaSolicitud = "";
+        this.usuarioJefatura = null;
     }
 }

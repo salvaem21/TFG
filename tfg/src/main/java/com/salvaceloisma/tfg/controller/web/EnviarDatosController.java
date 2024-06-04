@@ -162,6 +162,7 @@ public class EnviarDatosController {
                     carpetaSolicitud.mkdirs(); // Crear la carpeta si no existe
                 }
                 solicitud.setRutaSolicitud(rutaSolicitud);
+                solicitud.setUsuarioJefatura(inicioSesionService.findById(usuarioEnvio));
                 solicitudService.save(solicitud);
             } else {
                 // Si se está actualizando, obtener la solicitud existente y actualizar sus
@@ -705,6 +706,60 @@ public class EnviarDatosController {
         model.put("sortField", sortField);
         model.put("sortDir", sortDir);
         model.put("view", "profesor/solicitudesAllProfesor");
+
+        return "_t/frame";
+    }
+
+    // TODAS LAS SOLICITUDES DEL JEFATURA
+    @GetMapping("/solicitudesAllJefatura")
+    public String todasLasSolicitudesJefatura(ModelMap model, HttpSession session,
+            @RequestParam(name = "sort", required = false, defaultValue = "idSolicitud") String sortField,
+            @RequestParam(name = "dir", required = false, defaultValue = "asc") String sortDir) {
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+
+        List<Solicitud> allSolicitudesJefatura = solicitudService.findAllByUsuarioJefatura(usuario);
+
+        // Procesar el campo de horario de cada solicitud
+        for (Solicitud solicitud : allSolicitudesJefatura) {
+            String horarioProcesado = solicitud.getHorario().replace("Segundo horario:",
+                    "<br><strong>Segundo horario:</strong><br><br>");
+            horarioProcesado = horarioProcesado.replace(".", "<br>");
+            solicitud.setHorario(horarioProcesado);
+            // Cargar los alumnos vinculados a esta solicitud (LISTA) ya que se utilizara en
+            // la vista
+            solicitud.setAlumnos(alumnoService.findBySolicitudIdSolicitud(solicitud.getIdSolicitud()));
+        }
+
+        // Ordenar las solicitudes según el campo especificado
+        allSolicitudesJefatura.sort((s1, s2) -> {
+            int result;
+            switch (sortField) {
+                case "empresa":
+                    result = s1.getEmpresa().compareTo(s2.getEmpresa());
+                    break;
+                case "numeroConvenio":
+                    result = s1.getNumeroConvenio().compareTo(s2.getNumeroConvenio());
+                    break;
+                case "cicloFormativo":
+                    result = s1.getCicloFormativo().compareTo(s2.getCicloFormativo());
+                    break;
+                case "fechaInicio":
+                    result = s1.getFechaInicio().compareTo(s2.getFechaInicio());
+                    break;
+                case "estado":
+                    result = s1.getEstado().compareTo(s2.getEstado());
+                    break;
+                default:
+                    result = s1.getIdSolicitud().compareTo(s2.getIdSolicitud());
+                    break;
+            }
+            return "asc".equals(sortDir) ? result : -result;
+        });
+
+        model.put("solicitudes", allSolicitudesJefatura);
+        model.put("sortField", sortField);
+        model.put("sortDir", sortDir);
+        model.put("view", "jefatura/solicitudesAllJefatura");
 
         return "_t/frame";
     }
