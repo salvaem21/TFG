@@ -162,7 +162,7 @@ $(document).ready(function () {
 
     function validarDireccionPracticas(direccionInput) {
         var direccion = direccionInput.val();
-        var direccionRegex = /^[0-9a-zA-Zº/, ]+$/;
+        var direccionRegex = /^[0-9a-zA-Zº/,áéíóúÁÉÍÓÚüÜñÑ ]+$/;
         if (!direccionRegex.test(direccion)) {
             direccionInput.css('border-color', 'red');
             return false;
