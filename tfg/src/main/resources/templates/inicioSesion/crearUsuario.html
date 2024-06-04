@@ -2,7 +2,7 @@
     <div class="row justify-content-center"> <!-- Centra el contenido del formulario -->
         <div class="col-md-6"> <!-- Tamaño de columna medio para pantallas medianas -->
             <h1 class="text-center">CREAR USUARIO</h1>
-            <form action="/inicioSesion/crearUsuario" method="post">
+            <form action="/inicioSesion/crearUsuario" method="post" id="formularioAlumnos">
                 <div class="form-group"> <!-- Agrupa los elementos del formulario -->
                     <label for="nombreAlumno">Nombre</label>
                     <input id="nombreAlumno" type="text" name="nombre" autofocus="autofocus" class="form-control" />
@@ -36,7 +36,7 @@
                 <div class="form-group">
                     <div class="row">
                         <div class="col-6">
-                            <input class="btn btn-outline-propio1 btn-block" type="submit" value="Registrarse" />
+                            <input class="btn btn-outline-propio1 btn-block" type="submit" value="Crear Usuario" />
                         </div>
                         <div class="col-6">
                             <a class="nav-link btn btn-outline-propio1 btn-block" href="/">Cancelar</a>

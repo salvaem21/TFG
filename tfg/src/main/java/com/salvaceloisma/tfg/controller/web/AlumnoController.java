@@ -40,7 +40,7 @@ public class AlumnoController {
             @RequestParam("id") Long idAlumno, HttpSession session,
             ModelMap m) throws DangerException {
         Usuario usuario = (Usuario) session.getAttribute("usuario");
-        if (usuario == null || usuario.getRol() != RolUsuario.DIRECTOR || usuario.getRol() != RolUsuario.ADMIN) {
+        if (usuario == null) {
             PRG.error("Debes logearte con un usuario con permisos para acceder aqui.");
         }
         m.put("alumno", alumnoService.findById(idAlumno));
