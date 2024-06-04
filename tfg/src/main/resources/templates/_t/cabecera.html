@@ -47,7 +47,7 @@
             <h3 class="text-light ">Mensajes Nuevos</h3>
             <details th:each="mensaje : ${mensajesConNovedad}">
                 <summary class="text-light "
-                    th:text="|Mensaje de: ${mensaje.solicitud.usuario.nombre} (${mensaje.solicitud.estado})|"></summary>
+                    th:text="|Mensaje de: ${mensaje.remitente.nombre} (${mensaje.solicitud.estado})|"></summary>
                 <li class="text-light "
                     th:text="|Empresa: ${mensaje.solicitud.empresa} (Tutor: ${mensaje.solicitud.tutorEmpresa})|"></li>
                 <li class="text-light " th:text="|Ciclo Formativo: ${mensaje.solicitud.cicloFormativo}|"></li>
