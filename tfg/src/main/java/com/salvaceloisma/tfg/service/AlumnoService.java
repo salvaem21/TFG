@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.salvaceloisma.tfg.domain.Alumno;
 import com.salvaceloisma.tfg.domain.Solicitud;
@@ -72,12 +73,17 @@ public class AlumnoService {
         alumnoRepository.delete(alumnoRepository.getReferenceById(idAlumno));
     }
 
-    public void deleteByDni(String dni) {
-       alumnoRepository.deleteByDni(dni);
+    public void deleteByDniAndSolicitud(String dni, String idSolicitud) {
+       alumnoRepository.deleteByDniAndSolicitudIdSolicitud(dni, idSolicitud);
     }
 
     public Alumno findByDniAndSolicitudIdSolicitud(String dni, String idSolicitud) {
         return alumnoRepository.findByDniAndSolicitudIdSolicitud(dni, idSolicitud);
+    }
+    @Transactional
+    public void deleteAllBySolicitud(Solicitud solicitud) {
+    alumnoRepository.deleteAllBySolicitud(solicitud);
+
     }
 
 }
