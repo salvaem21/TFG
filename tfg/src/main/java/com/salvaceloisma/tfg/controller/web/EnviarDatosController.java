@@ -143,15 +143,19 @@ public class EnviarDatosController {
         Usuario destinatario = inicioSesionService.findById(usuarioEnvio);
         Mensaje mensaje = mensajeService.findBySolicitudIdSolicitud(idSolicitud);
         if (destinatario == null) {
+            if (mensaje == null) {
+                PRG.error("No se encontró ningún mensaje asociado con la solicitud ID " + idSolicitud);
+                return "redirect:../";
+            }
             destinatario = mensaje.getRemitente();
         }
         // Establecer el estado por defecto a PENDIENTE_JEFATURA
         EstadoSolicitud estado = EstadoSolicitud.PENDIENTE_FIRMA_JEFATURA;
         String observaciones = "";
+        Solicitud solicitud = null;
 
         try {
 
-            Solicitud solicitud = null;
             if (creandoNuevaSolicitud) {
                 solicitud = solicitudService.save(numeroConvenio, nombreEmpresa, cifEmpresa, tutorEmpresa,
                         direccionPracticas, localidadPracticas, codigoPostalPracticas, cicloFormativoAlumno, usuario,
@@ -188,22 +192,10 @@ public class EnviarDatosController {
                 solicitud.setRutaSolicitud(rutaSolicitud);
                 solicitudService.save(solicitud);
             }
-            // Obtener lista de alumnos actuales de la solicitud
-            List<Alumno> alumnosActuales = alumnoService.findBySolicitudIdSolicitud(idSolicitud);
-            List<String> nifAlumnosActuales = alumnosActuales.stream()
-                    .map(Alumno::getDni)
-                    .collect(Collectors.toList());
+            // DESPUES DE CREAR SOLICITUD
 
-            // Crear lista de NIFs recibidos en la solicitud
-            List<String> nifAlumnosRecibidos = Arrays.asList(nifAlumno);
 
-            // Determinar alumnos a eliminar
-            for (Alumno alumno : alumnosActuales) {
-                if (!nifAlumnosRecibidos.contains(alumno.getDni())) {
-                    alumnoService.deleteByDni(alumno.getDni());
-                }
-            }
-
+            alumnoService.deleteAllBySolicitud(solicitud);
             // Crear o actualizar los alumnos
             for (int i = 0; i < apellidosAlumno.length; i++) {
                 datos.append("Alumno ").append(i + 1).append(":\n");
@@ -214,31 +206,28 @@ public class EnviarDatosController {
                 datos.append("Fecha de nacimiento alumno: ").append("\n");
                 datos.append("\n");
                 try {
-                    if (creandoNuevaSolicitud || !nifAlumnosActuales.contains(nifAlumno[i])) {
-                        alumnoService.save(nifAlumno[i], nombreAlumno[i], apellidosAlumno[i], idSolicitud);
-                    } else {
-                        alumnoService.updateByDni(nifAlumno[i], nombreAlumno[i], apellidosAlumno[i], idSolicitud);
-                    }
+                    alumnoService.save(nifAlumno[i], nombreAlumno[i], apellidosAlumno[i], idSolicitud);
                 } catch (Exception e) {
                     PRG.error("Los alumnos no pueden ser creados o actualizados.");
                 }
             }
-            String correo;
-            if (usuarioEnvio != null) {
-                Usuario usuarioDestinatario = inicioSesionService.findById(usuarioEnvio);
-                correo = usuarioDestinatario != null ? usuarioDestinatario.getCorreo() : "default@example.com";
-            } else {
-                correo = destinatario.getCorreo();
-            }
-            mensajeService.enviarMensaje(remitente, destinatario, observaciones, solicitud);
-            emailService.enviarEmail(correo, "Datos pendientes de ser revisados.",
-                    "Un profesor ha enviado unos datos. Revisa tu bandeja de entrada.");
 
-        } catch (Exception e) {
-            PRG.error("Los datos no pudieron enviarse correctamente.");
+        // Enviar mensaje y correo electrónico solo si no ha habido errores antes
+        String correo;
+        if (usuarioEnvio != null) {
+            Usuario usuarioDestinatario = inicioSesionService.findById(usuarioEnvio);
+            correo = usuarioDestinatario != null ? usuarioDestinatario.getCorreo() : "default@example.com";
+        } else {
+            correo = destinatario.getCorreo();
         }
-        PRG.info("Los datos se enviaron correctamente.");
-        return "redirect:../";
+        mensajeService.enviarMensaje(remitente, destinatario, observaciones, solicitud);
+        emailService.enviarEmail(correo, "Datos pendientes de ser revisados.",
+                "Un profesor ha enviado unos datos. Revisa tu bandeja de entrada.");
+    } catch (Exception e) {
+        PRG.error("Los datos no pudieron enviarse correctamente. Error: " + e.getMessage());
+    }
+
+    return "redirect:../";
     }
 
     // --------------------------------------------------------------------------------------------------------------------------------------------//

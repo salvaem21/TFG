@@ -6,11 +6,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import com.salvaceloisma.tfg.domain.Alumno;
+import com.salvaceloisma.tfg.domain.Solicitud;
 
 @Repository
 public interface AlumnoRepository extends JpaRepository<Alumno, Long> {
     List<Alumno> findBySolicitudIdSolicitud(String idSolicitud);
     List<Alumno> findByDni(String dni);
     Alumno findByDniAndSolicitudIdSolicitud(String dni, String idSolicitud);
-    void deleteByDni(String dni);
+    void deleteByDniAndSolicitudIdSolicitud(String dni, String idSolicitud);
+    void deleteAllBySolicitud(Solicitud solicitud);
 }
