@@ -1,50 +1,62 @@
 <div class="container">
-    <h1>Solicitudes Pendientes</h1>
-</div>
-<div class="ml-3 mr-3">
-    <table class="table">
-        <thead class="thead">
-            <tr class="row">
-                <th class="col-3 table-header">
-                    <a th:href="@{/enviarDatos/pendientesDireccionLista(sort='idSolicitud', dir=${sortField == 'idSolicitud' ? (sortDir == 'asc' ? 'desc' : 'asc') : 'asc'})}">
-                        Nº Solicitud <span th:text="${sortField == 'idSolicitud' ? (sortDir == 'asc' ? '▲' : '▼') : ''}"></span>
-                    </a>
-                </th>
-                <th class="col-2 table-header">
-                    <a th:href="@{/enviarDatos/pendientesDireccionLista(sort='empresa', dir=${sortField == 'empresa' ? (sortDir == 'asc' ? 'desc' : 'asc') : 'asc'})}">
-                        Empresa <span th:text="${sortField == 'empresa' ? (sortDir == 'asc' ? '▲' : '▼') : ''}"></span>
-                    </a>
-                </th>
-                <th class="col-2 table-header">
-                    <a th:href="@{/enviarDatos/pendientesDireccionLista(sort='numeroConvenio', dir=${sortField == 'numeroConvenio' ? (sortDir == 'asc' ? 'desc' : 'asc') : 'asc'})}">
-                        Numero convenio <span th:text="${sortField == 'numeroConvenio' ? (sortDir == 'asc' ? '▲' : '▼') : ''}"></span>
-                    </a>
-                </th>
-                <th class="col-1 table-header">
-                    <a th:href="@{/enviarDatos/pendientesDireccionLista(sort='cicloFormativo', dir=${sortField == 'cicloFormativo' ? (sortDir == 'asc' ? 'desc' : 'asc') : 'asc'})}">
-                        Ciclo Formativo <span th:text="${sortField == 'cicloFormativo' ? (sortDir == 'asc' ? '▲' : '▼') : ''}"></span>
-                    </a>
-                </th>
-                <th class="col-2 table-header">
-                    <a th:href="@{/enviarDatos/pendientesDireccionLista(sort='fechaInicio', dir=${sortField == 'fechaInicio' ? (sortDir == 'asc' ? 'desc' : 'asc') : 'asc'})}">
-                        Fecha Inicio <span th:text="${sortField == 'fechaInicio' ? (sortDir == 'asc' ? '▲' : '▼') : ''}"></span>
-                    </a>
-                </th>
-                <th class="col-2">Gestionar</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- Bucle de solicitudes -->
-            <tr class="row solicitud-row" th:each="mensaje : ${mensajes}">
-                <!-- Fila de la solicitud -->
-                <td class="col-3 small" th:text="${mensaje.solicitud.idSolicitud}"></td>
-                <td class="col-2 small" th:text="${mensaje.solicitud.empresa}"></td>
-                <td class="col-2 small" th:text="${mensaje.solicitud.numeroConvenio}"></td>
-                <td class="col-1 small" th:text="${mensaje.solicitud.cicloFormativo}"></td>
-                <td class="col-2 small" th:text="${mensaje.solicitud.fechaInicio}"></td>
-                <td class="col-2"><a class="btn btn-outline-propio1" th:href="@{/enviarDatos/solicitudPendiente(id=${mensaje.solicitud.idSolicitud})}">Gestionar</a></td>
-            </tr>
-        </tbody>
-    </table>
-    <a class="btn btn-outline-propio1 mb-2 col-2 mr-2" href="../">Volver</a>
-</div>
+        <h1>Solicitudes Pendientes</h1>
+    </div>
+    <div class="ml-3 mr-3">
+        <div class="input-group mt-2 mb-2">
+            <select class="form-select search-attribute" aria-label="Seleccionar atributo de búsqueda">
+                <option value="all">Todos</option>
+                <option value="idSolicitud">Nº Solicitud</option>
+                <option value="empresa">Empresa</option>
+                <option value="numeroConvenio">Numero convenio</option>
+                <option value="cicloFormativo">Ciclo Formativo</option>
+                <option value="fechaInicio">Fecha Inicio</option>
+            </select>
+            <input class="form-control search-tables" placeholder="Buscar..." type="text"/>
+        </div>
+        <table id="solicitudes-table" class="table">
+            <thead class="thead">
+                <tr class="row">
+                    <th class="col-3 table-header">
+                        <a th:href="@{/enviarDatos/pendientesDireccionLista(sort='idSolicitud', dir=${sortField == 'idSolicitud' ? (sortDir == 'asc' ? 'desc' : 'asc') : 'asc'})}">
+                            Nº Solicitud <span th:text="${sortField == 'idSolicitud' ? (sortDir == 'asc' ? '▲' : '▼') : ''}"></span>
+                        </a>
+                    </th>
+                    <th class="col-2 table-header">
+                        <a th:href="@{/enviarDatos/pendientesDireccionLista(sort='empresa', dir=${sortField == 'empresa' ? (sortDir == 'asc' ? 'desc' : 'asc') : 'asc'})}">
+                            Empresa <span th:text="${sortField == 'empresa' ? (sortDir == 'asc' ? '▲' : '▼') : ''}"></span>
+                        </a>
+                    </th>
+                    <th class="col-2 table-header">
+                        <a th:href="@{/enviarDatos/pendientesDireccionLista(sort='numeroConvenio', dir=${sortField == 'numeroConvenio' ? (sortDir == 'asc' ? 'desc' : 'asc') : 'asc'})}">
+                            Numero convenio <span th:text="${sortField == 'numeroConvenio' ? (sortDir == 'asc' ? '▲' : '▼') : ''}"></span>
+                        </a>
+                    </th>
+                    <th class="col-1 table-header">
+                        <a th:href="@{/enviarDatos/pendientesDireccionLista(sort='cicloFormativo', dir=${sortField == 'cicloFormativo' ? (sortDir == 'asc' ? 'desc' : 'asc') : 'asc'})}">
+                            Ciclo Formativo <span th:text="${sortField == 'cicloFormativo' ? (sortDir == 'asc' ? '▲' : '▼') : ''}"></span>
+                        </a>
+                    </th>
+                    <th class="col-2 table-header">
+                        <a th:href="@{/enviarDatos/pendientesDireccionLista(sort='fechaInicio', dir=${sortField == 'fechaInicio' ? (sortDir == 'asc' ? 'desc' : 'asc') : 'asc'})}">
+                            Fecha Inicio <span th:text="${sortField == 'fechaInicio' ? (sortDir == 'asc' ? '▲' : '▼') : ''}"></span>
+                        </a>
+                    </th>
+                    <th class="col-2">Gestionar</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Bucle de solicitudes -->
+                <tr class="row solicitud-row" th:each="mensaje : ${mensajes}">
+                    <!-- Fila de la solicitud -->
+                    <td class="col-3 small" data-attribute="idSolicitud" th:text="${mensaje.solicitud.idSolicitud}"></td>
+                    <td class="col-2 small" data-attribute="empresa" th:text="${mensaje.solicitud.empresa}"></td>
+                    <td class="col-2 small" data-attribute="numeroConvenio" th:text="${mensaje.solicitud.numeroConvenio}"></td>
+                    <td class="col-1 small" data-attribute="cicloFormativo" th:text="${mensaje.solicitud.cicloFormativo}"></td>
+                    <td class="col-2 small" data-attribute="fechaInicio" th:text="${mensaje.solicitud.fechaInicio}"></td>
+                    <td class="col-2"><a class="btn btn-outline-propio1" th:href="@{/enviarDatos/solicitudPendiente(id=${mensaje.solicitud.idSolicitud})}">Gestionar</a></td>
+                </tr>
+            </tbody>
+        </table>
+        <a class="btn btn-outline-propio1 mb-2 col-2 mr-2" href="../">Volver</a>
+    </div>
+

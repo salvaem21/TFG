@@ -1,67 +1,72 @@
 <div class="container">
-    <h2 class="text-center mb-4">Solicitud FCT</h2>
-    <form action="" method="post" id="solicitudFCT">
-        <div class="mb-4 pb-2 border-bottom">
-            <h3 class="text-center">Solicitud</h3>
-            <div class="ml-3 mr-3">
-                <table class="table">
-                    <thead class="thead">
-                        <tr class="row">
-                            <th class="col-3">Nº Solicitud</th>
-                            <th class="col-2">Empresa</th>
-                            <th class="col-2">Numero convenio</th>
-                            <th class="col-1">Ciclo Formativo</th>
-                            <th class="col-2">Fecha Inicio</th>
-                            <th class="col-2">Solicitud</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Bucle de solicitudes -->
-                        <tr class="row solicitud-row">
-                            <!-- Fila de la solicitud -->
-                            <td class="col-3" th:text="${solicitud.idSolicitud}"></td>
-                            <td class="col-2" th:text="${solicitud.empresa}"></td>
-                            <td class="col-2" th:text="${solicitud.numeroConvenio}"></td>
-                            <td class="col-1" th:text="${solicitud.cicloFormativo}"></td>
-                            <td class="col-2" th:text="${solicitud.fechaInicio}"></td>
-                            <td class="col-2"><a th:href="@{/enviarDatos/descargarSolicitudFirmadaEmpresa/{idSolicitud}(idSolicitud=${solicitud.idSolicitud})}" class="btn btn-link btn-sm">
-                                Descargar PDF
-                            </a></td>
-            
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+        <h2 class="text-center mb-4">Solicitud FCT</h2>
+        <form action="" method="post" id="solicitudFCT">
+            <div class="mb-4 pb-2 border-bottom">
+                <h3 class="text-center">Solicitud</h3>
+                <div class="ml-3 mr-3">
+                    <div class="input-group mt-2 mb-2">
+                        <select class="form-select search-attribute" aria-label="Seleccionar atributo de búsqueda">
+                            <option value="all">Todos</option>
+                            <option value="idSolicitud">Nº Solicitud</option>
+                            <option value="empresa">Empresa</option>
+                            <option value="numeroConvenio">Numero convenio</option>
+                            <option value="cicloFormativo">Ciclo Formativo</option>
+                            <option value="fechaInicio">Fecha Inicio</option>
+                        </select>
+                        <input class="form-control search-tables" placeholder="Buscar..." type="text"/>
+                    </div>
+                    <table id="solicitudes-table" class="table">
+                        <thead class="thead">
+                            <tr class="row">
+                                <th class="col-3">Nº Solicitud</th>
+                                <th class="col-2">Empresa</th>
+                                <th class="col-2">Numero convenio</th>
+                                <th class="col-1">Ciclo Formativo</th>
+                                <th class="col-2">Fecha Inicio</th>
+                                <th class="col-2">Solicitud</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Bucle de solicitudes -->
+                            <tr class="row solicitud-row">
+                                <!-- Fila de la solicitud -->
+                                <td class="col-3" data-attribute="idSolicitud" th:text="${solicitud.idSolicitud}"></td>
+                                <td class="col-2" data-attribute="empresa" th:text="${solicitud.empresa}"></td>
+                                <td class="col-2" data-attribute="numeroConvenio" th:text="${solicitud.numeroConvenio}"></td>
+                                <td class="col-1" data-attribute="cicloFormativo" th:text="${solicitud.cicloFormativo}"></td>
+                                <td class="col-2" data-attribute="fechaInicio" th:text="${solicitud.fechaInicio}"></td>
+                                <td class="col-2"><a th:href="@{/enviarDatos/descargarSolicitudFirmadaEmpresa/{idSolicitud}(idSolicitud=${solicitud.idSolicitud})}" class="btn btn-link btn-sm">
+                                    Descargar PDF
+                                </a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
-            
-        </div>
-        <!-- Opción para añadir PDF -->
-        <div class="form-check mb-3">
-            <input class="form-check-input" type="radio" name="opcion" id="opcionPDF" value="pdf">
-            <label class="form-check-label" for="opcionPDF">Añadir PDF</label>
-        </div>
-
-        <!-- Opción para añadir Observaciones -->
-        <div class="form-check mb-3">
-            <input class="form-check-input" type="radio" name="opcion" id="opcionObservaciones" value="observaciones">
-            <label class="form-check-label" for="opcionObservaciones">Observaciones</label>
-        </div>
-
-        <!-- Campo para subir PDF -->
-        <div class="form-group" id="campoPDF" style="display: none;">
-            <label for="archivoPDF">Subir archivo PDF:</label>
-            <input type="file" class="form-control-file" id="archivoPDF" name="archivoPDF">
-        </div>
-
-        <!-- Campo para ingresar observaciones -->
-        <div class="form-group" id="campoObservaciones" style="display: none;">
-            <label for="observaciones">Observaciones:</label>
-            <textarea class="form-control" id="observaciones" name="observaciones" rows="3"></textarea>
-        </div>
-        <input type="hidden" name="idSolicitud" th:value="${solicitud.idSolicitud}">
-        <div class="row">
-        <button type="submit" class="btn btn-outline-propio1 mt-3 w-100 col-6 " id="boton">Enviar Archivo/Corrección</button>
-        <a class="btn btn-outline-propio1 mt-3 col-6" href="../">Volver</a>
-        </div>
-    </form>
-</div>
+            <!-- Opción para añadir PDF -->
+            <div class="form-check mb-3">
+                <input class="form-check-input" type="radio" name="opcion" id="opcionPDF" value="pdf">
+                <label class="form-check-label" for="opcionPDF">Añadir PDF</label>
+            </div>
+            <!-- Opción para añadir Observaciones -->
+            <div class="form-check mb-3">
+                <input class="form-check-input" type="radio" name="opcion" id="opcionObservaciones" value="observaciones">
+                <label class="form-check-label" for="opcionObservaciones">Observaciones</label>
+            </div>
+            <!-- Campo para subir PDF -->
+            <div class="form-group" id="campoPDF" style="display: none;">
+                <label for="archivoPDF">Subir archivo PDF:</label>
+                <input type="file" class="form-control-file" id="archivoPDF" name="archivoPDF">
+            </div>
+            <!-- Campo para ingresar observaciones -->
+            <div class="form-group" id="campoObservaciones" style="display: none;">
+                <label for="observaciones">Observaciones:</label>
+                <textarea class="form-control" id="observaciones" name="observaciones" rows="3"></textarea>
+            </div>
+            <input type="hidden" name="idSolicitud" th:value="${solicitud.idSolicitud}">
+            <div class="row">
+                <button type="submit" class="btn btn-outline-propio1 mt-3 w-100 col-6" id="boton">Enviar Archivo/Corrección</button>
+                <a class="btn btn-outline-propio1 mt-3 col-6" href="../">Volver</a>
+            </div>
+        </form>
+    </div>

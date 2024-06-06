@@ -2,7 +2,19 @@
     <h1>Lista de solicitudes y alumnos</h1>
 </div>
 <div class="ml-3 mr-3">
-    <table class="table">
+    <div class="input-group mt-2 mb-2">
+        <select class="form-select search-attribute" aria-label="Seleccionar atributo de búsqueda">
+            <option value="all">Todos</option>
+            <option value="idSolicitud">Nº Solicitud</option>
+            <option value="empresa">Empresa</option>
+            <option value="numeroConvenio">Numero convenio</option>
+            <option value="cicloFormativo">Ciclo Formativo</option>
+            <option value="fechaInicio">Fecha Inicio</option>
+            <option value="alumnos">Alumnos</option>
+        </select>
+        <input class="form-control search-tables" id="buscador" placeholder="Buscar..." type="text"/>
+    </div>
+    <table id="solicitudes-table" class="table">
         <thead class="thead">
             <tr class="row">
                 <th class="col-2 table-header">
@@ -38,13 +50,13 @@
             <!-- Bucle de solicitudes -->
             <tr class="row solicitud-row" th:each="solicitud : ${solicitudes}">
                 <!-- Fila de la solicitud -->
-                <td class="col-2 small" th:text="${solicitud.idSolicitud}"></td>
-                <td class="col-2 small" th:text="${solicitud.empresa}"></td>
-                <td class="col-2 small" th:text="${solicitud.numeroConvenio}"></td>
-                <td class="col-2 small" th:text="${solicitud.cicloFormativo}"></td>
-                <td class="col-2 small" th:text="${solicitud.fechaInicio}"></td>
+                <td class="col-2 small" data-attribute="idSolicitud" th:text="${solicitud.idSolicitud}"></td>
+                <td class="col-2 small" data-attribute="empresa" th:text="${solicitud.empresa}"></td>
+                <td class="col-2 small" data-attribute="numeroConvenio" th:text="${solicitud.numeroConvenio}"></td>
+                <td class="col-2 small" data-attribute="cicloFormativo" th:text="${solicitud.cicloFormativo}"></td>
+                <td class="col-2 small" data-attribute="fechaInicio" th:text="${solicitud.fechaInicio}"></td>
                 <!-- Columna para los detalles de los alumnos -->
-                <td class="col-1 small">
+                <td class="col-1 small" data-attribute="alumnos">
                     <!-- Detalles de los alumnos -->
                     <details class="alumnos-details">
                         <summary><b>Mostrar alumnos</b></summary>

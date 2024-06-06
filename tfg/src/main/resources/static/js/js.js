@@ -2,6 +2,53 @@
 var $ = jQuery.noConflict();
 
 $(document).ready(function () {
+
+    //-----------------------------------------------------------------------------
+    //---------------------------BUSCADOR EN TABLA---------------------------------
+    //-----------------------------------------------------------------------------
+
+    // Función para buscar en la tabla
+    $(".search-tables").on("keyup", function() {
+        var value = $(this).val().toLowerCase();
+        var attribute = $(".search-attribute").val();
+        $("#solicitudes-table .solicitud-row").filter(function() {
+            if (attribute === "all") {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+            } else {
+                $(this).toggle($(this).find("[data-attribute='" + attribute + "']").text().toLowerCase().indexOf(value) > -1);
+            }
+        });
+    });
+
+    // Función para ordenar la tabla
+    function sortTable(columnIndex, order) {
+        var rows = $('#solicitudes-table .solicitud-row').get();
+        rows.sort(function(a, b) {
+            var A = $(a).children('td').eq(columnIndex).text().toUpperCase();
+            var B = $(b).children('td').eq(columnIndex).text().toUpperCase();
+
+            if (A < B) {
+                return order === 'asc' ? -1 : 1;
+            }
+            if (A > B) {
+                return order === 'asc' ? 1 : -1;
+            }
+            return 0;
+        });
+        $.each(rows, function(index, row) {
+            $('#solicitudes-table tbody').append(row);
+        });
+    }
+
+    // Manejar el clic en los encabezados
+    $('th a').click(function(e) {
+        e.preventDefault();
+        var columnIndex = $(this).parent().index();
+        var order = $(this).find('span').text() === '▲' ? 'desc' : 'asc';
+        sortTable(columnIndex, order);
+        $(this).find('span').text(order === 'asc' ? '▲' : '▼');
+    });
+
     // Función para calcular la letra del DNI
     function calcularLetraDNI(numero) {
         var letras = 'TRWAGMYFPDXBNJZSQVHLCKET';
