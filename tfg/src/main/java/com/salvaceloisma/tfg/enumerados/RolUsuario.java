@@ -4,7 +4,6 @@ public enum RolUsuario {
     ADMIN,
     DIRECTOR,
     JEFATURA,
-    PROFESOR,
-    ALUMNO
+    PROFESOR
 }
 

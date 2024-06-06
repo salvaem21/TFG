@@ -11,16 +11,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.salvaceloisma.tfg.domain.Usuario;
 import com.salvaceloisma.tfg.exception.DangerException;
 import com.salvaceloisma.tfg.helper.PRG;
-import com.salvaceloisma.tfg.service.AlumnoService;
+import com.salvaceloisma.tfg.service.UsuarioService;
 
 import jakarta.servlet.http.HttpSession;
 
-@RequestMapping("/alumno")
+@RequestMapping("/usuario")
 @Controller
-public class AlumnoController {
+public class UsuarioController {
 
     @Autowired
-    private AlumnoService alumnoService;
+    private UsuarioService usuarioService;
 
     @GetMapping("r")
     public String r(
@@ -28,47 +28,49 @@ public class AlumnoController {
         Usuario usuario = (Usuario) session.getAttribute("usuario");
         if (usuario == null) {
             PRG.error("Debes logearte con un usuario con permisos para acceder aqui.");
+            return "";
+        } else {
+            m.put("usuarios", usuarioService.findAll());
+            m.put("view", "usuario/r");
+            return "_t/frame";
         }
-        m.put("alumnos", alumnoService.findAll());
-        m.put("view", "alumno/r");
-        return "_t/frame";
+
     }
 
     @GetMapping("u")
     public String update(
-            @RequestParam("id") Long idAlumno, HttpSession session,
+            @RequestParam("id") Long idUsuario, HttpSession session,
             ModelMap m) throws DangerException {
         Usuario usuario = (Usuario) session.getAttribute("usuario");
         if (usuario == null) {
             PRG.error("Debes logearte con un usuario con permisos para acceder aqui.");
         }
-        m.put("alumno", alumnoService.findById(idAlumno));
-        m.put("view", "alumno/u");
+        m.put("usuario", usuarioService.findById(idUsuario));
+        m.put("view", "usuario/u");
         return "_t/frame";
     }
 
     @PostMapping("u")
     public String updatePost(
-            @RequestParam("idAlumno") Long idAlumno,
-            @RequestParam("dni") String dni,
+            @RequestParam("idUsuario") Long idUsuario,
             @RequestParam("nombre") String nombre,
             @RequestParam("apellido") String apellido, HttpSession s) throws DangerException {
         try {
-            alumnoService.update(idAlumno, dni, nombre, apellido);
+            usuarioService.update(idUsuario, nombre, apellido);
         } catch (Exception e) {
-            PRG.error("El alumno no pudo ser actualizado", "/alumno/r");
+            PRG.error("El alumno no pudo ser actualizado", "/usuario/r");
         }
-        return "redirect:/alumno/r";
+        return "redirect:/usuario/r";
     }
 
     @PostMapping("d")
     public String delete(
-            @RequestParam("id") Long idAlumno) throws DangerException {
+            @RequestParam("id") Long idUsuario) throws DangerException {
         try {
-            alumnoService.delete(idAlumno);
+            usuarioService.delete(idUsuario);
         } catch (Exception e) {
-            PRG.error("No se puede borrar el alumno", "/alumno/r");
+            PRG.error("No se puede borrar el alumno", "/usuario/r");
         }
-        return "redirect:/alumno/r";
+        return "redirect:/usuario/r";
     }
 }

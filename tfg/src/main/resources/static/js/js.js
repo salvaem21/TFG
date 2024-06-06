@@ -433,6 +433,45 @@ $(document).ready(function () {
         }
     });
 
+    $("#formularioModAlumnos").submit(function (event) {
+        var alumnoValido = validarDNI($("#nifAlumno"));
+        var validarNombreAlumno = validarNombreApellidos($("#nombreAlumno"));
+        var validarApellidoAlumno = validarNombreApellidos($("#apellidosAlumno"));
+
+        // Si solo el NIF del Alumno es inválido
+        if (!alumnoValido) {
+            alert("El NIF del Alumno introducido no es válido.");
+            event.preventDefault(); // Evitar que se envíe el formulario si el NIF del Alumno no es válido
+            return;
+        }
+        if (!validarNombreAlumno) {
+            alert("El nombre del Alumno introducido no es válido.");
+            event.preventDefault();
+            return;
+        }
+        if (!validarApellidoAlumno) {
+            alert("El apellido del alumno introducido no es válido.");
+            event.preventDefault();
+            return;
+        }
+    });
+
+    $("#formularioModUsuarios").submit(function (event) {
+        var validarNombreAlumno = validarNombreApellidos($("#nombreAlumno"));
+        var validarApellidoAlumno = validarNombreApellidos($("#apellidosAlumno"));
+
+        if (!validarNombreAlumno) {
+            alert("El nombre del Alumno introducido no es válido.");
+            event.preventDefault();
+            return;
+        }
+        if (!validarApellidoAlumno) {
+            alert("El apellido del alumno introducido no es válido.");
+            event.preventDefault();
+            return;
+        }
+    });
+
 
     // Manejador de clic en el botón para agregar otro alumno
     $("#agregarAlumno").click(function () {

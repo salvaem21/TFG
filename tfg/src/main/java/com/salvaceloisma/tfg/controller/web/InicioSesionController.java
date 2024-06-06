@@ -19,6 +19,7 @@ import com.salvaceloisma.tfg.exception.DangerException;
 import com.salvaceloisma.tfg.helper.PRG;
 import com.salvaceloisma.tfg.service.AlumnoService;
 import com.salvaceloisma.tfg.service.InicioSesionService;
+import com.salvaceloisma.tfg.service.UsuarioService;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -31,6 +32,9 @@ public class InicioSesionController {
 
     @Autowired
     private AlumnoService alumnoService;
+
+    @Autowired
+    private UsuarioService usuarioService;
 
     @GetMapping("/inicioSesion")
     public String inicioSesion(
@@ -80,6 +84,7 @@ public class InicioSesionController {
         if (usuario == null) {
             PRG.error("Debes logearte con un usuario con permisos para acceder aqui.");
         }
+        m.put("roles", RolUsuario.values());
         m.put("view", "inicioSesion/crearUsuario");
         return "_t/frame";
     }
@@ -100,6 +105,20 @@ public class InicioSesionController {
         }
         return "redirect:../";
     }
+
+    @GetMapping("/gestionarUsuarios")
+    public String gestionarUsuarios(
+            ModelMap m, HttpSession session) throws DangerException {
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+        if (usuario == null) {
+
+            PRG.error("Debes logearte con un usuario con permisos para acceder aqui.");
+        }
+        m.put("usuarios", usuarioService.findAll());
+        m.put("view", "usuario/r");
+        return "_t/frame";
+    }
+
 
     @GetMapping("/gestionarAlumnos")
     public String gestionarAlumnos(

@@ -9,8 +9,7 @@
         </li>
     </ul>
     <ul class="navbar-nav ml-auto" th:if="${session.usuario!=null}">
-        <li class="nav-item mt-2"
-            th:if="${session.usuario.rol != T(com.salvaceloisma.tfg.enumerados.RolUsuario).ALUMNO}">
+        <li class="nav-item mt-2">
             <span class="badge badge-pill badge-danger mr-2" th:if="${#lists.size(session.mensajesConNovedad) >= 1}" th:text="${#lists.size(session.mensajesConNovedad)}"
                 style="font-size: 0.8rem;"></span>
             <i class="fa-regular fa-bell fa-shake fa-2x mr-2" th:if="${#lists.size(session.mensajesConNovedad) >= 1 && session.usuario.rol != T(com.salvaceloisma.tfg.enumerados.RolUsuario).ADMIN}"
@@ -22,6 +21,11 @@
             th:if="${session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).ADMIN || session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).DIRECTOR}">
             <a class="nav-link btn btn-outline-light mr-2" th:if="${session.usuario!=null}"
                 href="/inicioSesion/crearUsuario" id="registrarse">REGISTRAR USUARIO</a>
+        </li>
+        <li class="nav-item"
+            th:if="${session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).ADMIN || session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).DIRECTOR}">
+            <a class="nav-link btn btn-outline-light mr-2" th:if="${session.usuario!=null}"
+                href="/inicioSesion/gestionarUsuarios" id="registrarse">GESTIONAR USUARIOS</a>
         </li>
         <li class="nav-item"
             th:if="${session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).ADMIN || session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).DIRECTOR}">
