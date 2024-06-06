@@ -1,81 +1,92 @@
-<div class="container ">
-    <h1>Solicitudes Finalizadas</h1>
-</div>
-<div class="ml-3 mr-3">
-    <table class="table">
-        <thead class="thead">
-            <tr class="row">
-                <th class="col-2 table-header">
-                    <a th:href="@{/enviarDatos/solicitudesFinalizadas(sort='idSolicitud', dir=${sortField == 'idSolicitud' ? (sortDir == 'asc' ? 'desc' : 'asc') : 'asc'})}">
-                        Nº Solicitud <span th:text="${sortField == 'idSolicitud' ? (sortDir == 'asc' ? '▲' : '▼') : ''}"></span>
-                    </a>
-                </th>
-                <th class="col-1 table-header">
-                    <a th:href="@{/enviarDatos/solicitudesFinalizadas(sort='empresa', dir=${sortField == 'empresa' ? (sortDir == 'asc' ? 'desc' : 'asc') : 'asc'})}">
-                        Empresa <span th:text="${sortField == 'empresa' ? (sortDir == 'asc' ? '▲' : '▼') : ''}"></span>
-                    </a>
-                </th>
-                <th class="col-1 table-header">
-                    <a th:href="@{/enviarDatos/solicitudesFinalizadas(sort='numeroConvenio', dir=${sortField == 'numeroConvenio' ? (sortDir == 'asc' ? 'desc' : 'asc') : 'asc'})}">
-                        Numero convenio <span th:text="${sortField == 'numeroConvenio' ? (sortDir == 'asc' ? '▲' : '▼') : ''}"></span>
-                    </a>
-                </th>
-                <th class="col-2 table-header">
-                    <a th:href="@{/enviarDatos/solicitudesFinalizadas(sort='cicloFormativo', dir=${sortField == 'cicloFormativo' ? (sortDir == 'asc' ? 'desc' : 'asc') : 'asc'})}">
-                        Ciclo Formativo <span th:text="${sortField == 'cicloFormativo' ? (sortDir == 'asc' ? '▲' : '▼') : ''}"></span>
-                    </a>
-                </th>
-                <th class="col-1 table-header">
-                    <a th:href="@{/enviarDatos/solicitudesFinalizadas(sort='fechaInicio', dir=${sortField == 'fechaInicio' ? (sortDir == 'asc' ? 'desc' : 'asc') : 'asc'})}">
-                        Fecha Inicio <span th:text="${sortField == 'fechaInicio' ? (sortDir == 'asc' ? '▲' : '▼') : ''}"></span>
-                    </a>
-                </th>
-                <th class="col-2">Alumnos</th>
-                <th class="col-2">Solicitud</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- Bucle de solicitudes -->
-            <tr class="row solicitud-row" th:each="solicitud : ${solicitudes}" th:if="${solicitud.estado == estadoFinalizado}">
-                <!-- Fila de la solicitud -->
-                <td class="col-2 small" th:text="${solicitud.idSolicitud}"></td>
-                <td class="col-1 small" th:text="${solicitud.empresa}"></td>
-                <td class="col-1 small" th:text="${solicitud.numeroConvenio}"></td>
-                <td class="col-2 small" th:text="${solicitud.cicloFormativo}"></td>
-                <td class="col-1 small" th:text="${solicitud.fechaInicio}"></td>
-                <!-- Columna para los detalles de los alumnos -->
-                <td class="col-2">
-                    <!-- Detalles de los alumnos -->
-                    <details class="alumnos-details">
-                        <summary><b>Mostrar alumnos</b></summary>
-                        <!-- Lista de alumnos -->
-                        <div class="alumnos-list">
-                            <!-- Bucle de alumnos -->
-                            <li class="alumno" th:each="alumno : ${solicitud?.alumnos}">
-                                <span th:text="${alumno.nombre}"></span> <span th:text="${alumno.apellido}"></span>
-                            </li>
-                        </div>
-                    </details>
-                </td>
-                <td class="col-2">
-                    <details class="descargas-details">
-                        <summary><b>Descargas</b></summary>
-                        <!-- Lista de descargas -->
-                        <div class="descargas-list">
-                            <a th:href="@{/enviarDatos/descargarSolicitudAprobadaJefatura/{idSolicitud}(idSolicitud=${solicitud.idSolicitud})}" class="btn btn-link btn-sm">
-                                Aprobada Por Jefatura
-                            </a>
-                            <a th:href="@{/enviarDatos/descargarSolicitudFirmadaEmpresa/{idSolicitud}(idSolicitud=${solicitud.idSolicitud})}" class="btn btn-link btn-sm">
-                                Firmada Por Empresa
-                            </a>
-                            <a th:href="@{/enviarDatos/descargarSolicitudFirmadaDireccion/{idSolicitud}(idSolicitud=${solicitud.idSolicitud})}" class="btn btn-link btn-sm">
-                                Firmada Por Direccion
-                            </a>                       
-                        </div>
-                    </details>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-    <a class="btn btn-outline-propio1 mb-2 col-2 mr-2" href="../">Volver</a>
-</div>
+<div class="container">
+        <h1>Solicitudes Finalizadas</h1>
+    </div>
+    <div class="ml-3 mr-3">
+        <div class="input-group mt-2 mb-2">
+            <select class="form-select search-attribute" aria-label="Seleccionar atributo de búsqueda">
+                <option value="all">Todos</option>
+                <option value="idSolicitud">Nº Solicitud</option>
+                <option value="empresa">Empresa</option>
+                <option value="numeroConvenio">Numero convenio</option>
+                <option value="cicloFormativo">Ciclo Formativo</option>
+                <option value="fechaInicio">Fecha Inicio</option>
+            </select>
+            <input class="form-control search-tables" placeholder="Buscar..." type="text"/>
+        </div>
+        <table id="solicitudes-table" class="table">
+            <thead class="thead">
+                <tr class="row">
+                    <th class="col-2 table-header">
+                        <a th:href="@{/enviarDatos/solicitudesFinalizadas(sort='idSolicitud', dir=${sortField == 'idSolicitud' ? (sortDir == 'asc' ? 'desc' : 'asc') : 'asc'})}">
+                            Nº Solicitud <span th:text="${sortField == 'idSolicitud' ? (sortDir == 'asc' ? '▲' : '▼') : ''}"></span>
+                        </a>
+                    </th>
+                    <th class="col-1 table-header">
+                        <a th:href="@{/enviarDatos/solicitudesFinalizadas(sort='empresa', dir=${sortField == 'empresa' ? (sortDir == 'asc' ? 'desc' : 'asc') : 'asc'})}">
+                            Empresa <span th:text="${sortField == 'empresa' ? (sortDir == 'asc' ? '▲' : '▼') : ''}"></span>
+                        </a>
+                    </th>
+                    <th class="col-1 table-header">
+                        <a th:href="@{/enviarDatos/solicitudesFinalizadas(sort='numeroConvenio', dir=${sortField == 'numeroConvenio' ? (sortDir == 'asc' ? 'desc' : 'asc') : 'asc'})}">
+                            Numero convenio <span th:text="${sortField == 'numeroConvenio' ? (sortDir == 'asc' ? '▲' : '▼') : ''}"></span>
+                        </a>
+                    </th>
+                    <th class="col-2 table-header">
+                        <a th:href="@{/enviarDatos/solicitudesFinalizadas(sort='cicloFormativo', dir=${sortField == 'cicloFormativo' ? (sortDir == 'asc' ? 'desc' : 'asc') : 'asc'})}">
+                            Ciclo Formativo <span th:text="${sortField == 'cicloFormativo' ? (sortDir == 'asc' ? '▲' : '▼') : ''}"></span>
+                        </a>
+                    </th>
+                    <th class="col-1 table-header">
+                        <a th:href="@{/enviarDatos/solicitudesFinalizadas(sort='fechaInicio', dir=${sortField == 'fechaInicio' ? (sortDir == 'asc' ? 'desc' : 'asc') : 'asc'})}">
+                            Fecha Inicio <span th:text="${sortField == 'fechaInicio' ? (sortDir == 'asc' ? '▲' : '▼') : ''}"></span>
+                        </a>
+                    </th>
+                    <th class="col-2">Alumnos</th>
+                    <th class="col-2">Solicitud</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Bucle de solicitudes -->
+                <tr class="row solicitud-row" th:each="solicitud : ${solicitudes}" th:if="${solicitud.estado == estadoFinalizado}">
+                    <!-- Fila de la solicitud -->
+                    <td class="col-2 small" data-attribute="idSolicitud" th:text="${solicitud.idSolicitud}"></td>
+                    <td class="col-1 small" data-attribute="empresa" th:text="${solicitud.empresa}"></td>
+                    <td class="col-1 small" data-attribute="numeroConvenio" th:text="${solicitud.numeroConvenio}"></td>
+                    <td class="col-2 small" data-attribute="cicloFormativo" th:text="${solicitud.cicloFormativo}"></td>
+                    <td class="col-1 small" data-attribute="fechaInicio" th:text="${solicitud.fechaInicio}"></td>
+                    <!-- Columna para los detalles de los alumnos -->
+                    <td class="col-2">
+                        <!-- Detalles de los alumnos -->
+                        <details class="alumnos-details">
+                            <summary><b>Mostrar alumnos</b></summary>
+                            <!-- Lista de alumnos -->
+                            <div class="alumnos-list">
+                                <!-- Bucle de alumnos -->
+                                <li class="alumno" th:each="alumno : ${solicitud?.alumnos}">
+                                    <span th:text="${alumno.nombre}"></span> <span th:text="${alumno.apellido}"></span>
+                                </li>
+                            </div>
+                        </details>
+                    </td>
+                    <td class="col-2">
+                        <details class="descargas-details">
+                            <summary><b>Descargas</b></summary>
+                            <!-- Lista de descargas -->
+                            <div class="descargas-list">
+                                <a th:href="@{/enviarDatos/descargarSolicitudAprobadaJefatura/{idSolicitud}(idSolicitud=${solicitud.idSolicitud})}" class="btn btn-link btn-sm">
+                                    Aprobada Por Jefatura
+                                </a>
+                                <a th:href="@{/enviarDatos/descargarSolicitudFirmadaEmpresa/{idSolicitud}(idSolicitud=${solicitud.idSolicitud})}" class="btn btn-link btn-sm">
+                                    Firmada Por Empresa
+                                </a>
+                                <a th:href="@{/enviarDatos/descargarSolicitudFirmadaDireccion/{idSolicitud}(idSolicitud=${solicitud.idSolicitud})}" class="btn btn-link btn-sm">
+                                    Firmada Por Direccion
+                                </a>                       
+                            </div>
+                        </details>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <a class="btn btn-outline-propio1 mb-2 col-2 mr-2" href="../">Volver</a>
+    </div>
