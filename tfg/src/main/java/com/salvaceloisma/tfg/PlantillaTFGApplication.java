@@ -23,7 +23,7 @@ public class PlantillaTFGApplication {
 			if (repository.count() == 0) {
             repository.save("Maria", "Cocera", "maria@educa.madrid.org", "", RolUsuario.PROFESOR);
             repository.save("Guillermo", "Diaz", "guillermo@educa.madrid.org", "", RolUsuario.JEFATURA);
-            repository.save("Director", "Director", "director@educa.madrid.org", "", RolUsuario.DIRECTOR);
+            repository.save("Salvador", "Espejo", "salvador.espejo@educa.madrid.org", "", RolUsuario.DIRECTOR);
             repository.save("Admin", "Admin", "admin@educa.madrid.org", "admin", RolUsuario.ADMIN);
         }
     };

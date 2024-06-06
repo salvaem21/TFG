@@ -127,25 +127,6 @@ $(document).ready(function () {
         validarCicloFormativo($(this));
     });
 
-    function validarNumeroConvenio(convenioInput) {
-        var numeroConvenio = convenioInput.val();
-        // Expresión regular para validar que el número de convenio tenga exactamente 14 dígitos
-        var convenioRegex = /^\d{14}$/;
-
-        if (!convenioRegex.test(numeroConvenio)) {
-            convenioInput.css('border-color', 'red');
-            return false;
-        }
-
-        // Si el número de convenio es válido, eliminar el resaltado rojo
-        convenioInput.css('border-color', '');
-        return true;
-    }
-
-    // Evento para validar el número de convenio cuando se modifica el campo de entrada
-    $("#numeroConvenio").on('input', function () {
-        validarNumeroConvenio($(this));
-    });
 
     function validarNombreEmpresa(nombreInput) {
         var nombreEmpresa = nombreInput.val();
@@ -322,7 +303,6 @@ $(document).ready(function () {
         var alumnoValido = validarDNI($("#nifAlumno"));
         var nombreTutorValido = validarNombreTutor($("#tutorAlumno"));
         var cicloValido = validarCicloFormativo($("#cicloFormativoAlumno"));
-        var numeroConvenioValido = validarNumeroConvenio($("#numeroConvenio"));
         var nombreEmpresaValido = validarNombreEmpresa($("#nombreEmpresa"));
         var tutorEmpresaValido = validarTutorEmpresa($("#tutorEmpresa"));
         var cifEmpresaValido = validarCIFEmpresa($("#cifEmpresa"));
@@ -348,11 +328,6 @@ $(document).ready(function () {
         }
         if (!cicloValido) {
             alert("Seleccione un ciclo formativo.");
-            event.preventDefault();
-            return;
-        }
-        if (!numeroConvenioValido) {
-            alert("El numero de convenio introducido no es válido.");
             event.preventDefault();
             return;
         }
@@ -442,6 +417,22 @@ $(document).ready(function () {
         }
     });
 
+    $("#formularioCreador").submit(function (event) {
+        var validarNombreAlumno = validarNombreApellidos($("#nombreAlumno"));
+        var validarApellidoAlumno = validarNombreApellidos($("#apellidosAlumno"));
+        
+        if (!validarNombreAlumno) {
+            alert("El nombre del Alumno introducido no es válido.");
+            event.preventDefault();
+            return;
+        }
+        if (!validarApellidoAlumno) {
+            alert("El apellido del alumno introducido no es válido.");
+            event.preventDefault();
+            return;
+        }
+    });
+
 
     // Manejador de clic en el botón para agregar otro alumno
     $("#agregarAlumno").click(function () {
@@ -472,7 +463,7 @@ $(document).ready(function () {
     });
 
     // Manejador de clic en el botón "Enviar Datos FCTs"
-    $("#boton").click(function (event) {
+    $("#confirmarBotonEnvio").click(function (event) {
         const calcularHorasTrabajadas = (inicio1, fin1, inicio2, fin2) => {
             const horaInicio1 = parseInt(inicio1.split(":")[0]);
             const minutoInicio1 = parseInt(inicio1.split(":")[1]);
@@ -615,17 +606,11 @@ $(document).ready(function () {
             this.enctype = 'multipart/form-data';
         } else if (opcionSeleccionada === 'observaciones') {
             this.action = '/enviarDatos/corregirDatosDireccionObservaciones';
+            
         }
         else{
             this.action = '/enviarDatos/errorSinSeleccionarDireccion';
         }
         this.submit(); // Envía el formulario después de actualizar el action y enctype
     });
-    //------------------Selección de uno u otro endpoints--------------------
-    
-
-
-
-    //-------------------------------ARCHIVO CARGA Y DESCARGA-----------------
-    
 });
