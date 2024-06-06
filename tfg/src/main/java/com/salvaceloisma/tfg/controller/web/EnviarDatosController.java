@@ -39,7 +39,6 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -221,8 +220,9 @@ public class EnviarDatosController {
             correo = destinatario.getCorreo();
         }
         mensajeService.enviarMensaje(remitente, destinatario, observaciones, solicitud);
-        emailService.enviarEmail(correo, "Datos pendientes de ser revisados.",
+        emailService.enviarEmail(correo, "(FCT'S) Datos pendientes de ser revisados.",
                 "Un profesor ha enviado unos datos. Revisa tu bandeja de entrada.");
+
     } catch (Exception e) {
         PRG.error("Los datos no pudieron enviarse correctamente. Error: " + e.getMessage());
     }
@@ -367,7 +367,7 @@ public class EnviarDatosController {
         try {
             mensajeService.actualizarMensaje(idSolicitud, destinatario, remitente, observaciones);
             solicitudService.cambiarEstadoSolicitud(idSolicitud, estadoSolicitud, remitente);
-            emailService.enviarEmail(destinatarioCorreo, "Datos pendientes de ser corregidos.",
+            emailService.enviarEmail(destinatarioCorreo, "(FCT'S) Datos pendientes de ser corregidos.",
                     "Jefatura ha enviado datos para corregir. Revisa tu bandeja de entrada.");
 
             PRG.info("Correción enviada correctamente.");
@@ -469,7 +469,7 @@ public class EnviarDatosController {
 
             // Enviar el correo
             emailService.enviarEmail(destinatario.getCorreo(),
-                    "Solicitud aceptada por Jefatura.",
+                    "(FCT'S) Solicitud aceptada por Jefatura.",
                     "Jefatura ha aceptado tu solicitud y podras descargar el PDF. Revisa tu bandeja de entrada.");
 
             PRG.info("Corrección enviada correctamente.");
@@ -828,7 +828,7 @@ public class EnviarDatosController {
             mensajeService.actualizarNotificacion(idSolicitud, destinatario, remitente);
             solicitudService.cambiarEstadoSolicitud(idSolicitud, estadoSolicitud, remitente);
             emailService.enviarEmail(destinatarioCorreo,
-                    "Documento pendiente de ser revisado.",
+                    "(FCT'S) Documento pendiente de ser revisado.",
                     "Un profesor ha enviado un documento para firmar. Revisa tu bandeja de entrada.");
 
             PRG.info("Correción enviada correctamente.");
@@ -946,7 +946,7 @@ public class EnviarDatosController {
 
             // Enviar el correo
             emailService.enviarEmail(destinatarioCorreo,
-                    "Solicitud firmada por Direccion y finalizada.",
+                    "(FCT'S) Solicitud firmada por Direccion y finalizada.",
                     "Direccion ha firmado tu solicitud y podras descargar todos los PDFs.Revisa tu bandeja de entrada.");
 
             PRG.info("Corrección enviada correctamente.");
@@ -976,7 +976,7 @@ public class EnviarDatosController {
         try {
             mensajeService.actualizarMensaje(idSolicitud, destinatario, remitente, observaciones);
             solicitudService.cambiarEstadoSolicitud(idSolicitud, estadoSolicitud, remitente);
-            emailService.enviarEmail(destinatarioCorreo, "Solicitud denegada por Direccion.",
+            emailService.enviarEmail(destinatarioCorreo, "(FCT'S) Solicitud denegada por Direccion.",
                     "Direccion ha rechazado tu solicitud. Envia de nuevo el documento. Revisa tu bandeja de entrada.");
             PRG.info("Corrección enviada correctamente.");
         } catch (IOException e) {

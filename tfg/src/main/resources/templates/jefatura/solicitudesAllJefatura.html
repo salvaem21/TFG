@@ -25,14 +25,14 @@
                         Ciclo Formativo <span th:text="${sortField == 'cicloFormativo' ? (sortDir == 'asc' ? '▲' : '▼') : ''}"></span>
                     </a>
                 </th>
-                <th class="col-1 table-header">
-                    <a th:href="@{/enviarDatos/solicitudesAllJefatura(sort='fechaInicio', dir=${sortField == 'fechaInicio' ? (sortDir == 'asc' ? 'desc' : 'asc') : 'asc'})}">
-                        Fecha Inicio <span th:text="${sortField == 'fechaInicio' ? (sortDir == 'asc' ? '▲' : '▼') : ''}"></span>
-                    </a>
-                </th>
                 <th class="col-2 table-header">
                     <a th:href="@{/enviarDatos/solicitudesAllJefatura(sort='estado', dir=${sortField == 'estado' ? (sortDir == 'asc' ? 'desc' : 'asc') : 'asc'})}">
                         Estado <span th:text="${sortField == 'estado' ? (sortDir == 'asc' ? '▲' : '▼') : ''}"></span>
+                    </a>
+                </th>
+                <th class="col-1 table-header">
+                    <a th:href="@{/enviarDatos/solicitudesAllJefatura(sort='usuario', dir=${sortField == 'usuario' ? (sortDir == 'asc' ? 'desc' : 'asc') : 'asc'})}">
+                        Profesor <span th:text="${sortField == 'usuario' ? (sortDir == 'asc' ? '▲' : '▼') : ''}"></span>
                     </a>
                 </th>
                 <th class="col-2">Alumnos</th>
@@ -47,8 +47,8 @@
                 <td class="col-1 small" th:text="${solicitud.empresa}"></td>
                 <td class="col-1 small" th:text="${solicitud.numeroConvenio}"></td>
                 <td class="col-1 small" th:text="${solicitud.cicloFormativo}"></td>
-                <td class="col-1 small" th:text="${solicitud.fechaInicio}"></td>
                 <td class="col-2 small" th:text="${solicitud.estado}"></td>
+                <td class="col-1 small" th:text="${solicitud.usuario.nombre}"></td>
                 <!-- Columna para los detalles de los alumnos -->
                 <td class="col-2">
                     <!-- Detalles de los alumnos -->
@@ -63,10 +63,21 @@
                         </div>
                     </details>
                 </td>
-                <td class="col-2 ">
-                    <details class="solicitud-details">
-                        <summary><b>Mostrar horarios</b></summary>
-                        <span th:utext="${solicitud.horario}"></span>
+                <td class="col-2">
+                    <details class="descargas-details">
+                        <summary><b>Descargas</b></summary>
+                        <!-- Lista de descargas -->
+                        <div class="descargas-list">
+                            <a th:href="@{/enviarDatos/descargarSolicitudAprobadaJefatura/{idSolicitud}(idSolicitud=${solicitud.idSolicitud})}" class="btn btn-link btn-sm">
+                                Aprobada Por Jefatura
+                            </a>
+                            <a th:href="@{/enviarDatos/descargarSolicitudFirmadaEmpresa/{idSolicitud}(idSolicitud=${solicitud.idSolicitud})}" class="btn btn-link btn-sm">
+                                Firmada Por Empresa
+                            </a>
+                            <a th:href="@{/enviarDatos/descargarSolicitudFirmadaDireccion/{idSolicitud}(idSolicitud=${solicitud.idSolicitud})}" class="btn btn-link btn-sm">
+                                Firmada Por Direccion
+                            </a>                       
+                        </div>
                     </details>
                 </td>
             </tr>
