@@ -3,6 +3,20 @@ var $ = jQuery.noConflict();
 
 $(document).ready(function () {
 
+    //PAGINACION
+    function updatePageSize() {
+        const pageSize = $('#pageSizeSelect').val(); // Utiliza jQuery para obtener el valor del select
+        const url = new URL(window.location.href);
+        url.searchParams.set('size', pageSize);
+        url.searchParams.set('page', 0); // Reiniciar a la primera página
+        window.location.href = url.toString();
+    }
+
+    $('#pageSizeSelect').on('change', function() {
+        updatePageSize();
+    });
+    
+
     //-----------------------------------------------------------------------------
     //---------------------------BUSCADOR EN TABLA---------------------------------
     //-----------------------------------------------------------------------------
@@ -652,4 +666,6 @@ $(document).ready(function () {
         }
         this.submit(); // Envía el formulario después de actualizar el action y enctype
     });
+
+    
 });

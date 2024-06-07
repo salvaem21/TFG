@@ -2,6 +2,10 @@ package com.salvaceloisma.tfg.controller.web;
 
 import org.apache.pdfbox.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -68,10 +72,7 @@ public class EnviarDatosController {
 
     @GetMapping("/enviarDatosAJefatura")
     public String crearDocumento(ModelMap m, HttpSession session) throws DangerException {
-        Usuario usuario = (Usuario) session.getAttribute("usuario");
-        if (usuario == null || usuario.getRol() != RolUsuario.PROFESOR) {
-            PRG.error("Debes logearte con un usuario con permisos para acceder aqui.");
-        }
+
         m.put("usuariosJefatura", inicioSesionService.obtenerUsuariosPorRol(RolUsuario.JEFATURA));
         m.put("grados", Grados.values()); // Añadir el enum Grados al modelo
         m.put("view", "profesor/enviarDatosAlumnos");
@@ -193,7 +194,6 @@ public class EnviarDatosController {
             }
             // DESPUES DE CREAR SOLICITUD
 
-
             alumnoService.deleteAllBySolicitud(solicitud);
             // Crear o actualizar los alumnos
             for (int i = 0; i < apellidosAlumno.length; i++) {
@@ -211,23 +211,23 @@ public class EnviarDatosController {
                 }
             }
 
-        // Enviar mensaje y correo electrónico solo si no ha habido errores antes
-        String correo;
-        if (usuarioEnvio != null) {
-            Usuario usuarioDestinatario = inicioSesionService.findById(usuarioEnvio);
-            correo = usuarioDestinatario != null ? usuarioDestinatario.getCorreo() : "default@example.com";
-        } else {
-            correo = destinatario.getCorreo();
+            // Enviar mensaje y correo electrónico solo si no ha habido errores antes
+            String correo;
+            if (usuarioEnvio != null) {
+                Usuario usuarioDestinatario = inicioSesionService.findById(usuarioEnvio);
+                correo = usuarioDestinatario != null ? usuarioDestinatario.getCorreo() : "default@example.com";
+            } else {
+                correo = destinatario.getCorreo();
+            }
+            mensajeService.enviarMensaje(remitente, destinatario, observaciones, solicitud);
+            emailService.enviarEmail(correo, "(FCT'S) Datos pendientes de ser revisados.",
+                    "Un profesor ha enviado unos datos. Revisa tu bandeja de entrada.");
+
+        } catch (Exception e) {
+            PRG.error("Los datos no pudieron enviarse correctamente. Error: " + e.getMessage());
         }
-        mensajeService.enviarMensaje(remitente, destinatario, observaciones, solicitud);
-        emailService.enviarEmail(correo, "(FCT'S) Datos pendientes de ser revisados.",
-                "Un profesor ha enviado unos datos. Revisa tu bandeja de entrada.");
 
-    } catch (Exception e) {
-        PRG.error("Los datos no pudieron enviarse correctamente. Error: " + e.getMessage());
-    }
-
-    return "redirect:../";
+        return "redirect:../";
     }
 
     // --------------------------------------------------------------------------------------------------------------------------------------------//
@@ -256,15 +256,14 @@ public class EnviarDatosController {
     @GetMapping("/recibirDatosJefatura")
     public String recibirMensajes(Model model, HttpSession session,
             @RequestParam(name = "sort", required = false, defaultValue = "idSolicitud") String sortField,
-            @RequestParam(name = "dir", required = false, defaultValue = "asc") String sortDir) throws DangerException {
+            @RequestParam(name = "dir", required = false, defaultValue = "asc") String sortDir,
+            @RequestParam(name = "page", required = false, defaultValue = "0") int page,
+            @RequestParam(name = "size", required = false, defaultValue = "5") int size) throws DangerException {
 
         Usuario usuario = (Usuario) session.getAttribute("usuario");
-        if (usuario == null || usuario.getRol() != RolUsuario.JEFATURA) {
-            PRG.error("Debes logearte con un usuario con permisos para acceder aqui.");
-        }
-        else{
-            model.addAttribute("nombreUsuario", usuario.getNombre()); // Agregar nombre del usuario al modelo
-        }
+
+        model.addAttribute("nombreUsuario", usuario.getNombre()); // Agregar nombre del usuario al modelo
+
         // Obtener los mensajes enviados y recibidos por el usuario
         List<Mensaje> mensajes = mensajeService.recibirMensajes(usuario);
 
@@ -302,9 +301,18 @@ public class EnviarDatosController {
             return "asc".equals(sortDir) ? result : -result;
         });
 
-        model.addAttribute("solicitudes", solicitudes);
+        // Crear la paginación
+        Pageable pageable = PageRequest.of(page, size);
+        int start = (int) pageable.getOffset();
+        int end = Math.min((start + pageable.getPageSize()), solicitudes.size());
+        Page<Solicitud> pageSolicitudes = new PageImpl<>(solicitudes.subList(start, end), pageable, solicitudes.size());
+
+        model.addAttribute("solicitudes", pageSolicitudes.getContent());
         model.addAttribute("sortField", sortField);
         model.addAttribute("sortDir", sortDir);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", pageSolicitudes.getTotalPages());
+        model.addAttribute("pageSize", size);
         model.addAttribute("view", "jefatura/recibirDatosJefatura");
 
         return "_t/frame";
@@ -314,10 +322,7 @@ public class EnviarDatosController {
     public String verificarDocumento(
             @RequestParam("id") String idSolicitud, HttpSession session,
             ModelMap m) throws DangerException {
-        Usuario usuario = (Usuario) session.getAttribute("usuario");
-        if (usuario == null || usuario.getRol() != RolUsuario.JEFATURA) {
-            PRG.error("Debes logearte con un usuario con permisos para acceder aqui.");
-        }
+
         Solicitud solicitud = solicitudService.findById(idSolicitud);
         String horarioSinSegundoHorario = solicitud.getHorario().replace("Segundo horario:", "");
         solicitud.setHorario(horarioSinSegundoHorario); // ELIMINAMOS EL TEXTO PARA QUE NO DE ERROR AL RECORRER.
@@ -486,14 +491,13 @@ public class EnviarDatosController {
     @GetMapping("/correccionSolicitudListado")
     public String recibirCorreccionDatosDeJefatura(Model model, HttpSession session,
             @RequestParam(name = "sort", required = false, defaultValue = "idSolicitud") String sortField,
-            @RequestParam(name = "dir", required = false, defaultValue = "asc") String sortDir) throws DangerException {
+            @RequestParam(name = "dir", required = false, defaultValue = "asc") String sortDir,
+            @RequestParam(name = "page", required = false, defaultValue = "0") int page,
+            @RequestParam(name = "size", required = false, defaultValue = "5") int size) throws DangerException {
         Usuario usuario = (Usuario) session.getAttribute("usuario");
-        if (usuario == null || usuario.getRol() != RolUsuario.PROFESOR) {
-            PRG.error("Debes logearte con un usuario con permisos para acceder aqui.");
-        }
-        else{
-            model.addAttribute("nombreUsuario", usuario.getNombre()); // Agregar nombre del usuario al modelo
-        }
+
+        model.addAttribute("nombreUsuario", usuario.getNombre()); // Agregar nombre del usuario al modelo
+
         // Obtener los mensajes recibidos por el usuario
         EstadoSolicitud estadoRechazado = EstadoSolicitud.RECHAZADO_JEFATURA;
         List<Mensaje> mensajes = mensajeService.recibirMensajes(usuario);
@@ -530,10 +534,18 @@ public class EnviarDatosController {
             return "asc".equals(sortDir) ? result : -result;
         });
 
+        // Crear la paginación
+        int start = page * size;
+        int end = Math.min((start + size), mensajesPendientesCorreccion.size());
+        List<Mensaje> mensajesPaginados = mensajesPendientesCorreccion.subList(start, end);
+
         model.addAttribute("estadoRechazado", estadoRechazado);
-        model.addAttribute("mensajes", mensajesPendientesCorreccion);
+        model.addAttribute("mensajes", mensajesPaginados);
         model.addAttribute("sortField", sortField);
         model.addAttribute("sortDir", sortDir);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", (int) Math.ceil((double) mensajesPendientesCorreccion.size() / size));
+        model.addAttribute("pageSize", size);
         model.addAttribute("view", "profesor/solicitudesPendientesCorregir");
 
         return "_t/frame";
@@ -542,10 +554,7 @@ public class EnviarDatosController {
     @GetMapping("/correccionSolicitud")
     public String modificarDocumento(@RequestParam("id") String idSolicitud, ModelMap m, HttpSession session)
             throws DangerException {
-        Usuario usuario = (Usuario) session.getAttribute("usuario");
-        if (usuario == null || usuario.getRol() != RolUsuario.PROFESOR) {
-            PRG.error("Debes logearte con un usuario con permisos para acceder aqui.");
-        }
+
         Solicitud solicitud = solicitudService.findById(idSolicitud);
         String horarioSinSegundoHorario = solicitud.getHorario().replace("Segundo horario:", "");
         solicitud.setHorario(horarioSinSegundoHorario); // ELIMINAMOS EL TEXTO PARA QUE NO DE ERROR AL RECORRER.
@@ -561,14 +570,13 @@ public class EnviarDatosController {
     @GetMapping("/solicitudListadoOk")
     public String aprobadosDatosDeJefatura(ModelMap model, HttpSession session,
             @RequestParam(name = "sort", required = false, defaultValue = "idSolicitud") String sortField,
-            @RequestParam(name = "dir", required = false, defaultValue = "asc") String sortDir) throws DangerException {
+            @RequestParam(name = "dir", required = false, defaultValue = "asc") String sortDir,
+            @RequestParam(name = "page", required = false, defaultValue = "0") int page,
+            @RequestParam(name = "size", required = false, defaultValue = "5") int size) throws DangerException {
         Usuario usuario = (Usuario) session.getAttribute("usuario");
-        if (usuario == null || usuario.getRol() != RolUsuario.PROFESOR) {
-            PRG.error("Debes logearte con un usuario con permisos para acceder aqui.");
-        }
-        else{
-            model.addAttribute("nombreUsuario", usuario.getNombre()); // Agregar nombre del usuario al modelo
-        }
+
+        model.addAttribute("nombreUsuario", usuario.getNombre()); // Agregar nombre del usuario al modelo
+
         // Obtener los mensajes recibidos por el usuario
         EstadoSolicitud estadoAprobado1 = EstadoSolicitud.APROBADO_JEFATURA_PDF;
         EstadoSolicitud estadoAprobado2 = EstadoSolicitud.RECHAZADO_DIRECCION;
@@ -604,11 +612,19 @@ public class EnviarDatosController {
             return "asc".equals(sortDir) ? result : -result;
         });
 
+        // Crear la paginación
+        int start = page * size;
+        int end = Math.min((start + size), mensajesAprobados.size());
+        List<Mensaje> mensajesPaginados = mensajesAprobados.subList(start, end);
+
         model.put("estadoAprobado1", estadoAprobado1);
         model.put("estadoAprobado2", estadoAprobado2);
-        model.put("mensajes", mensajesAprobados);
+        model.put("mensajes", mensajesPaginados);
         model.put("sortField", sortField);
         model.put("sortDir", sortDir);
+        model.put("currentPage", page);
+        model.put("totalPages", (int) Math.ceil((double) mensajesAprobados.size() / size));
+        model.put("pageSize", size);
         model.put("view", "profesor/solicitudesAprobados");
 
         return "_t/frame";
@@ -618,15 +634,15 @@ public class EnviarDatosController {
     @GetMapping("/solicitudesFinalizadas")
     public String solicitudesFinalizadas(ModelMap model, HttpSession session,
             @RequestParam(name = "sort", required = false, defaultValue = "idSolicitud") String sortField,
-            @RequestParam(name = "dir", required = false, defaultValue = "asc") String sortDir) throws DangerException {
+            @RequestParam(name = "dir", required = false, defaultValue = "asc") String sortDir,
+            @RequestParam(name = "page", required = false, defaultValue = "0") int page,
+            @RequestParam(name = "size", required = false, defaultValue = "5") int size) throws DangerException {
         Usuario usuario = (Usuario) session.getAttribute("usuario");
-        if (usuario == null || usuario.getRol() != RolUsuario.PROFESOR) {
-            PRG.error("Debes logearte con un usuario con permisos para acceder aqui.");
-        }
 
         EstadoSolicitud estadoFinalizado = EstadoSolicitud.SOLICITUD_FINALIZADA;
 
-        List<Solicitud> allSolicitudes = solicitudService.findAllByUsuario(usuario);
+        List<Solicitud> allSolicitudes = solicitudService.findAllByUsuarioAndEstado(usuario,
+                EstadoSolicitud.SOLICITUD_FINALIZADA);
 
         // Procesar el campo de horario de cada solicitud
         for (Solicitud solicitud : allSolicitudes) {
@@ -665,11 +681,20 @@ public class EnviarDatosController {
             return "asc".equals(sortDir) ? result : -result;
         });
 
-        model.put("estadoFinalizado", estadoFinalizado);
-        model.put("solicitudes", allSolicitudes);
-        model.put("sortField", sortField);
-        model.put("sortDir", sortDir);
-        model.put("view", "profesor/solicitudesFinalizadas");
+        // Crear la paginación
+        // Crear la paginación
+        int start = page * size;
+        int end = Math.min((start + size), allSolicitudes.size());
+        List<Solicitud> solicitudesPaginadas = allSolicitudes.subList(start, end);
+
+        model.addAttribute("estadoFinalizado", estadoFinalizado);
+        model.addAttribute("solicitudes", solicitudesPaginadas);
+        model.addAttribute("sortField", sortField);
+        model.addAttribute("sortDir", sortDir);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", (int) Math.ceil((double) allSolicitudes.size() / size));
+        model.addAttribute("pageSize", size);
+        model.addAttribute("view", "profesor/solicitudesFinalizadas");
 
         return "_t/frame";
     }
@@ -678,11 +703,10 @@ public class EnviarDatosController {
     @GetMapping("/solicitudesAllProfesor")
     public String todasLasSolicitudesProfesor(ModelMap model, HttpSession session,
             @RequestParam(name = "sort", required = false, defaultValue = "idSolicitud") String sortField,
-            @RequestParam(name = "dir", required = false, defaultValue = "asc") String sortDir) throws DangerException {
+            @RequestParam(name = "dir", required = false, defaultValue = "asc") String sortDir,
+            @RequestParam(name = "page", required = false, defaultValue = "0") int page,
+            @RequestParam(name = "size", required = false, defaultValue = "5") int size) throws DangerException {
         Usuario usuario = (Usuario) session.getAttribute("usuario");
-        if (usuario == null || usuario.getRol() != RolUsuario.PROFESOR) {
-            PRG.error("Debes logearte con un usuario con permisos para acceder aqui.");
-        }
 
         List<Solicitud> allSolicitudesProfesor = solicitudService.findAllByUsuario(usuario);
 
@@ -723,9 +747,17 @@ public class EnviarDatosController {
             return "asc".equals(sortDir) ? result : -result;
         });
 
-        model.put("solicitudes", allSolicitudesProfesor);
+        // Crear la paginación
+        int start = page * size;
+        int end = Math.min((start + size), allSolicitudesProfesor.size());
+        List<Solicitud> solicitudesPaginadas = allSolicitudesProfesor.subList(start, end);
+
+        model.put("solicitudes", solicitudesPaginadas);
         model.put("sortField", sortField);
         model.put("sortDir", sortDir);
+        model.put("currentPage", page);
+        model.put("totalPages", (int) Math.ceil((double) allSolicitudesProfesor.size() / size));
+        model.put("pageSize", size);
         model.put("view", "profesor/solicitudesAllProfesor");
 
         return "_t/frame";
@@ -735,26 +767,21 @@ public class EnviarDatosController {
     @GetMapping("/solicitudesAllJefatura")
     public String todasLasSolicitudesJefatura(ModelMap model, HttpSession session,
             @RequestParam(name = "sort", required = false, defaultValue = "idSolicitud") String sortField,
-            @RequestParam(name = "dir", required = false, defaultValue = "asc") String sortDir) throws DangerException {
+            @RequestParam(name = "dir", required = false, defaultValue = "asc") String sortDir,
+            @RequestParam(name = "page", required = false, defaultValue = "0") int page,
+            @RequestParam(name = "size", required = false, defaultValue = "5") int size) throws DangerException {
         Usuario usuario = (Usuario) session.getAttribute("usuario");
-        if (usuario == null || usuario.getRol() != RolUsuario.JEFATURA) {
-            PRG.error("Debes logearte con un usuario con permisos para acceder aqui.");
-        }
 
         List<Solicitud> allSolicitudesJefatura = solicitudService.findAllByUsuarioJefatura(usuario);
 
-        // Procesar el campo de horario de cada solicitud
         for (Solicitud solicitud : allSolicitudesJefatura) {
             String horarioProcesado = solicitud.getHorario().replace("Segundo horario:",
                     "<br><strong>Segundo horario:</strong><br><br>");
             horarioProcesado = horarioProcesado.replace(".", "<br>");
             solicitud.setHorario(horarioProcesado);
-            // Cargar los alumnos vinculados a esta solicitud (LISTA) ya que se utilizara en
-            // la vista
             solicitud.setAlumnos(alumnoService.findBySolicitudIdSolicitud(solicitud.getIdSolicitud()));
         }
 
-        // Ordenar las solicitudes según el campo especificado
         allSolicitudesJefatura.sort((s1, s2) -> {
             int result;
             switch (sortField) {
@@ -780,9 +807,18 @@ public class EnviarDatosController {
             return "asc".equals(sortDir) ? result : -result;
         });
 
-        model.put("solicitudes", allSolicitudesJefatura);
+        Pageable pageable = PageRequest.of(page, size);
+        int start = (int) pageable.getOffset();
+        int end = Math.min((start + pageable.getPageSize()), allSolicitudesJefatura.size());
+        Page<Solicitud> pageSolicitudes = new PageImpl<>(allSolicitudesJefatura.subList(start, end), pageable,
+                allSolicitudesJefatura.size());
+
+        model.put("solicitudes", pageSolicitudes.getContent());
         model.put("sortField", sortField);
         model.put("sortDir", sortDir);
+        model.put("currentPage", page);
+        model.put("totalPages", pageSolicitudes.getTotalPages());
+        model.put("pageSize", size);
         model.put("view", "jefatura/solicitudesAllJefatura");
 
         return "_t/frame";
@@ -845,14 +881,12 @@ public class EnviarDatosController {
     @GetMapping("/pendientesDireccionLista")
     public String pendienteDeAprobarDireccion(ModelMap model, HttpSession session,
             @RequestParam(name = "sort", required = false, defaultValue = "idSolicitud") String sortField,
-            @RequestParam(name = "dir", required = false, defaultValue = "asc") String sortDir) throws DangerException {
+            @RequestParam(name = "dir", required = false, defaultValue = "asc") String sortDir,
+            @RequestParam(name = "page", required = false, defaultValue = "0") int page,
+            @RequestParam(name = "size", required = false, defaultValue = "5") int size) throws DangerException {
         Usuario usuario = (Usuario) session.getAttribute("usuario");
-        if (usuario == null || usuario.getRol() != RolUsuario.DIRECTOR) {
-            PRG.error("Debes logearte con un usuario con permisos para acceder aqui.");
-        }
-        else{
-            model.addAttribute("nombreUsuario", usuario.getNombre()); // Agregar nombre del usuario al modelo
-        }
+
+        model.addAttribute("nombreUsuario", usuario.getNombre()); // Agregar nombre del usuario al modelo
 
         // Obtener los mensajes recibidos por el usuario
         EstadoSolicitud estadoPendienteDireccion = EstadoSolicitud.PENDIENTE_FIRMA_DIRECCION;
@@ -883,10 +917,18 @@ public class EnviarDatosController {
             }
         });
 
+        // Crear la paginación
+        int start = page * size;
+        int end = Math.min((start + size), mensajes.size());
+        List<Mensaje> mensajesPaginados = mensajes.subList(start, end);
+
         model.put("estadoPendiente", estadoPendienteDireccion);
-        model.put("mensajes", mensajes);
+        model.put("mensajes", mensajesPaginados);
         model.put("sortField", sortField);
         model.put("sortDir", sortDir);
+        model.put("currentPage", page);
+        model.put("totalPages", (int) Math.ceil((double) mensajes.size() / size));
+        model.put("pageSize", size);
         model.put("view", "direccion/solicitudesPendientes");
 
         return "_t/frame";
@@ -896,10 +938,7 @@ public class EnviarDatosController {
     @GetMapping("/solicitudPendiente")
     public String solicitudTratadoDireccion(ModelMap m, HttpSession session, @RequestParam("id") String idSolicitud)
             throws DangerException {
-        Usuario usuario = (Usuario) session.getAttribute("usuario");
-        if (usuario == null || usuario.getRol() != RolUsuario.DIRECTOR) {
-            PRG.error("Debes logearte con un usuario con permisos para acceder aqui.");
-        }
+
         Solicitud solicitud = solicitudService.findById(idSolicitud);
         m.put("solicitud", solicitud);
         m.put("view", "direccion/solicitudPendiente");
@@ -990,10 +1029,7 @@ public class EnviarDatosController {
     public void descargarSolicitudAprobadaJefatura(@PathVariable String idSolicitud, HttpSession session,
             HttpServletResponse response)
             throws IOException, DangerException {
-        Usuario usuario = (Usuario) session.getAttribute("usuario");
-        if (usuario == null) {
-            PRG.error("Debes logearte con un usuario con permisos para acceder aqui.");
-        }
+
         Solicitud solicitud = solicitudService.findById(idSolicitud);
         String rutaArchivo = solicitud.getRutaSolicitud() + "/APROBADO_POR_JEFATURA " + idSolicitud + ".pdf";
 
@@ -1014,10 +1050,7 @@ public class EnviarDatosController {
     public void descargarSolicitudFirmadaEmpresa(@PathVariable String idSolicitud, HttpSession session,
             HttpServletResponse response)
             throws IOException, DangerException {
-        Usuario usuario = (Usuario) session.getAttribute("usuario");
-        if (usuario == null) {
-            PRG.error("Debes logearte con un usuario con permisos para acceder aqui.");
-        }
+
         Solicitud solicitud = solicitudService.findById(idSolicitud);
         String rutaArchivo = solicitud.getRutaSolicitud() + "/FIRMADO_POR_EMPRESA " + idSolicitud + ".pdf";
 
@@ -1038,10 +1071,7 @@ public class EnviarDatosController {
     public void descargarSolicitudFirmadaDireccion(@PathVariable String idSolicitud, HttpSession session,
             HttpServletResponse response)
             throws IOException, DangerException {
-        Usuario usuario = (Usuario) session.getAttribute("usuario");
-        if (usuario == null) {
-            PRG.error("Debes logearte con un usuario con permisos para acceder aqui.");
-        }
+
         Solicitud solicitud = solicitudService.findById(idSolicitud);
         String rutaArchivo = solicitud.getRutaSolicitud() + "/SOLICITUD_FINALIZADA " + idSolicitud + ".pdf";
 

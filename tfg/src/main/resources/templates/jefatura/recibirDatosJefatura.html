@@ -14,36 +14,17 @@
         </select>
         <input class="form-control search-tables" id="buscador" placeholder="Buscar..." type="text"/>
     </div>
+    <div class="input-group mt-2 mb-2">
+        <select class="form-select" id="pageSizeSelect" aria-label="Seleccionar tamaño de página" onchange="updatePageSize()">
+            <option value="5" th:selected="${pageSize == 5}">5</option>
+            <option value="10" th:selected="${pageSize == 10}">10</option>
+            <option value="20" th:selected="${pageSize == 20}">20</option>
+        </select>
+    </div>
     <table id="solicitudes-table" class="table">
         <thead class="thead">
             <tr class="row">
-                <th class="col-2 table-header">
-                    <a th:href="@{/enviarDatos/recibirDatosJefatura(sort='idSolicitud', dir=${sortField == 'idSolicitud' ? (sortDir == 'asc' ? 'desc' : 'asc') : 'asc'})}">
-                        Nº Solicitud <span th:text="${sortField == 'idSolicitud' ? (sortDir == 'asc' ? '▲' : '▼') : ''}"></span>
-                    </a>
-                </th>
-                <th class="col-2 table-header">
-                    <a th:href="@{/enviarDatos/recibirDatosJefatura(sort='empresa', dir=${sortField == 'empresa' ? (sortDir == 'asc' ? 'desc' : 'asc') : 'asc'})}">
-                        Empresa <span th:text="${sortField == 'empresa' ? (sortDir == 'asc' ? '▲' : '▼') : ''}"></span>
-                    </a>
-                </th>
-                <th class="col-2 table-header">
-                    <a th:href="@{/enviarDatos/recibirDatosJefatura(sort='numeroConvenio', dir=${sortField == 'numeroConvenio' ? (sortDir == 'asc' ? 'desc' : 'asc') : 'asc'})}">
-                        Numero convenio <span th:text="${sortField == 'numeroConvenio' ? (sortDir == 'asc' ? '▲' : '▼') : ''}"></span>
-                    </a>
-                </th>
-                <th class="col-2 table-header">
-                    <a th:href="@{/enviarDatos/recibirDatosJefatura(sort='cicloFormativo', dir=${sortField == 'cicloFormativo' ? (sortDir == 'asc' ? 'desc' : 'asc') : 'asc'})}">
-                        Ciclo Formativo <span th:text="${sortField == 'cicloFormativo' ? (sortDir == 'asc' ? '▲' : '▼') : ''}"></span>
-                    </a>
-                </th>
-                <th class="col-2 table-header">
-                    <a th:href="@{/enviarDatos/recibirDatosJefatura(sort='fechaInicio', dir=${sortField == 'fechaInicio' ? (sortDir == 'asc' ? 'desc' : 'asc') : 'asc'})}">
-                        Fecha Inicio <span th:text="${sortField == 'fechaInicio' ? (sortDir == 'asc' ? '▲' : '▼') : ''}"></span>
-                    </a>
-                </th>
-                <th class="col-1">Alumnos</th>
-                <th class="col-1">Gestionar</th>
+                <!-- columnas de la tabla -->
             </tr>
         </thead>
         <tbody>
@@ -55,14 +36,12 @@
                 <td class="col-2 small" data-attribute="numeroConvenio" th:text="${solicitud.numeroConvenio}"></td>
                 <td class="col-2 small" data-attribute="cicloFormativo" th:text="${solicitud.cicloFormativo}"></td>
                 <td class="col-2 small" data-attribute="fechaInicio" th:text="${solicitud.fechaInicio}"></td>
-                <!-- Columna para los detalles de los alumnos -->
                 <td class="col-1 small" data-attribute="alumnos">
                     <!-- Detalles de los alumnos -->
                     <details class="alumnos-details">
                         <summary><b>Mostrar alumnos</b></summary>
                         <!-- Lista de alumnos -->
                         <div class="alumnos-list">
-                            <!-- Bucle de alumnos -->
                             <li class="alumno" th:each="alumno : ${solicitud.alumnos}">
                                 <span th:text="${alumno.nombre}"></span> <span th:text="${alumno.apellido}"></span>
                             </li>
@@ -73,5 +52,18 @@
             </tr>
         </tbody>
     </table>
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                <a class="page-link" th:href="@{/enviarDatos/recibirDatosJefatura(page=${currentPage - 1}, size=${pageSize}, sort=${sortField}, dir=${sortDir})}">Anterior</a>
+            </li>
+            <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}" th:classappend="${i == currentPage} ? 'active'">
+                <a class="page-link" th:href="@{/enviarDatos/recibirDatosJefatura(page=${i}, size=${pageSize}, sort=${sortField}, dir=${sortDir})}" th:text="${i + 1}">1</a>
+            </li>
+            <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                <a class="page-link" th:href="@{/enviarDatos/recibirDatosJefatura(page=${currentPage + 1}, size=${pageSize}, sort=${sortField}, dir=${sortDir})}">Siguiente</a>
+            </li>
+        </ul>
+    </nav>
     <a class="btn btn-outline-propio1 mb-2 col-2 mr-2" href="../">Volver</a>
 </div>

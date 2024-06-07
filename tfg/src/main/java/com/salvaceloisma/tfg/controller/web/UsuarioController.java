@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.salvaceloisma.tfg.domain.Usuario;
 import com.salvaceloisma.tfg.exception.DangerException;
 import com.salvaceloisma.tfg.helper.PRG;
 import com.salvaceloisma.tfg.service.UsuarioService;
@@ -25,15 +24,10 @@ public class UsuarioController {
     @GetMapping("r")
     public String r(
             ModelMap m, HttpSession session) throws DangerException {
-        Usuario usuario = (Usuario) session.getAttribute("usuario");
-        if (usuario == null) {
-            PRG.error("Debes logearte con un usuario con permisos para acceder aqui.");
-            return "";
-        } else {
-            m.put("usuarios", usuarioService.findAll());
-            m.put("view", "usuario/r");
-            return "_t/frame";
-        }
+
+        m.put("usuarios", usuarioService.findAll());
+        m.put("view", "usuario/r");
+        return "_t/frame";
 
     }
 
@@ -41,10 +35,7 @@ public class UsuarioController {
     public String update(
             @RequestParam("id") Long idUsuario, HttpSession session,
             ModelMap m) throws DangerException {
-        Usuario usuario = (Usuario) session.getAttribute("usuario");
-        if (usuario == null) {
-            PRG.error("Debes logearte con un usuario con permisos para acceder aqui.");
-        }
+        
         m.put("usuario", usuarioService.findById(idUsuario));
         m.put("view", "usuario/u");
         return "_t/frame";

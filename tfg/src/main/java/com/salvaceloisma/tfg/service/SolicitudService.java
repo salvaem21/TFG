@@ -146,6 +146,10 @@ public class SolicitudService {
         return solicitudRepository.findAllByUsuario(usuario);
     }
 
+    public List<Solicitud> findAllByUsuarioAndEstado(Usuario usuario, EstadoSolicitud estadoSolicitud) {
+        return solicitudRepository.findAllByUsuarioAndEstado(usuario, estadoSolicitud);
+    }
+
     public List<Solicitud> findAllByUsuarioJefatura(Usuario usuario) {
         return solicitudRepository.findAllByUsuarioJefatura(usuario);
     }
