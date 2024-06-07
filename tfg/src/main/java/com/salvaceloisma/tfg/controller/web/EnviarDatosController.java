@@ -72,7 +72,10 @@ public class EnviarDatosController {
 
     @GetMapping("/enviarDatosAJefatura")
     public String crearDocumento(ModelMap m, HttpSession session) throws DangerException {
-
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+        if (usuario == null || usuario.getRol() != RolUsuario.PROFESOR) {
+            PRG.error("No tienes los privilegios necesarios para realizar esta accion.");
+        }
         m.put("usuariosJefatura", inicioSesionService.obtenerUsuariosPorRol(RolUsuario.JEFATURA));
         m.put("grados", Grados.values()); // Añadir el enum Grados al modelo
         m.put("view", "profesor/enviarDatosAlumnos");
@@ -234,6 +237,7 @@ public class EnviarDatosController {
     // LISTADOS TODAS LAS SOLICITUDES
     @GetMapping("/listadoAllSolicitudes")
     public String allSolicitudes(ModelMap m) {
+
         List<Solicitud> allSolicitudes = solicitudService.findAll();
 
         // Procesar el campo de horario de cada solicitud
@@ -261,8 +265,11 @@ public class EnviarDatosController {
             @RequestParam(name = "size", required = false, defaultValue = "5") int size) throws DangerException {
 
         Usuario usuario = (Usuario) session.getAttribute("usuario");
-
-        model.addAttribute("nombreUsuario", usuario.getNombre()); // Agregar nombre del usuario al modelo
+        if (usuario == null || usuario.getRol() != RolUsuario.JEFATURA) {
+            PRG.error("No tienes los privilegios necesarios para realizar esta accion.");
+        } else {
+            model.addAttribute("nombreUsuario", usuario.getNombre()); // Agregar nombre del usuario al modelo
+        }
 
         // Obtener los mensajes enviados y recibidos por el usuario
         List<Mensaje> mensajes = mensajeService.recibirMensajes(usuario);
@@ -323,6 +330,11 @@ public class EnviarDatosController {
             @RequestParam("id") String idSolicitud, HttpSession session,
             ModelMap m) throws DangerException {
 
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+        if (usuario == null || usuario.getRol() != RolUsuario.JEFATURA) {
+            PRG.error("No tienes los privilegios necesarios para realizar esta accion.");
+        }
+
         Solicitud solicitud = solicitudService.findById(idSolicitud);
         String horarioSinSegundoHorario = solicitud.getHorario().replace("Segundo horario:", "");
         solicitud.setHorario(horarioSinSegundoHorario); // ELIMINAMOS EL TEXTO PARA QUE NO DE ERROR AL RECORRER.
@@ -333,26 +345,6 @@ public class EnviarDatosController {
         m.put("view", "jefatura/corregirDatosJefatura");
         return "_t/frame";
     }
-    /*
-     * @GetMapping("/corregirDatosJefatura/{idSolicitud}")
-     * public String corregirDatos(@PathVariable("idSolicitud") String idSolicitud,
-     * Model model) {
-     * Solicitud solicitud = solicitudService.findById(idSolicitud);
-     * String horarioSinSegundoHorario =
-     * solicitud.getHorario().replace("Segundo horario:", "");
-     * if (solicitud == null) {
-     * }
-     * solicitud.setHorario(horarioSinSegundoHorario); //ELIMINAMOS EL TEXTO PARA
-     * QUE NO DE ERROR AL RECORRER.
-     * List<Alumno> alumnos = alumnoService.findBySolicitudIdSolicitud(idSolicitud);
-     * model.addAttribute("solicitud", solicitud);
-     * model.addAttribute("alumnos", alumnos);
-     * model.addAttribute("usuariosJefatura",
-     * inicioSesionService.obtenerUsuariosPorRol(RolUsuario.JEFATURA));
-     * model.addAttribute("view", "jefatura/corregirDatosJefatura");
-     * return "_t/frame";
-     * }
-     */
 
     // MENSAJE Y NOTIFICACIÓN
     @PostMapping("/corregirDatosJefaturaObservaciones")
@@ -495,9 +487,11 @@ public class EnviarDatosController {
             @RequestParam(name = "page", required = false, defaultValue = "0") int page,
             @RequestParam(name = "size", required = false, defaultValue = "5") int size) throws DangerException {
         Usuario usuario = (Usuario) session.getAttribute("usuario");
-
-        model.addAttribute("nombreUsuario", usuario.getNombre()); // Agregar nombre del usuario al modelo
-
+        if (usuario == null || usuario.getRol() != RolUsuario.PROFESOR) {
+            PRG.error("No tienes los privilegios necesarios para realizar esta accion.");
+        } else {
+            model.addAttribute("nombreUsuario", usuario.getNombre()); // Agregar nombre del usuario al modelo
+        }
         // Obtener los mensajes recibidos por el usuario
         EstadoSolicitud estadoRechazado = EstadoSolicitud.RECHAZADO_JEFATURA;
         List<Mensaje> mensajes = mensajeService.recibirMensajes(usuario);
@@ -554,7 +548,10 @@ public class EnviarDatosController {
     @GetMapping("/correccionSolicitud")
     public String modificarDocumento(@RequestParam("id") String idSolicitud, ModelMap m, HttpSession session)
             throws DangerException {
-
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+        if (usuario == null || usuario.getRol() != RolUsuario.PROFESOR) {
+            PRG.error("No tienes los privilegios necesarios para realizar esta accion.");
+        }
         Solicitud solicitud = solicitudService.findById(idSolicitud);
         String horarioSinSegundoHorario = solicitud.getHorario().replace("Segundo horario:", "");
         solicitud.setHorario(horarioSinSegundoHorario); // ELIMINAMOS EL TEXTO PARA QUE NO DE ERROR AL RECORRER.
@@ -574,9 +571,11 @@ public class EnviarDatosController {
             @RequestParam(name = "page", required = false, defaultValue = "0") int page,
             @RequestParam(name = "size", required = false, defaultValue = "5") int size) throws DangerException {
         Usuario usuario = (Usuario) session.getAttribute("usuario");
-
-        model.addAttribute("nombreUsuario", usuario.getNombre()); // Agregar nombre del usuario al modelo
-
+        if (usuario == null || usuario.getRol() != RolUsuario.PROFESOR) {
+            PRG.error("No tienes los privilegios necesarios para realizar esta accion.");
+        } else {
+            model.addAttribute("nombreUsuario", usuario.getNombre()); // Agregar nombre del usuario al modelo
+        }
         // Obtener los mensajes recibidos por el usuario
         EstadoSolicitud estadoAprobado1 = EstadoSolicitud.APROBADO_JEFATURA_PDF;
         EstadoSolicitud estadoAprobado2 = EstadoSolicitud.RECHAZADO_DIRECCION;
@@ -638,7 +637,9 @@ public class EnviarDatosController {
             @RequestParam(name = "page", required = false, defaultValue = "0") int page,
             @RequestParam(name = "size", required = false, defaultValue = "5") int size) throws DangerException {
         Usuario usuario = (Usuario) session.getAttribute("usuario");
-
+        if (usuario == null || usuario.getRol() != RolUsuario.PROFESOR) {
+            PRG.error("No tienes los privilegios necesarios para realizar esta accion.");
+        }
         EstadoSolicitud estadoFinalizado = EstadoSolicitud.SOLICITUD_FINALIZADA;
 
         List<Solicitud> allSolicitudes = solicitudService.findAllByUsuarioAndEstado(usuario,
@@ -707,7 +708,9 @@ public class EnviarDatosController {
             @RequestParam(name = "page", required = false, defaultValue = "0") int page,
             @RequestParam(name = "size", required = false, defaultValue = "5") int size) throws DangerException {
         Usuario usuario = (Usuario) session.getAttribute("usuario");
-
+        if (usuario == null || usuario.getRol() != RolUsuario.PROFESOR) {
+            PRG.error("No tienes los privilegios necesarios para realizar esta accion.");
+        }
         List<Solicitud> allSolicitudesProfesor = solicitudService.findAllByUsuario(usuario);
 
         // Procesar el campo de horario de cada solicitud
@@ -771,7 +774,9 @@ public class EnviarDatosController {
             @RequestParam(name = "page", required = false, defaultValue = "0") int page,
             @RequestParam(name = "size", required = false, defaultValue = "5") int size) throws DangerException {
         Usuario usuario = (Usuario) session.getAttribute("usuario");
-
+        if (usuario == null || usuario.getRol() != RolUsuario.JEFATURA) {
+            PRG.error("No tienes los privilegios necesarios para realizar esta accion.");
+        }
         List<Solicitud> allSolicitudesJefatura = solicitudService.findAllByUsuarioJefatura(usuario);
 
         for (Solicitud solicitud : allSolicitudesJefatura) {
@@ -885,9 +890,11 @@ public class EnviarDatosController {
             @RequestParam(name = "page", required = false, defaultValue = "0") int page,
             @RequestParam(name = "size", required = false, defaultValue = "5") int size) throws DangerException {
         Usuario usuario = (Usuario) session.getAttribute("usuario");
-
-        model.addAttribute("nombreUsuario", usuario.getNombre()); // Agregar nombre del usuario al modelo
-
+        if (usuario == null || usuario.getRol() != RolUsuario.DIRECTOR) {
+            PRG.error("No tienes los privilegios necesarios para realizar esta accion.");
+        } else {
+            model.addAttribute("nombreUsuario", usuario.getNombre()); // Agregar nombre del usuario al modelo
+        }
         // Obtener los mensajes recibidos por el usuario
         EstadoSolicitud estadoPendienteDireccion = EstadoSolicitud.PENDIENTE_FIRMA_DIRECCION;
         List<Mensaje> mensajes = mensajeService.recibirMensajes(usuario);
@@ -938,6 +945,10 @@ public class EnviarDatosController {
     @GetMapping("/solicitudPendiente")
     public String solicitudTratadoDireccion(ModelMap m, HttpSession session, @RequestParam("id") String idSolicitud)
             throws DangerException {
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+        if (usuario == null || usuario.getRol() != RolUsuario.DIRECTOR) {
+            PRG.error("No tienes los privilegios necesarios para realizar esta accion.");
+        }
 
         Solicitud solicitud = solicitudService.findById(idSolicitud);
         m.put("solicitud", solicitud);
@@ -951,13 +962,6 @@ public class EnviarDatosController {
     public String solicitudFinalizacion(
             @RequestParam("idSolicitud") String idSolicitud,
             @RequestParam("archivoPDF") MultipartFile archivo) throws Exception {
-
-        // // Verificar si el archivo está vacío
-        // if (archivo.isEmpty()) {
-        // PRG.error("Por favor, seleccione un archivo antes de enviar.",
-        // "/direccion/solicitudesPendientes");
-        // return "redirect:/direccion/solicitudesPendientes";
-        // }
 
         if (archivo == null || archivo.isEmpty()) {
             PRG.error("El archivo no ha sido seleccionado", "../");
@@ -1029,6 +1033,10 @@ public class EnviarDatosController {
     public void descargarSolicitudAprobadaJefatura(@PathVariable String idSolicitud, HttpSession session,
             HttpServletResponse response)
             throws IOException, DangerException {
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+        if (usuario == null) {
+            PRG.error("No tienes los privilegios necesarios para realizar esta accion.");
+        }
 
         Solicitud solicitud = solicitudService.findById(idSolicitud);
         String rutaArchivo = solicitud.getRutaSolicitud() + "/APROBADO_POR_JEFATURA " + idSolicitud + ".pdf";
@@ -1050,7 +1058,10 @@ public class EnviarDatosController {
     public void descargarSolicitudFirmadaEmpresa(@PathVariable String idSolicitud, HttpSession session,
             HttpServletResponse response)
             throws IOException, DangerException {
-
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+        if (usuario == null) {
+            PRG.error("No tienes los privilegios necesarios para realizar esta accion.");
+        }
         Solicitud solicitud = solicitudService.findById(idSolicitud);
         String rutaArchivo = solicitud.getRutaSolicitud() + "/FIRMADO_POR_EMPRESA " + idSolicitud + ".pdf";
 
@@ -1071,7 +1082,10 @@ public class EnviarDatosController {
     public void descargarSolicitudFirmadaDireccion(@PathVariable String idSolicitud, HttpSession session,
             HttpServletResponse response)
             throws IOException, DangerException {
-
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+        if (usuario == null) {
+            PRG.error("No tienes los privilegios necesarios para realizar esta accion.");
+        }
         Solicitud solicitud = solicitudService.findById(idSolicitud);
         String rutaArchivo = solicitud.getRutaSolicitud() + "/SOLICITUD_FINALIZADA " + idSolicitud + ".pdf";
 

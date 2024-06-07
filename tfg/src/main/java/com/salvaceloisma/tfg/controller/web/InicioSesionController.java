@@ -38,7 +38,11 @@ public class InicioSesionController {
 
     @GetMapping("/inicioSesion")
     public String inicioSesion(
-            ModelMap m) {
+            ModelMap m, HttpSession session) throws DangerException {
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+        if (usuario != null) {
+            PRG.error("Ya tienes una sesion iniciada. Cierra sesion y vuelve.");
+        }
         m.put("view", "inicioSesion/inicioSesion");
         return "_t/frame";
     }
@@ -68,7 +72,10 @@ public class InicioSesionController {
     public String logout(
             HttpSession s,
             ModelMap m, HttpSession session) throws DangerException {
-        
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+        if (usuario == null) {
+            PRG.error("No tienes ninguna sesion iniciada. Inicia sesion y vuelve.");
+        }
         s.setAttribute("usuario", null);
         s.invalidate();
         return "redirect:../";
@@ -77,7 +84,10 @@ public class InicioSesionController {
     @GetMapping("/crearUsuario")
     public String crearUsuario(
             ModelMap m, HttpSession session) throws DangerException {
-        
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+        if (usuario == null || (usuario.getRol() != RolUsuario.ADMIN && usuario.getRol() != RolUsuario.DIRECTOR)) {
+            PRG.error("No tienes los privilegios necesarios para realizar esta accion.");
+        }
         m.put("roles", RolUsuario.values());
         m.put("view", "inicioSesion/crearUsuario");
         return "_t/frame";
@@ -103,17 +113,22 @@ public class InicioSesionController {
     @GetMapping("/gestionarUsuarios")
     public String gestionarUsuarios(
             ModelMap m, HttpSession session) throws DangerException {
-        
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+        if (usuario == null || (usuario.getRol() != RolUsuario.ADMIN && usuario.getRol() != RolUsuario.DIRECTOR)) {
+            PRG.error("No tienes los privilegios necesarios para realizar esta accion.");
+        }
         m.put("usuarios", usuarioService.findAll());
         m.put("view", "usuario/r");
         return "_t/frame";
     }
 
-
     @GetMapping("/gestionarAlumnos")
     public String gestionarAlumnos(
             ModelMap m, HttpSession session) throws DangerException {
-        
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+        if (usuario == null || (usuario.getRol() != RolUsuario.ADMIN && usuario.getRol() != RolUsuario.DIRECTOR)) {
+            PRG.error("No tienes los privilegios necesarios para realizar esta accion.");
+        }
         m.put("alumnos", alumnoService.findAll());
         m.put("view", "alumno/r");
         return "_t/frame";
@@ -122,7 +137,10 @@ public class InicioSesionController {
     @GetMapping("/cambiarContrasenia")
     public String cambiarContrasenia(
             ModelMap m, HttpSession session) throws DangerException {
-        
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+        if (usuario == null) {
+            PRG.error("No tienes ninguna sesion iniciada. Inicia sesion y vuelve.");
+        }
         m.put("view", "inicioSesion/cambiarContrasenia");
         return "_t/frame";
     }
