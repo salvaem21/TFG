@@ -2,12 +2,6 @@
     <a class="navbar-brand" href="/">
         <img src="/img/reyFernando.png" alt="INICIO" style="width:50px;">
     </a>
-    <ul class="navbar-nav ml-auto" th:if="${session.usuario==null}">
-        <li class="nav-item">
-            <a class="nav-link btn btn-outline-light" href="/inicioSesion/inicioSesion" id="inicioSesion">Iniciar
-                sesión</a>
-        </li>
-    </ul>
     <ul class="navbar-nav ml-auto" th:if="${session.usuario!=null}">
         <li class="nav-item mt-2">
             <span class="badge badge-pill badge-danger mr-2" th:if="${#lists.size(session.mensajesConNovedad) >= 1}" th:text="${#lists.size(session.mensajesConNovedad)}"
