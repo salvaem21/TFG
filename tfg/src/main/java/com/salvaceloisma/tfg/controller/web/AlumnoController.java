@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.salvaceloisma.tfg.domain.Usuario;
 import com.salvaceloisma.tfg.enumerados.RolUsuario;
 import com.salvaceloisma.tfg.exception.DangerException;
+import com.salvaceloisma.tfg.exception.InfoException;
 import com.salvaceloisma.tfg.helper.PRG;
 import com.salvaceloisma.tfg.service.AlumnoService;
 
@@ -53,23 +54,25 @@ public class AlumnoController {
             @RequestParam("idAlumno") Long idAlumno,
             @RequestParam("dni") String dni,
             @RequestParam("nombre") String nombre,
-            @RequestParam("apellido") String apellido, HttpSession s) throws DangerException {
+            @RequestParam("apellido") String apellido, HttpSession s) throws DangerException, InfoException {
         try {
             alumnoService.update(idAlumno, dni, nombre, apellido);
         } catch (Exception e) {
             PRG.error("El alumno no pudo ser actualizado", "/alumno/r");
         }
+        PRG.info("Alumno actualizado correctamente.", "/alumno/r");
         return "redirect:/alumno/r";
     }
 
     @PostMapping("d")
     public String delete(
-            @RequestParam("id") Long idAlumno) throws DangerException {
+            @RequestParam("id") Long idAlumno) throws DangerException, InfoException {
         try {
             alumnoService.delete(idAlumno);
         } catch (Exception e) {
             PRG.error("No se puede borrar el alumno", "/alumno/r");
         }
+        PRG.info("Alumno eliminado correctamente.", "/alumno/r");
         return "redirect:/alumno/r";
     }
 }

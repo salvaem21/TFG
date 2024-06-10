@@ -16,6 +16,7 @@ import com.salvaceloisma.tfg.domain.Mensaje;
 import com.salvaceloisma.tfg.domain.Usuario;
 import com.salvaceloisma.tfg.enumerados.RolUsuario;
 import com.salvaceloisma.tfg.exception.DangerException;
+import com.salvaceloisma.tfg.exception.InfoException;
 import com.salvaceloisma.tfg.helper.PRG;
 import com.salvaceloisma.tfg.service.AlumnoService;
 import com.salvaceloisma.tfg.service.InicioSesionService;
@@ -99,7 +100,7 @@ public class InicioSesionController {
             @RequestParam("apellido") String apellido,
             @RequestParam("correo") String correo,
             @RequestParam("contrasenia") String contrasenia,
-            @RequestParam("rol") RolUsuario rol, HttpSession s) throws Exception {
+            @RequestParam("rol") RolUsuario rol, HttpSession s) throws DangerException, InfoException {
 
         try {
             correo = correo + "@educa.madrid.org";
@@ -107,6 +108,7 @@ public class InicioSesionController {
         } catch (Exception e) {
             PRG.error("El usuario ya existe", "/inicioSesion/crearUsuario");
         }
+        PRG.info("Usuario creado correctamente.", "/inicioSesion/crearUsuario");
         return "redirect:../";
     }
 
@@ -150,17 +152,16 @@ public class InicioSesionController {
             @RequestParam("contraseniaActual") String contraseniaAntigua,
             @RequestParam("contraseniaNueva") String contraseniaNueva,
             HttpSession session,
-            ModelMap modelMap) throws DangerException {
+            ModelMap modelMap) throws DangerException, InfoException {
 
         Usuario usuario = (Usuario) session.getAttribute("usuario");
 
         try {
             inicioSesionService.cambiarContrasenia(usuario, contraseniaAntigua, contraseniaNueva);
-
         } catch (Exception e) {
             PRG.error("La contraseña no es valida", "/inicioSesion/cambiarContrasenia");
         }
-
+        PRG.info("Contraseña actualizada correctamente.", "/inicioSesion/cambiarContrasenia");
         return "redirect:../";
     }
 

@@ -229,7 +229,7 @@ public class EnviarDatosController {
         } catch (Exception e) {
             PRG.error("Los datos no pudieron enviarse correctamente. Error: " + e.getMessage());
         }
-
+        PRG.info("Datos enviados correctamente.");
         return "redirect:../";
     }
 
@@ -367,7 +367,7 @@ public class EnviarDatosController {
             emailService.enviarEmail(destinatarioCorreo, "(FCT'S) Datos pendientes de ser corregidos.",
                     "Jefatura ha enviado datos para corregir. Revisa tu bandeja de entrada.");
 
-            PRG.info("Correción enviada correctamente.");
+            PRG.info("Datos enviados a corregir correctamente.");
         } catch (IOException e) {
             PRG.error("Error al subir el archivo.", "/jefatura/corregirDatosJefatura");
 
@@ -469,7 +469,7 @@ public class EnviarDatosController {
                     "(FCT'S) Solicitud aceptada por Jefatura.",
                     "Jefatura ha aceptado tu solicitud y podras descargar el PDF. Revisa tu bandeja de entrada.");
 
-            PRG.info("Corrección enviada correctamente.");
+            PRG.info("Archivo enviado correctamente.");
         } catch (IOException e) {
             PRG.error("Error al subir el archivo.", "/jefatura/corregirDatosJefatura");
         }
@@ -872,7 +872,7 @@ public class EnviarDatosController {
                     "(FCT'S) Documento pendiente de ser revisado.",
                     "Un profesor ha enviado un documento para firmar. Revisa tu bandeja de entrada.");
 
-            PRG.info("Correción enviada correctamente.");
+            PRG.info("Archivo enviado correctamente.");
         } catch (IOException e) {
             PRG.error("Error al subir el archivo.", "/profesor/solicitudesAprobados");
         }
@@ -992,7 +992,7 @@ public class EnviarDatosController {
                     "(FCT'S) Solicitud firmada por Direccion y finalizada.",
                     "Direccion ha firmado tu solicitud y podras descargar todos los PDFs.Revisa tu bandeja de entrada.");
 
-            PRG.info("Corrección enviada correctamente.");
+            PRG.info("Archivo enviado correctamente. La solicitud a finalizado.");
         } catch (IOException e) {
             PRG.error("Error al subir el archivo.", "/direccion/solicitudesPendientes");
         }
@@ -1021,7 +1021,7 @@ public class EnviarDatosController {
             solicitudService.cambiarEstadoSolicitud(idSolicitud, estadoSolicitud, remitente);
             emailService.enviarEmail(destinatarioCorreo, "(FCT'S) Solicitud denegada por Direccion.",
                     "Direccion ha rechazado tu solicitud. Envia de nuevo el documento. Revisa tu bandeja de entrada.");
-            PRG.info("Corrección enviada correctamente.");
+            PRG.info("Datos enviados a corregir correctamente.");
         } catch (IOException e) {
             PRG.error("Error al subir el archivo.", "/direccion/solicitudesPendientes");
         }

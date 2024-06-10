@@ -429,6 +429,7 @@ $(document).ready(function () {
             alert("El nombre,apellido o NIF del alumno extra es invalido.");
             event.preventDefault(); // Evitar que se envíe el formulario si uno o más campos de alumnos son inválidos
         }
+        $("#boton").prop("disabled", true);
     });
 
     $("#formularioCreador").submit(function (event) {
@@ -445,6 +446,7 @@ $(document).ready(function () {
             event.preventDefault();
             return;
         }
+        $("#boton").prop("disabled", true);
     });
 
     $("#formularioModAlumnos").submit(function (event) {
@@ -468,6 +470,7 @@ $(document).ready(function () {
             event.preventDefault();
             return;
         }
+        $("#boton").prop("disabled", true);
     });
 
     $("#formularioModUsuarios").submit(function (event) {
@@ -484,8 +487,16 @@ $(document).ready(function () {
             event.preventDefault();
             return;
         }
+        $("#boton").prop("disabled", true);
     });
 
+    $("#formularioAprobado").submit(function (event) {
+        $("#boton").prop("disabled", true);
+    });
+
+    $("#solicitudFCT").submit(function (event) {
+        $("#boton").prop("disabled", true);
+    });
 
     // Manejador de clic en el botón para agregar otro alumno
     $("#agregarAlumno").click(function () {
