@@ -24,7 +24,7 @@
                                 <td class="col-2" data-attribute="numeroConvenio" th:text="${solicitud.numeroConvenio}"></td>
                                 <td class="col-1" data-attribute="cicloFormativo" th:text="${solicitud.cicloFormativo}"></td>
                                 <td class="col-2" data-attribute="fechaInicio" th:text="${solicitud.fechaInicio}"></td>
-                                <td class="col-2"><a th:href="@{/enviarDatos/descargarSolicitudFirmadaEmpresa/{idSolicitud}(idSolicitud=${solicitud.idSolicitud})}" class="btn btn-link btn-sm">
+                                <td class="col-2"><a th:href="@{/descargas/descargarSolicitudFirmadaEmpresa/{idSolicitud}(idSolicitud=${solicitud.idSolicitud})}" class="btn btn-link btn-sm">
                                     Descargar PDF
                                 </a></td>
                             </tr>

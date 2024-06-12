@@ -650,13 +650,13 @@ $(document).ready(function () {
     $('#formularioAlumnos').submit(function (event) {
         var opcionSeleccionada = $('input[name="opcion"]:checked').val();
         if (opcionSeleccionada === 'pdf') {
-            this.action = '/enviarDatos/corregirDatosJefaturaArchivo';
+            this.action = '/jefatura/solicitudAceptadaJefatura';
             this.enctype = 'multipart/form-data'; // Añadir el tipo de codificación para archivos
         } else if (opcionSeleccionada === 'observaciones') {
-            this.action = '/enviarDatos/corregirDatosJefaturaObservaciones';
+            this.action = '/jefatura/solicitudRechazadaJefatura';
         }
         else{
-            this.action = '/enviarDatos/errorSinSeleccionarJeftura';
+            this.action = '/jefatura/errorSinSeleccionarJeftura';
         }
     });
     
@@ -666,14 +666,14 @@ $(document).ready(function () {
         event.preventDefault(); // Evitar el envío predeterminado del formulario
         var opcionSeleccionada = $('input[name="opcion"]:checked').val();
         if (opcionSeleccionada === 'pdf') {
-            this.action = '/enviarDatos/solicitudAceptadaDireccion';
+            this.action = '/direccion/solicitudAceptadaDireccion';
             this.enctype = 'multipart/form-data';
         } else if (opcionSeleccionada === 'observaciones') {
-            this.action = '/enviarDatos/corregirDatosDireccionObservaciones';
+            this.action = '/direccion/solicitudRechazadaDireccion';
             
         }
         else{
-            this.action = '/enviarDatos/errorSinSeleccionarDireccion';
+            this.action = '/direccion/errorSinSeleccionarDireccion';
         }
         this.submit(); // Envía el formulario después de actualizar el action y enctype
     });

@@ -14,17 +14,17 @@
         <li class="nav-item"
             th:if="${session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).ADMIN || session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).DIRECTOR}">
             <a class="nav-link btn btn-outline-light mr-2" th:if="${session.usuario!=null}"
-                href="/inicioSesion/crearUsuario" id="registrarse">REGISTRAR USUARIO</a>
+                href="/usuario/crearUsuario" id="registrarse">REGISTRAR USUARIO</a>
         </li>
         <li class="nav-item"
             th:if="${session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).ADMIN || session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).DIRECTOR}">
             <a class="nav-link btn btn-outline-light mr-2" th:if="${session.usuario!=null}"
-                href="/inicioSesion/gestionarUsuarios" id="registrarse">GESTIONAR USUARIOS</a>
+                href="/usuario/gestionarUsuarios" id="registrarse">GESTIONAR USUARIOS</a>
         </li>
         <li class="nav-item"
             th:if="${session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).ADMIN || session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).DIRECTOR}">
             <a class="nav-link btn btn-outline-light mr-2" th:if="${session.usuario!=null}"
-                href="/inicioSesion/gestionarAlumnos" id="registrarse">GESTIONAR ALUMNOS</a>
+                href="/alumno/gestionarAlumnos" id="registrarse">GESTIONAR ALUMNOS</a>
         </li>
         <li class="nav-item">
             <a class="nav-link btn btn-outline-light mr-2" th:if="${session.usuario!=null}"

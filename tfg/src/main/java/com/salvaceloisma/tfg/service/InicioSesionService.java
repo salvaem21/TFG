@@ -23,9 +23,6 @@ public class InicioSesionService {
     @Autowired
     private MensajeRepository mensajeRepository;
 
-    @Autowired
-    private CarpetaUsuarioService carpetaUsuarioService;
-
     public void enviarMensaje(Usuario remitente, Usuario destinatario, String contenido, Solicitud solicitud) {
         Mensaje mensaje = new Mensaje();
         mensaje.setRemitente(remitente);
@@ -54,31 +51,6 @@ public class InicioSesionService {
 
     public Usuario findByCorreo(String correo) {
         return inicioSesionRepository.findByCorreo(correo);
-    }
-
-    public Usuario save(String nombre, String apellido, String correo, String contrasenia, RolUsuario rol) {
-        // Cifrar la contraseña
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        String contraseniaCifrada = encoder.encode(contrasenia);
-        //
-        Usuario usuario = new Usuario(nombre, apellido, correo, contraseniaCifrada, rol);
-        usuario = inicioSesionRepository.save(usuario);
-
-        // Crear la carpeta del usuario
-        if (rol == RolUsuario.PROFESOR) {
-            // Crear la carpeta del usuario
-            String rutaCarpetaUsuario = carpetaUsuarioService.crearCarpetaUsuario(usuario.getCorreo());
-
-            // Actualizar la ruta de la carpeta del usuario en la entidad Usuario
-            usuario.setRutaCarpeta(rutaCarpetaUsuario);
-
-            // Guardar los cambios en la base de datos
-            return inicioSesionRepository.save(usuario);
-        }
-
-        // Si el usuario no es Profesor, no se crea la carpeta y se devuelve el usuario
-        // sin cambios
-        return usuario;
     }
 
     public Usuario findById(Long idUsuario) {
@@ -125,9 +97,5 @@ public class InicioSesionService {
             mensaje.setNovedad(false); // Establecer el booleano en false
         }
         mensajeRepository.saveAll(mensajes); // Guardar los cambios en la base de datos
-    }
-
-    public long count() {
-        return inicioSesionRepository.count();
     }
 }

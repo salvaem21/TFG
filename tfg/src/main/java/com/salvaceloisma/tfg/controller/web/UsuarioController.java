@@ -24,21 +24,63 @@ public class UsuarioController {
     @Autowired
     private UsuarioService usuarioService;
 
-    @GetMapping("r")
-    public String r(
+    @GetMapping("/gestionarUsuarios")
+    public String gestionarUsuarios(
             ModelMap m, HttpSession session) throws DangerException {
         Usuario usuario = (Usuario) session.getAttribute("usuario");
         if (usuario == null || (usuario.getRol() != RolUsuario.ADMIN && usuario.getRol() != RolUsuario.DIRECTOR)) {
             PRG.error("No tienes los privilegios necesarios para realizar esta accion.");
         }
         m.put("usuarios", usuarioService.findAll());
-        m.put("view", "usuario/r");
+        m.put("view", "usuario/verUsuarios");
+        return "_t/frame";
+    }
+
+    @GetMapping("verUsuarios")
+    public String verUsuarios(
+            ModelMap m, HttpSession session) throws DangerException {
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+        if (usuario == null || (usuario.getRol() != RolUsuario.ADMIN && usuario.getRol() != RolUsuario.DIRECTOR)) {
+            PRG.error("No tienes los privilegios necesarios para realizar esta accion.");
+        }
+        m.put("usuarios", usuarioService.findAll());
+        m.put("view", "usuario/verUsuarios");
         return "_t/frame";
 
     }
 
-    @GetMapping("u")
-    public String update(
+    @GetMapping("/crearUsuario")
+    public String crearUsuario(
+            ModelMap m, HttpSession session) throws DangerException {
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+        if (usuario == null || (usuario.getRol() != RolUsuario.ADMIN && usuario.getRol() != RolUsuario.DIRECTOR)) {
+            PRG.error("No tienes los privilegios necesarios para realizar esta accion.");
+        }
+        m.put("roles", RolUsuario.values());
+        m.put("view", "usuario/crearUsuario");
+        return "_t/frame";
+    }
+
+    @PostMapping("/crearUsuario")
+    public String crearUsuarioPost(
+            @RequestParam("nombre") String nombre,
+            @RequestParam("apellido") String apellido,
+            @RequestParam("correo") String correo,
+            @RequestParam("contrasenia") String contrasenia,
+            @RequestParam("rol") RolUsuario rol, HttpSession s) throws DangerException, InfoException {
+
+        try {
+            correo = correo + "@educa.madrid.org";
+            usuarioService.save(nombre, apellido, correo, contrasenia, rol);
+        } catch (Exception e) {
+            PRG.error("El usuario ya existe", "/usuario/crearUsuario");
+        }
+        PRG.info("Usuario creado correctamente.", "/usuario/crearUsuario");
+        return "redirect:../";
+    }
+
+    @GetMapping("actualizarUsuario")
+    public String actualizarUsuario(
             @RequestParam("id") Long idUsuario, HttpSession session,
             ModelMap m) throws DangerException {
         Usuario usuario = (Usuario) session.getAttribute("usuario");
@@ -46,33 +88,33 @@ public class UsuarioController {
             PRG.error("No tienes los privilegios necesarios para realizar esta accion.");
         }
         m.put("usuario", usuarioService.findById(idUsuario));
-        m.put("view", "usuario/u");
+        m.put("view", "usuario/actualizarUsuario");
         return "_t/frame";
     }
 
-    @PostMapping("u")
-    public String updatePost(
+    @PostMapping("actualizarUsuario")
+    public String actualizarUsuarioPost(
             @RequestParam("idUsuario") Long idUsuario,
             @RequestParam("nombre") String nombre,
             @RequestParam("apellido") String apellido, HttpSession s) throws DangerException, InfoException {
         try {
             usuarioService.update(idUsuario, nombre, apellido);
         } catch (Exception e) {
-            PRG.error("El alumno no pudo ser actualizado", "/usuario/r");
+            PRG.error("El alumno no pudo ser actualizado", "/usuario/verUsuarios");
         }
-        PRG.info("Usuario actualizado correctamente.", "/usuario/r");
-        return "redirect:/usuario/r";
+        PRG.info("Usuario actualizado correctamente.", "/usuario/verUsuarios");
+        return "redirect:/usuario/verUsuarios";
     }
 
-    @PostMapping("d")
-    public String delete(
+    @PostMapping("borrarUsuario")
+    public String borrarUsuario(
             @RequestParam("id") Long idUsuario) throws DangerException, InfoException {
         try {
             usuarioService.delete(idUsuario);
         } catch (Exception e) {
-            PRG.error("No se puede borrar el alumno", "/usuario/r");
+            PRG.error("No se puede borrar el alumno", "/usuario/verUsuarios");
         }
-        PRG.info("Usuario eliminado correctamente.", "/usuario/r");
-        return "redirect:/usuario/r";
+        PRG.info("Usuario eliminado correctamente.", "/usuario/verUsuarios");
+        return "redirect:/usuario/verUsuarios";
     }
 }

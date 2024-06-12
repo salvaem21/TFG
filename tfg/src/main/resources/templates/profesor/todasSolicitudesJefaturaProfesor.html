@@ -1,5 +1,5 @@
 <div class="container">
-        <h1>Solicitudes Finalizadas</h1>
+        <h1>Solicitudes Relacionadas Contigo</h1>
     </div>
     <div class="ml-3 mr-3">
         <div class="input-group mt-2 mb-2">
@@ -10,6 +10,9 @@
                 <option value="numeroConvenio">Numero convenio</option>
                 <option value="cicloFormativo">Ciclo Formativo</option>
                 <option value="fechaInicio">Fecha Inicio</option>
+                <option value="estado">Estado</option>
+                <option value="alumnos">Alumnos</option>
+                <option value="horarios">Horarios</option>
             </select>
             <input class="form-control search-tables" placeholder="Buscar..." type="text"/>
         </div>
@@ -24,28 +27,33 @@
             <thead class="thead">
                 <tr class="row">
                     <th class="col-2 table-header">
-                        <a th:href="@{/enviarDatos/solicitudesFinalizadas(sort='idSolicitud', dir=${sortField == 'idSolicitud' ? (sortDir == 'asc' ? 'desc' : 'asc') : 'asc'})}">
+                        <a th:href="@{/profesor/todasSolicitudesJefaturaProfesor(sort='idSolicitud', dir=${sortField == 'idSolicitud' ? (sortDir == 'asc' ? 'desc' : 'asc') : 'asc'})}">
                             Nº Solicitud <span th:text="${sortField == 'idSolicitud' ? (sortDir == 'asc' ? '▲' : '▼') : ''}"></span>
                         </a>
                     </th>
                     <th class="col-1 table-header">
-                        <a th:href="@{/enviarDatos/solicitudesFinalizadas(sort='empresa', dir=${sortField == 'empresa' ? (sortDir == 'asc' ? 'desc' : 'asc') : 'asc'})}">
+                        <a th:href="@{/profesor/todasSolicitudesJefaturaProfesor(sort='empresa', dir=${sortField == 'empresa' ? (sortDir == 'asc' ? 'desc' : 'asc') : 'asc'})}">
                             Empresa <span th:text="${sortField == 'empresa' ? (sortDir == 'asc' ? '▲' : '▼') : ''}"></span>
                         </a>
                     </th>
                     <th class="col-1 table-header">
-                        <a th:href="@{/enviarDatos/solicitudesFinalizadas(sort='numeroConvenio', dir=${sortField == 'numeroConvenio' ? (sortDir == 'asc' ? 'desc' : 'asc') : 'asc'})}">
+                        <a th:href="@{/profesor/todasSolicitudesJefaturaProfesor(sort='numeroConvenio', dir=${sortField == 'numeroConvenio' ? (sortDir == 'asc' ? 'desc' : 'asc') : 'asc'})}">
                             Numero convenio <span th:text="${sortField == 'numeroConvenio' ? (sortDir == 'asc' ? '▲' : '▼') : ''}"></span>
                         </a>
                     </th>
-                    <th class="col-2 table-header">
-                        <a th:href="@{/enviarDatos/solicitudesFinalizadas(sort='cicloFormativo', dir=${sortField == 'cicloFormativo' ? (sortDir == 'asc' ? 'desc' : 'asc') : 'asc'})}">
+                    <th class="col-1 table-header">
+                        <a th:href="@{/profesor/todasSolicitudesJefaturaProfesor(sort='cicloFormativo', dir=${sortField == 'cicloFormativo' ? (sortDir == 'asc' ? 'desc' : 'asc') : 'asc'})}">
                             Ciclo Formativo <span th:text="${sortField == 'cicloFormativo' ? (sortDir == 'asc' ? '▲' : '▼') : ''}"></span>
                         </a>
                     </th>
                     <th class="col-1 table-header">
-                        <a th:href="@{/enviarDatos/solicitudesFinalizadas(sort='fechaInicio', dir=${sortField == 'fechaInicio' ? (sortDir == 'asc' ? 'desc' : 'asc') : 'asc'})}">
+                        <a th:href="@{/profesor/todasSolicitudesJefaturaProfesor(sort='fechaInicio', dir=${sortField == 'fechaInicio' ? (sortDir == 'asc' ? 'desc' : 'asc') : 'asc'})}">
                             Fecha Inicio <span th:text="${sortField == 'fechaInicio' ? (sortDir == 'asc' ? '▲' : '▼') : ''}"></span>
+                        </a>
+                    </th>
+                    <th class="col-2 table-header">
+                        <a th:href="@{/profesor/todasSolicitudesJefaturaProfesor(sort='estado', dir=${sortField == 'estado' ? (sortDir == 'asc' ? 'desc' : 'asc') : 'asc'})}">
+                            Estado <span th:text="${sortField == 'estado' ? (sortDir == 'asc' ? '▲' : '▼') : ''}"></span>
                         </a>
                     </th>
                     <th class="col-2">Alumnos</th>
@@ -54,15 +62,16 @@
             </thead>
             <tbody>
                 <!-- Bucle de solicitudes -->
-                <tr class="row solicitud-row" th:each="solicitud : ${solicitudes}" th:if="${solicitud.estado == estadoFinalizado}">
+                <tr class="row solicitud-row" th:each="solicitud : ${solicitudes}">
                     <!-- Fila de la solicitud -->
                     <td class="col-2 small" data-attribute="idSolicitud" th:text="${solicitud.idSolicitud}"></td>
                     <td class="col-1 small" data-attribute="empresa" th:text="${solicitud.empresa}"></td>
                     <td class="col-1 small" data-attribute="numeroConvenio" th:text="${solicitud.numeroConvenio}"></td>
-                    <td class="col-2 small" data-attribute="cicloFormativo" th:text="${solicitud.cicloFormativo}"></td>
+                    <td class="col-1 small" data-attribute="cicloFormativo" th:text="${solicitud.cicloFormativo}"></td>
                     <td class="col-1 small" data-attribute="fechaInicio" th:text="${solicitud.fechaInicio}"></td>
+                    <td class="col-2 small" data-attribute="estado" th:text="${solicitud.estado}"></td>
                     <!-- Columna para los detalles de los alumnos -->
-                    <td class="col-2">
+                    <td class="col-2" data-attribute="alumnos">
                         <!-- Detalles de los alumnos -->
                         <details class="alumnos-details">
                             <summary><b>Mostrar alumnos</b></summary>
@@ -78,17 +87,13 @@
                     <td class="col-2">
                         <details class="descargas-details">
                             <summary><b>Descargas</b></summary>
-                            <!-- Lista de descargas -->
                             <div class="descargas-list">
-                                <a th:href="@{/enviarDatos/descargarSolicitudAprobadaJefatura/{idSolicitud}(idSolicitud=${solicitud.idSolicitud})}" class="btn btn-link btn-sm">
-                                    Aprobada Por Jefatura
-                                </a>
-                                <a th:href="@{/enviarDatos/descargarSolicitudFirmadaEmpresa/{idSolicitud}(idSolicitud=${solicitud.idSolicitud})}" class="btn btn-link btn-sm">
-                                    Firmada Por Empresa
-                                </a>
-                                <a th:href="@{/enviarDatos/descargarSolicitudFirmadaDireccion/{idSolicitud}(idSolicitud=${solicitud.idSolicitud})}" class="btn btn-link btn-sm">
-                                    Firmada Por Direccion
-                                </a>                       
+                                <a th:href="@{/descargas/descargarSolicitudAprobadaJefatura/{idSolicitud}(idSolicitud=${solicitud.idSolicitud})}"
+                                    class="btn btn-link btn-sm">Aprobada Por Jefatura</a>
+                                <a th:href="@{/descargas/descargarSolicitudFirmadaEmpresa/{idSolicitud}(idSolicitud=${solicitud.idSolicitud})}"
+                                    class="btn btn-link btn-sm">Firmada Por Empresa</a>
+                                <a th:href="@{/descargas/descargarSolicitudFirmadaDireccion/{idSolicitud}(idSolicitud=${solicitud.idSolicitud})}"
+                                    class="btn btn-link btn-sm">Firmada Por Direccion</a>
                             </div>
                         </details>
                     </td>
@@ -98,13 +103,13 @@
         <nav aria-label="Page navigation">
             <ul class="pagination justify-content-center">
                 <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-                    <a class="page-link" th:href="@{/enviarDatos/solicitudesFinalizadas(page=${currentPage - 1}, size=${pageSize}, sort=${sortField}, dir=${sortDir})}">Anterior</a>
+                    <a class="page-link" th:href="@{/profesor/todasSolicitudesJefaturaProfesor(page=${currentPage - 1}, size=${pageSize}, sort=${sortField}, dir=${sortDir})}">Anterior</a>
                 </li>
                 <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}" th:classappend="${i == currentPage} ? 'active'">
-                    <a class="page-link" th:href="@{/enviarDatos/solicitudesFinalizadas(page=${i}, size=${pageSize}, sort=${sortField}, dir=${sortDir})}" th:text="${i + 1}">1</a>
+                    <a class="page-link" th:href="@{/profesor/todasSolicitudesJefaturaProfesor(page=${i}, size=${pageSize}, sort=${sortField}, dir=${sortDir})}" th:text="${i + 1}">1</a>
                 </li>
                 <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
-                    <a class="page-link" th:href="@{/enviarDatos/solicitudesFinalizadas(page=${currentPage + 1}, size=${pageSize}, sort=${sortField}, dir=${sortDir})}">Siguiente</a>
+                    <a class="page-link" th:href="@{/profesor/todasSolicitudesJefaturaProfesor(page=${currentPage + 1}, size=${pageSize}, sort=${sortField}, dir=${sortDir})}">Siguiente</a>
                 </li>
             </ul>
         </nav>

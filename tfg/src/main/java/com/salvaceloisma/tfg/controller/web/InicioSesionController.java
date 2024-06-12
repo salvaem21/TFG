@@ -14,13 +14,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.salvaceloisma.tfg.domain.Mensaje;
 import com.salvaceloisma.tfg.domain.Usuario;
-import com.salvaceloisma.tfg.enumerados.RolUsuario;
 import com.salvaceloisma.tfg.exception.DangerException;
 import com.salvaceloisma.tfg.exception.InfoException;
 import com.salvaceloisma.tfg.helper.PRG;
-import com.salvaceloisma.tfg.service.AlumnoService;
 import com.salvaceloisma.tfg.service.InicioSesionService;
-import com.salvaceloisma.tfg.service.UsuarioService;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -30,12 +27,6 @@ public class InicioSesionController {
 
     @Autowired
     private InicioSesionService inicioSesionService;
-
-    @Autowired
-    private AlumnoService alumnoService;
-
-    @Autowired
-    private UsuarioService usuarioService;
 
     @GetMapping("/inicioSesion")
     public String inicioSesion(
@@ -80,60 +71,6 @@ public class InicioSesionController {
         s.setAttribute("usuario", null);
         s.invalidate();
         return "redirect:../";
-    }
-
-    @GetMapping("/crearUsuario")
-    public String crearUsuario(
-            ModelMap m, HttpSession session) throws DangerException {
-        Usuario usuario = (Usuario) session.getAttribute("usuario");
-        if (usuario == null || (usuario.getRol() != RolUsuario.ADMIN && usuario.getRol() != RolUsuario.DIRECTOR)) {
-            PRG.error("No tienes los privilegios necesarios para realizar esta accion.");
-        }
-        m.put("roles", RolUsuario.values());
-        m.put("view", "inicioSesion/crearUsuario");
-        return "_t/frame";
-    }
-
-    @PostMapping("/crearUsuario")
-    public String crearUsuarioPost(
-            @RequestParam("nombre") String nombre,
-            @RequestParam("apellido") String apellido,
-            @RequestParam("correo") String correo,
-            @RequestParam("contrasenia") String contrasenia,
-            @RequestParam("rol") RolUsuario rol, HttpSession s) throws DangerException, InfoException {
-
-        try {
-            correo = correo + "@educa.madrid.org";
-            inicioSesionService.save(nombre, apellido, correo, contrasenia, rol);
-        } catch (Exception e) {
-            PRG.error("El usuario ya existe", "/inicioSesion/crearUsuario");
-        }
-        PRG.info("Usuario creado correctamente.", "/inicioSesion/crearUsuario");
-        return "redirect:../";
-    }
-
-    @GetMapping("/gestionarUsuarios")
-    public String gestionarUsuarios(
-            ModelMap m, HttpSession session) throws DangerException {
-        Usuario usuario = (Usuario) session.getAttribute("usuario");
-        if (usuario == null || (usuario.getRol() != RolUsuario.ADMIN && usuario.getRol() != RolUsuario.DIRECTOR)) {
-            PRG.error("No tienes los privilegios necesarios para realizar esta accion.");
-        }
-        m.put("usuarios", usuarioService.findAll());
-        m.put("view", "usuario/r");
-        return "_t/frame";
-    }
-
-    @GetMapping("/gestionarAlumnos")
-    public String gestionarAlumnos(
-            ModelMap m, HttpSession session) throws DangerException {
-        Usuario usuario = (Usuario) session.getAttribute("usuario");
-        if (usuario == null || (usuario.getRol() != RolUsuario.ADMIN && usuario.getRol() != RolUsuario.DIRECTOR)) {
-            PRG.error("No tienes los privilegios necesarios para realizar esta accion.");
-        }
-        m.put("alumnos", alumnoService.findAll());
-        m.put("view", "alumno/r");
-        return "_t/frame";
     }
 
     @GetMapping("/cambiarContrasenia")

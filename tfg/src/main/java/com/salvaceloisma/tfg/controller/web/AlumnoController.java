@@ -24,20 +24,32 @@ public class AlumnoController {
     @Autowired
     private AlumnoService alumnoService;
 
-    @GetMapping("r")
-    public String r(
+    @GetMapping("/gestionarAlumnos")
+    public String gestionarAlumnos(
             ModelMap m, HttpSession session) throws DangerException {
         Usuario usuario = (Usuario) session.getAttribute("usuario");
         if (usuario == null || (usuario.getRol() != RolUsuario.ADMIN && usuario.getRol() != RolUsuario.DIRECTOR)) {
             PRG.error("No tienes los privilegios necesarios para realizar esta accion.");
         }
         m.put("alumnos", alumnoService.findAll());
-        m.put("view", "alumno/r");
+        m.put("view", "alumno/verAlumnos");
+        return "_t/frame";
+    }
+    
+    @GetMapping("verAlumnos")
+    public String verAlumnos(
+            ModelMap m, HttpSession session) throws DangerException {
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+        if (usuario == null || (usuario.getRol() != RolUsuario.ADMIN && usuario.getRol() != RolUsuario.DIRECTOR)) {
+            PRG.error("No tienes los privilegios necesarios para realizar esta accion.");
+        }
+        m.put("alumnos", alumnoService.findAll());
+        m.put("view", "alumno/verAlumnos");
         return "_t/frame";
     }
 
-    @GetMapping("u")
-    public String update(
+    @GetMapping("actualizarAlumno")
+    public String actualizarAlumno(
             @RequestParam("id") Long idAlumno, HttpSession session,
             ModelMap m) throws DangerException {
         Usuario usuario = (Usuario) session.getAttribute("usuario");
@@ -45,12 +57,12 @@ public class AlumnoController {
             PRG.error("No tienes los privilegios necesarios para realizar esta accion.");
         }
         m.put("alumno", alumnoService.findById(idAlumno));
-        m.put("view", "alumno/u");
+        m.put("view", "alumno/actualizarAlumno");
         return "_t/frame";
     }
 
-    @PostMapping("u")
-    public String updatePost(
+    @PostMapping("actualizarAlumno")
+    public String actualizarAlumnoPost(
             @RequestParam("idAlumno") Long idAlumno,
             @RequestParam("dni") String dni,
             @RequestParam("nombre") String nombre,
@@ -58,21 +70,21 @@ public class AlumnoController {
         try {
             alumnoService.update(idAlumno, dni, nombre, apellido);
         } catch (Exception e) {
-            PRG.error("El alumno no pudo ser actualizado", "/alumno/r");
+            PRG.error("El alumno no pudo ser actualizado", "/alumno/verAlumnos");
         }
-        PRG.info("Alumno actualizado correctamente.", "/alumno/r");
-        return "redirect:/alumno/r";
+        PRG.info("Alumno actualizado correctamente.", "/alumno/verAlumnos");
+        return "redirect:/alumno/verAlumnos";
     }
 
-    @PostMapping("d")
-    public String delete(
+    @PostMapping("borrarAlumno")
+    public String borrarAlumno(
             @RequestParam("id") Long idAlumno) throws DangerException, InfoException {
         try {
             alumnoService.delete(idAlumno);
         } catch (Exception e) {
-            PRG.error("No se puede borrar el alumno", "/alumno/r");
+            PRG.error("No se puede borrar el alumno", "/alumno/verAlumnos");
         }
-        PRG.info("Alumno eliminado correctamente.", "/alumno/r");
-        return "redirect:/alumno/r";
+        PRG.info("Alumno eliminado correctamente.", "/alumno/verAlumnos");
+        return "redirect:/alumno/verAlumnos";
     }
 }

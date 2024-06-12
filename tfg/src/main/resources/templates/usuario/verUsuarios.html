@@ -18,13 +18,13 @@
             <td th:text="${usuario.rol}">
 
             <td>
-                <button class="btn btn-outline-propio1 mb-2 col-4 mr-2" th:onclick="|window.location.href='/usuario/u?id=${usuario.id}'|">
+                <button class="btn btn-outline-propio1 mb-2 col-4 mr-2" th:onclick="|window.location.href='/usuario/actualizarUsuario?id=${usuario.id}'|">
                     <img src="/img/lapiz.png" height="20" width="20">
                 </button>
             </td>
             
             <td>
-                <form action="/usuario/d" method="post">
+                <form action="/usuario/borrarUsuario" method="post">
                     <input type="hidden" name="id" th:value="${usuario.id}">
                     <button class="btn btn-outline-propio1 mb-2 col-4 mr-2">
                         <img src="/img/basura.png" height="20" width="20">

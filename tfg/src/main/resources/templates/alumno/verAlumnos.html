@@ -16,13 +16,13 @@
             <td th:text="${alumno.dni}">
 
             <td>
-                <button class="btn btn-outline-propio1 mb-2 col-4 mr-2" th:onclick="|window.location.href='/alumno/u?id=${alumno.id}'|">
+                <button class="btn btn-outline-propio1 mb-2 col-4 mr-2" th:onclick="|window.location.href='/alumno/actualizarAlumno?id=${alumno.id}'|">
                     <img src="/img/lapiz.png" height="20" width="20">
                 </button>
             </td>
             
             <td>
-                <form action="/alumno/d" method="post">
+                <form action="/alumno/borrarAlumno" method="post">
                     <input type="hidden" name="id" th:value="${alumno.id}">
                     <button class="btn btn-outline-propio1 mb-2 col-4 mr-2">
                         <img src="/img/basura.png" height="20" width="20">

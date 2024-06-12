@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfi
 import org.springframework.context.annotation.Bean;
 // import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import com.salvaceloisma.tfg.service.InicioSesionService;
+import com.salvaceloisma.tfg.service.UsuarioService;
 import com.salvaceloisma.tfg.enumerados.RolUsuario;
 
 @SpringBootApplication(exclude=SecurityAutoConfiguration.class)
@@ -18,7 +18,7 @@ public class PlantillaTFGApplication {
 	}
 
 	@Bean
-    CommandLineRunner initDatabase(InicioSesionService repository) {
+    CommandLineRunner initDatabase(UsuarioService repository) {
         return args -> {
 			if (repository.count() == 0) {
             repository.save("Maria", "Cocera", "maria@educa.madrid.org", "", RolUsuario.PROFESOR);
