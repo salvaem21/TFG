@@ -1,5 +1,7 @@
 package com.salvaceloisma.tfg.controller.web;
 
+import java.util.Arrays;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -56,7 +58,11 @@ public class UsuarioController {
         if (usuario == null || (usuario.getRol() != RolUsuario.ADMIN && usuario.getRol() != RolUsuario.DIRECTOR)) {
             PRG.error("No tienes los privilegios necesarios para realizar esta accion.");
         }
-        m.put("roles", RolUsuario.values());
+        RolUsuario[] rolesSinDirector = Arrays.stream(RolUsuario.values())
+                .filter(rol -> rol != RolUsuario.DIRECTOR)
+                .toArray(RolUsuario[]::new);
+
+        m.put("roles", rolesSinDirector);
         m.put("view", "usuario/crearUsuario");
         return "_t/frame";
     }
