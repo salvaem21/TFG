@@ -1,88 +1,108 @@
 <div class="container">
-        <h1>Solicitudes Pendientes de Corregir</h1>
+    <h1>Solicitudes Pendientes de Corregir</h1>
+</div>
+<div class="ml-3 mr-3">
+    <div class="input-group mt-2 mb-2">
+        <select class="form-select search-attribute" aria-label="Seleccionar atributo de búsqueda">
+            <option value="all">Todos</option>
+            <option value="idSolicitud">Nº Solicitud</option>
+            <option value="empresa">Empresa</option>
+            <option value="numeroConvenio">Numero convenio</option>
+            <option value="cicloFormativo">Ciclo Formativo</option>
+            <option value="fechaInicio">Fecha Inicio</option>
+            <option value="observaciones">Observaciones</option>
+        </select>
+        <input class="form-control search-tables" placeholder="Buscar..." type="text" />
     </div>
-    <div class="ml-3 mr-3">
-        <div class="input-group mt-2 mb-2">
-            <select class="form-select search-attribute" aria-label="Seleccionar atributo de búsqueda">
-                <option value="all">Todos</option>
-                <option value="idSolicitud">Nº Solicitud</option>
-                <option value="empresa">Empresa</option>
-                <option value="numeroConvenio">Numero convenio</option>
-                <option value="cicloFormativo">Ciclo Formativo</option>
-                <option value="fechaInicio">Fecha Inicio</option>
-                <option value="observaciones">Observaciones</option>
-            </select>
-            <input class="form-control search-tables" placeholder="Buscar..." type="text"/>
-        </div>
-        <div class="input-group mt-2 mb-2">
-            <select class="form-select" id="pageSizeSelect" aria-label="Seleccionar tamaño de página" onchange="updatePageSize()">
-                <option value="5" th:selected="${pageSize == 5}">5</option>
-                <option value="10" th:selected="${pageSize == 10}">10</option>
-                <option value="20" th:selected="${pageSize == 20}">20</option>
-            </select>
-        </div>
-        <table id="solicitudes-table" class="table">
-            <thead class="thead">
-                <tr class="row">
-                    <th class="col-3 table-header">
-                        <a th:href="@{/profesor/solicitudesRechazadasPorJefatura(sort='idSolicitud', dir=${sortField == 'idSolicitud' ? (sortDir == 'asc' ? 'desc' : 'asc') : 'asc'})}">
-                            Nº Solicitud <span th:text="${sortField == 'idSolicitud' ? (sortDir == 'asc' ? '▲' : '▼') : ''}"></span>
-                        </a>
-                    </th>
-                    <th class="col-1 table-header">
-                        <a th:href="@{/profesor/solicitudesRechazadasPorJefatura(sort='empresa', dir=${sortField == 'empresa' ? (sortDir == 'asc' ? 'desc' : 'asc') : 'asc'})}">
-                            Empresa <span th:text="${sortField == 'empresa' ? (sortDir == 'asc' ? '▲' : '▼') : ''}"></span>
-                        </a>
-                    </th>
-                    <th class="col-2 table-header">
-                        <a th:href="@{/profesor/solicitudesRechazadasPorJefatura(sort='numeroConvenio', dir=${sortField == 'numeroConvenio' ? (sortDir == 'asc' ? 'desc' : 'asc') : 'asc'})}">
-                            Numero convenio <span th:text="${sortField == 'numeroConvenio' ? (sortDir == 'asc' ? '▲' : '▼') : ''}"></span>
-                        </a>
-                    </th>
-                    <th class="col-2 table-header">
-                        <a th:href="@{/profesor/solicitudesRechazadasPorJefatura(sort='cicloFormativo', dir=${sortField == 'cicloFormativo' ? (sortDir == 'asc' ? 'desc' : 'asc') : 'asc'})}">
-                            Ciclo Formativo <span th:text="${sortField == 'cicloFormativo' ? (sortDir == 'asc' ? '▲' : '▼') : ''}"></span>
-                        </a>
-                    </th>
-                    <th class="col-1 table-header">
-                        <a th:href="@{/profesor/solicitudesRechazadasPorJefatura(sort='fechaInicio', dir=${sortField == 'fechaInicio' ? (sortDir == 'asc' ? 'desc' : 'asc') : 'asc'})}">
-                            Fecha Inicio <span th:text="${sortField == 'fechaInicio' ? (sortDir == 'asc' ? '▲' : '▼') : ''}"></span>
-                        </a>
-                    </th>
-                    <th class="col-2 table-header">
-                        <a th:href="@{/profesor/solicitudesRechazadasPorJefatura(sort='observaciones', dir=${sortField == 'observaciones' ? (sortDir == 'asc' ? 'desc' : 'asc') : 'asc'})}">
-                            Observaciones <span th:text="${sortField == 'observaciones' ? (sortDir == 'asc' ? '▲' : '▼') : ''}"></span>
-                        </a>
-                    </th>
-                    <th class="col-1">Gestionar</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Bucle de solicitudes -->
-                <tr class="row solicitud-row" th:each="mensaje : ${mensajes}" th:if="${mensaje.solicitud.estado == estadoRechazado}">
-                    <!-- Fila de la solicitud -->
-                    <td class="col-3 small" data-attribute="idSolicitud" th:text="${mensaje.solicitud.idSolicitud}"></td>
-                    <td class="col-1 small" data-attribute="empresa" th:text="${mensaje.solicitud.empresa}"></td>
-                    <td class="col-2 small" data-attribute="numeroConvenio" th:text="${mensaje.solicitud.numeroConvenio}"></td>
-                    <td class="col-2 small" data-attribute="cicloFormativo" th:text="${mensaje.solicitud.cicloFormativo}"></td>
-                    <td class="col-1 small" data-attribute="fechaInicio" th:text="${mensaje.solicitud.fechaInicio}"></td>
-                    <td class="col-2 small" data-attribute="observaciones" th:text="${mensaje.contenido}"></td>
-                    <td class="col-1"><a class="btn btn-outline-propio1" th:href="@{/profesor/solicitudRechazadaPorJefaturaCorreccion(id=${mensaje.solicitud.idSolicitud})}">Gestionar</a></td>
-                </tr>
-            </tbody>
-        </table>
-        <nav aria-label="Page navigation">
-            <ul class="pagination justify-content-center">
-                <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-                    <a class="page-link" th:href="@{/profesor/solicitudesRechazadasPorJefatura(page=${currentPage - 1}, size=${pageSize}, sort=${sortField}, dir=${sortDir})}">Anterior</a>
-                </li>
-                <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}" th:classappend="${i == currentPage} ? 'active'">
-                    <a class="page-link" th:href="@{/profesor/solicitudesRechazadasPorJefatura(page=${i}, size=${pageSize}, sort=${sortField}, dir=${sortDir})}" th:text="${i + 1}">1</a>
-                </li>
-                <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
-                    <a class="page-link" th:href="@{/profesor/solicitudesRechazadasPorJefatura(page=${currentPage + 1}, size=${pageSize}, sort=${sortField}, dir=${sortDir})}">Siguiente</a>
-                </li>
-            </ul>
-        </nav>
-        <a class="btn btn-outline-propio1 mb-2 col-2 mr-2" href="../">Volver</a>
+    <div class="input-group mt-2 mb-2">
+        <select class="form-select" id="pageSizeSelect" aria-label="Seleccionar tamaño de página"
+            onchange="updatePageSize()">
+            <option value="5" th:selected="${pageSize == 5}">5</option>
+            <option value="10" th:selected="${pageSize == 10}">10</option>
+            <option value="20" th:selected="${pageSize == 20}">20</option>
+        </select>
     </div>
+    <table id="solicitudes-table" class="table">
+        <thead class="thead">
+            <tr class="row">
+                <th class="col-3 table-header">
+                    <a
+                        th:href="@{/profesor/solicitudesRechazadasPorJefatura(sort='idSolicitud', dir=${sortField == 'idSolicitud' ? (sortDir == 'asc' ? 'desc' : 'asc') : 'asc'})}">
+                        Nº Solicitud <span
+                            th:text="${sortField == 'idSolicitud' ? (sortDir == 'asc' ? '▲' : '▼') : ''}"></span>
+                    </a>
+                </th>
+                <th class="col-1 table-header">
+                    <a
+                        th:href="@{/profesor/solicitudesRechazadasPorJefatura(sort='empresa', dir=${sortField == 'empresa' ? (sortDir == 'asc' ? 'desc' : 'asc') : 'asc'})}">
+                        Empresa <span th:text="${sortField == 'empresa' ? (sortDir == 'asc' ? '▲' : '▼') : ''}"></span>
+                    </a>
+                </th>
+                <th class="col-2 table-header">
+                    <a
+                        th:href="@{/profesor/solicitudesRechazadasPorJefatura(sort='numeroConvenio', dir=${sortField == 'numeroConvenio' ? (sortDir == 'asc' ? 'desc' : 'asc') : 'asc'})}">
+                        Numero convenio <span
+                            th:text="${sortField == 'numeroConvenio' ? (sortDir == 'asc' ? '▲' : '▼') : ''}"></span>
+                    </a>
+                </th>
+                <th class="col-2 table-header">
+                    <a
+                        th:href="@{/profesor/solicitudesRechazadasPorJefatura(sort='cicloFormativo', dir=${sortField == 'cicloFormativo' ? (sortDir == 'asc' ? 'desc' : 'asc') : 'asc'})}">
+                        Ciclo Formativo <span
+                            th:text="${sortField == 'cicloFormativo' ? (sortDir == 'asc' ? '▲' : '▼') : ''}"></span>
+                    </a>
+                </th>
+                <th class="col-1 table-header">
+                    <a
+                        th:href="@{/profesor/solicitudesRechazadasPorJefatura(sort='fechaInicio', dir=${sortField == 'fechaInicio' ? (sortDir == 'asc' ? 'desc' : 'asc') : 'asc'})}">
+                        Fecha Inicio <span
+                            th:text="${sortField == 'fechaInicio' ? (sortDir == 'asc' ? '▲' : '▼') : ''}"></span>
+                    </a>
+                </th>
+                <th class="col-2 table-header">
+                    <a
+                        th:href="@{/profesor/solicitudesRechazadasPorJefatura(sort='observaciones', dir=${sortField == 'observaciones' ? (sortDir == 'asc' ? 'desc' : 'asc') : 'asc'})}">
+                        Observaciones <span
+                            th:text="${sortField == 'observaciones' ? (sortDir == 'asc' ? '▲' : '▼') : ''}"></span>
+                    </a>
+                </th>
+                <th class="col-1">Gestionar</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="row solicitud-row" th:each="mensaje : ${mensajes}"
+                th:if="${mensaje.solicitud.estado == estadoRechazado}">
+                <td class="col-3 small" data-attribute="idSolicitud" th:text="${mensaje.solicitud.idSolicitud}"></td>
+                <td class="col-1 small" data-attribute="empresa" th:text="${mensaje.solicitud.empresa}"></td>
+                <td class="col-2 small" data-attribute="numeroConvenio" th:text="${mensaje.solicitud.numeroConvenio}">
+                </td>
+                <td class="col-2 small" data-attribute="cicloFormativo" th:text="${mensaje.solicitud.cicloFormativo}">
+                </td>
+                <td class="col-1 small" data-attribute="fechaInicio" th:text="${mensaje.solicitud.fechaInicio}"></td>
+                <td class="col-2 small" data-attribute="observaciones" th:text="${mensaje.contenido}"></td>
+                <td class="col-1"><a class="btn btn-outline-propio1"
+                        th:href="@{/profesor/solicitudRechazadaPorJefaturaCorreccion(id=${mensaje.solicitud.idSolicitud})}">Gestionar</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                <a class="page-link"
+                    th:href="@{/profesor/solicitudesRechazadasPorJefatura(page=${currentPage - 1}, size=${pageSize}, sort=${sortField}, dir=${sortDir})}">Anterior</a>
+            </li>
+            <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                th:classappend="${i == currentPage} ? 'active'">
+                <a class="page-link"
+                    th:href="@{/profesor/solicitudesRechazadasPorJefatura(page=${i}, size=${pageSize}, sort=${sortField}, dir=${sortDir})}"
+                    th:text="${i + 1}">1</a>
+            </li>
+            <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                <a class="page-link"
+                    th:href="@{/profesor/solicitudesRechazadasPorJefatura(page=${currentPage + 1}, size=${pageSize}, sort=${sortField}, dir=${sortDir})}">Siguiente</a>
+            </li>
+        </ul>
+    </nav>
+    <a class="btn btn-outline-propio1 mb-2 col-2 mr-2" href="../">Volver</a>
+</div>

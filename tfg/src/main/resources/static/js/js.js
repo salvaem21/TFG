@@ -1,31 +1,23 @@
-// Utilizar jQuery en modo noConflict para evitar conflictos con otras bibliotecas
 var $ = jQuery.noConflict();
 
 $(document).ready(function () {
 
-    //PAGINACION
     function updatePageSize() {
-        const pageSize = $('#pageSizeSelect').val(); // Utiliza jQuery para obtener el valor del select
+        const pageSize = $('#pageSizeSelect').val();
         const url = new URL(window.location.href);
         url.searchParams.set('size', pageSize);
-        url.searchParams.set('page', 0); // Reiniciar a la primera página
+        url.searchParams.set('page', 0);
         window.location.href = url.toString();
     }
 
-    $('#pageSizeSelect').on('change', function() {
+    $('#pageSizeSelect').on('change', function () {
         updatePageSize();
     });
-    
 
-    //-----------------------------------------------------------------------------
-    //---------------------------BUSCADOR EN TABLA---------------------------------
-    //-----------------------------------------------------------------------------
-
-    // Función para buscar en la tabla
-    $(".search-tables").on("keyup", function() {
+    $(".search-tables").on("keyup", function () {
         var value = $(this).val().toLowerCase();
         var attribute = $(".search-attribute").val();
-        $("#solicitudes-table .solicitud-row").filter(function() {
+        $("#solicitudes-table .solicitud-row").filter(function () {
             if (attribute === "all") {
                 $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
             } else {
@@ -34,10 +26,9 @@ $(document).ready(function () {
         });
     });
 
-    // Función para ordenar la tabla
     function sortTable(columnIndex, order) {
         var rows = $('#solicitudes-table .solicitud-row').get();
-        rows.sort(function(a, b) {
+        rows.sort(function (a, b) {
             var A = $(a).children('td').eq(columnIndex).text().toUpperCase();
             var B = $(b).children('td').eq(columnIndex).text().toUpperCase();
 
@@ -49,13 +40,12 @@ $(document).ready(function () {
             }
             return 0;
         });
-        $.each(rows, function(index, row) {
+        $.each(rows, function (index, row) {
             $('#solicitudes-table tbody').append(row);
         });
     }
 
-    // Manejar el clic en los encabezados
-    $('th a').click(function(e) {
+    $('th a').click(function (e) {
         e.preventDefault();
         var columnIndex = $(this).parent().index();
         var order = $(this).find('span').text() === '▲' ? 'desc' : 'asc';
@@ -63,16 +53,13 @@ $(document).ready(function () {
         $(this).find('span').text(order === 'asc' ? '▲' : '▼');
     });
 
-    // Función para calcular la letra del DNI
     function calcularLetraDNI(numero) {
         var letras = 'TRWAGMYFPDXBNJZSQVHLCKET';
         return letras.charAt(numero % 23);
     }
 
-    // Validar el DNI introducido
     function validarDNI(dniInput) {
         var dni = dniInput.val();
-        // Expresión regular para validar el formato del DNI
         var dniRegex = /^\d{8}[a-zA-Z]$/;
         if (!dniRegex.test(dni)) {
             dniInput.css('border-color', 'red');
@@ -82,29 +69,24 @@ $(document).ready(function () {
         var numerosDNI = dni.substring(0, 8);
         var letraDNI = dni.substring(8).toUpperCase();
 
-        // Calcular la letra correcta del DNI
         var letraCorrecta = calcularLetraDNI(parseInt(numerosDNI, 10));
 
-        // Comprobar si la letra introducida coincide con la letra calculada
         if (letraDNI !== letraCorrecta) {
             dniInput.css('border-color', 'red');
             return false;
         }
 
-        // Si el DNI es válido, eliminar el resaltado rojo
         dniInput.css('border-color', '');
 
         return true;
     }
 
-    // Validar el DNI cuando se modifica el campo de entrada
     $("#nifAlumno").on('input', function () {
         validarDNI($(this));
     });
 
     function validarNombreTutor(nombreInput) {
         var nombre = nombreInput.val();
-        // Expresión regular para validar el nombre (letras, espacios en blanco y algunos signos)
         var nombreRegex = /^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ \-'']+$/;
 
         if (!nombreRegex.test(nombre)) {
@@ -112,12 +94,10 @@ $(document).ready(function () {
             return false;
         }
 
-        // Si el nombre es válido, eliminar el resaltado rojo
         nombreInput.css('border-color', '');
         return true;
     }
 
-    // Evento para validar el nombre cuando se modifica el campo de entrada
     $("#tutorAlumno").on('input', function () {
         validarNombreTutor($(this));
     });
@@ -125,18 +105,15 @@ $(document).ready(function () {
     function validarCicloFormativo(cicloInput) {
         var valorSeleccionado = cicloInput.val();
 
-        // Verificar que la selección no sea la opción predeterminada
         if (valorSeleccionado === "") {
             cicloInput.css('border-color', 'red');
             return false;
         }
 
-        // Si se selecciona una opción válida, eliminar el resaltado rojo
         cicloInput.css('border-color', '');
         return true;
     }
 
-    // Evento para validar el ciclo formativo cuando se cambia la selección del campo desplegable
     $("#cicloFormativoAlumno").on('input', function () {
         validarCicloFormativo($(this));
     });
@@ -144,7 +121,6 @@ $(document).ready(function () {
 
     function validarNombreEmpresa(nombreInput) {
         var nombreEmpresa = nombreInput.val();
-        // Expresión regular para validar el nombre (letras, números, espacios y signos de puntuación)
         var nombreRegex = /^[a-zA-Z0-9áéíóúÁÉÍÓÚüÜñÑ \s.,'-]+$/;
 
         if (!nombreRegex.test(nombreEmpresa)) {
@@ -152,19 +128,16 @@ $(document).ready(function () {
             return false;
         }
 
-        // Si el nombre de la empresa es válido, eliminar el resaltado rojo
         nombreInput.css('border-color', '');
         return true;
     }
 
-    // Evento para validar el nombre de la empresa cuando se modifica el campo de entrada
     $("#nombreEmpresa").on('input', function () {
         validarNombreEmpresa($(this));
     });
 
     function validarTutorEmpresa(nombreInput) {
         var nombre = nombreInput.val();
-        // Expresión regular para validar el nombre (letras, espacios en blanco y guiones)
         var nombreRegex = /^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ \-'']+$/;
 
         if (!nombreRegex.test(nombre)) {
@@ -172,19 +145,16 @@ $(document).ready(function () {
             return false;
         }
 
-        // Si el nombre es válido, eliminar el resaltado rojo
         nombreInput.css('border-color', '');
         return true;
     }
 
-    // Evento para validar el nombre cuando se modifica el campo de entrada
     $("#tutorEmpresa").on('input', function () {
         validarTutorEmpresa($(this));
     });
 
     function validarCIFEmpresa(cifInput) {
         var cifEmpresa = cifInput.val();
-        // Expresión regular para validar que el CIF tenga 1 número seguido de 8 letras
         var cifRegex = /^[a-zA-Z]\d{8}$/;
 
         if (!cifRegex.test(cifEmpresa)) {
@@ -192,12 +162,10 @@ $(document).ready(function () {
             return false;
         }
 
-        // Si el CIF de la empresa es válido, eliminar el resaltado rojo
         cifInput.css('border-color', '');
         return true;
     }
 
-    // Evento para validar el CIF de la empresa cuando se modifica el campo de entrada
     $("#cifEmpresa").on('input', function () {
         validarCIFEmpresa($(this));
     });
@@ -217,7 +185,6 @@ $(document).ready(function () {
         validarDireccionPracticas($(this));
     });
 
-    // Validación de la Localidad de las Prácticas
     function validarLocalidadPracticas(localidadInput) {
         var localidad = localidadInput.val();
         var localidadRegex = /^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ \-]+$/;
@@ -233,7 +200,6 @@ $(document).ready(function () {
         validarLocalidadPracticas($(this));
     });
 
-    // Validación del Código Postal de las Prácticas
     function validarCodigoPostalPracticas(codigoInput) {
         var codigoPostal = codigoInput.val();
         var codigoRegex = /^\d{5}$/;
@@ -257,32 +223,28 @@ $(document).ready(function () {
             input.css('border-color', 'red');
             return false;
         }
-        input.css('border-color', ''); // Eliminar el resaltado si es válido
+        input.css('border-color', '');
         return true;
     }
 
-    // Evento para validar el nombre y apellidos cuando se modifica el campo de entrada
     $("#apellidosAlumno, #nombreAlumno").on('input', function () {
         validarNombreApellidos($(this));
     });
 
-    // Asegurarse de aplicar la validación a campos dinámicos
     $(document).on('input', '.datos-alumno #apellidosAlumno, .datos-alumno #nombreAlumno', function () {
         validarNombreApellidos($(this));
     });
 
-    //Validacion horas totales entre 240(practicas Fp basica) y 440(practias maximo 5 titulos LOGSE)
     function validarHorasTotales(horasInput) {
         var horas = parseInt(horasInput.val(), 10);
         if (isNaN(horas) || horas < 240 || horas > 440) {
             horasInput.css('border-color', 'red');
             return false;
         }
-        horasInput.css('border-color', ''); // Limpiar el color del borde si es válido
+        horasInput.css('border-color', '');
         return true;
     }
 
-    // Evento para validar las horas totales cuando se modifica el campo
     $("#horasTotales").on('input', function () {
         validarHorasTotales($(this));
     });
@@ -292,7 +254,6 @@ $(document).ready(function () {
         return true;
     }
 
-    // Función para validar la fecha de fin
     function validarFechaFin(fechaInicioInput, fechaFinInput) {
         var fechaInicio = new Date(fechaInicioInput.val());
         var fechaFin = new Date(fechaFinInput.val());
@@ -305,14 +266,12 @@ $(document).ready(function () {
         return true;
     }
 
-    // Evento para validar las fechas cuando se modifica cualquiera de los campos
     $("#fechaInicio, #fechaFin").on('change', function () {
         validarFechaInicio($('#fechaInicio'));
         validarFechaFin($('#fechaInicio'), $('#fechaFin'));
     });
 
 
-    // Validar el formulario antes de enviarlo
     $("#formularioAlumnos").submit(function (event) {
         var alumnoValido = validarDNI($("#nifAlumno"));
         var nombreTutorValido = validarNombreTutor($("#tutorAlumno"));
@@ -329,10 +288,9 @@ $(document).ready(function () {
         var fechaInicioValida = validarFechaInicio($("#fechaInicio"));
         var fechaFinValida = validarFechaFin($("#fechaInicio"), $("#fechaFin"));
 
-        // Si solo el NIF del Alumno es inválido
         if (!alumnoValido) {
             alert("El NIF del Alumno introducido no es válido.");
-            event.preventDefault(); // Evitar que se envíe el formulario si el NIF del Alumno no es válido
+            event.preventDefault();
             return;
         }
         if (!nombreTutorValido) {
@@ -401,33 +359,29 @@ $(document).ready(function () {
             return;
         }
 
-        //ALUMNOS EXTRAS
-        // Validar el NIF de los alumnos extra
         var alumnosExtraValidos = true;
         $(".datos-alumno").not(":first").find("#nifAlumno").each(function () {
             if (!validarDNI($(this))) {
                 alumnosExtraValidos = false;
-                return false; // Romper el bucle si se encuentra un NIF inválido
+                return false;
             }
-            // Validar Apellidos del alumno
             if (!validarNombreApellidos($(this).find("#apellidosAlumno"))) {
                 alert("Los apellidos de uno o más alumnos introducidos no son válidos.");
                 alumnosExtraValidos = false;
                 event.preventDefault();
-                return false; // Romper el bucle si se encuentra un apellido inválido
+                return false;
             }
 
-            // Validar Nombre del alumno
             if (!validarNombreApellidos($(this).find("#nombreAlumno"))) {
                 alert("El nombre de uno o más alumnos introducidos no es válido.");
                 alumnosExtraValidos = false;
                 event.preventDefault();
-                return false; // Romper el bucle si se encuentra un nombre inválido
+                return false;
             }
         });
         if (!alumnosExtraValidos) {
             alert("El nombre,apellido o NIF del alumno extra es invalido.");
-            event.preventDefault(); // Evitar que se envíe el formulario si uno o más campos de alumnos son inválidos
+            event.preventDefault();
         }
         $("#boton").prop("disabled", true);
     });
@@ -435,7 +389,7 @@ $(document).ready(function () {
     $("#formularioCreador").submit(function (event) {
         var validarNombreAlumno = validarNombreApellidos($("#nombreAlumno"));
         var validarApellidoAlumno = validarNombreApellidos($("#apellidosAlumno"));
-        
+
         if (!validarNombreAlumno) {
             alert("El nombre del Alumno introducido no es válido.");
             event.preventDefault();
@@ -454,10 +408,9 @@ $(document).ready(function () {
         var validarNombreAlumno = validarNombreApellidos($("#nombreAlumno"));
         var validarApellidoAlumno = validarNombreApellidos($("#apellidosAlumno"));
 
-        // Si solo el NIF del Alumno es inválido
         if (!alumnoValido) {
             alert("El NIF del Alumno introducido no es válido.");
-            event.preventDefault(); // Evitar que se envíe el formulario si el NIF del Alumno no es válido
+            event.preventDefault();
             return;
         }
         if (!validarNombreAlumno) {
@@ -498,21 +451,15 @@ $(document).ready(function () {
         $("#boton").prop("disabled", true);
     });
 
-    // Manejador de clic en el botón para agregar otro alumno
     $("#agregarAlumno").click(function () {
-        // Clonar el último conjunto de campos de datos del alumno y agregarlo al formulario
         var ultimoAlumno = $(".datos-alumno").last().clone();
-        // Limpiar los valores de los campos clonados para evitar confusiones
         ultimoAlumno.find("input[type=text], input[type=date]").val("");
-        // Aplicar la validación del DNI a los nuevos campos de DNI
         ultimoAlumno.find("#nifAlumno").on('input', function () {
             validarDNI($(this));
         });
-        // Agregar un botón "Eliminar alumno" solo si no existe ya uno en este conjunto de campos de datos del alumno
         if (!ultimoAlumno.find(".eliminar-alumno").length) {
             var botonEliminar = $("<button class='btn btn-danger eliminar-alumno'>Eliminar alumno</button>");
             botonEliminar.click(function () {
-                // Eliminar el conjunto de campos de datos del alumno correspondiente al hacer clic en el botón "Eliminar alumno"
                 $(this).closest(".datos-alumno").remove();
             });
             ultimoAlumno.append(botonEliminar);
@@ -520,13 +467,10 @@ $(document).ready(function () {
         $("#contenedorAlumnos").append(ultimoAlumno);
     });
 
-    // Manejador de clic en el botón "Eliminar alumno" existente
     $(document).on("click", ".eliminar-alumno", function () {
-        // Eliminar el conjunto de campos de datos del alumno correspondiente al hacer clic en el botón "Eliminar alumno"
         $(this).closest(".datos-alumno").remove();
     });
 
-    // Manejador de clic en el botón "Enviar Datos FCTs"
     $("#confirmarBotonEnvio").click(function (event) {
         const calcularHorasTrabajadas = (inicio1, fin1, inicio2, fin2) => {
             const horaInicio1 = parseInt(inicio1.split(":")[0]);
@@ -538,10 +482,8 @@ $(document).ready(function () {
             const horaFin2 = parseInt(fin2.split(":")[0]);
             const minutoFin2 = parseInt(fin2.split(":")[1]);
 
-            // Calcular las horas del primer tramo
             const horasTramo1 = horaFin1 - horaInicio1 + (minutoFin1 - minutoInicio1) / 60;
 
-            // Calcular las horas del segundo tramo
             const horasTramo2 = horaFin2 - horaInicio2 + (minutoFin2 - minutoInicio2) / 60;
 
             return horasTramo1 + horasTramo2;
@@ -591,20 +533,17 @@ $(document).ready(function () {
             return true;
         } else {
             alert("Está explotado");
-            event.preventDefault(); // Cancelar el envío del formulario
+            event.preventDefault();
             return false;
         }
     });
 
-    // Función para copiar las horas del lunes a todos los días de la semana
     $("#copiarHoras").click(function () {
-        // Obtener las horas del lunes
         const horasLunesInicio1 = document.getElementsByName("lunesInicio1")[0].value;
         const horasLunesFin1 = document.getElementsByName("lunesFin1")[0].value;
         const horasLunesInicio2 = document.getElementsByName("lunesInicio2")[0].value;
         const horasLunesFin2 = document.getElementsByName("lunesFin2")[0].value;
 
-        // Copiar las horas del lunes a los demás días de la semana
         const diasSemana = ["martes", "miercoles", "jueves", "viernes"];
         diasSemana.forEach(function (dia) {
             document.getElementsByName(dia + "Inicio1")[0].value = horasLunesInicio1;
@@ -613,7 +552,6 @@ $(document).ready(function () {
             document.getElementsByName(dia + "Fin2")[0].value = horasLunesFin2;
         });
 
-        // Opcional: mostrar un mensaje o realizar alguna acción adicional
         alert("Horas del lunes copiadas a todos los días de la semana.");
     });
 
@@ -622,19 +560,16 @@ $(document).ready(function () {
     const campoPDF = document.getElementById("campoPDF");
     const campoObservaciones = document.getElementById("campoObservaciones");
 
-    // Función para habilitar el campo PDF y deshabilitar Observaciones
     function habilitarPDF() {
         campoPDF.style.display = "block";
         campoObservaciones.style.display = "none";
     }
 
-    // Función para habilitar el campo Observaciones y deshabilitar PDF
     function habilitarObservaciones() {
         campoPDF.style.display = "none";
         campoObservaciones.style.display = "block";
     }
 
-    // Event listener para detectar el cambio en la selección de opción
     opcionPDF.addEventListener("change", function () {
         if (opcionPDF.checked) {
             habilitarPDF();
@@ -651,32 +586,31 @@ $(document).ready(function () {
         var opcionSeleccionada = $('input[name="opcion"]:checked').val();
         if (opcionSeleccionada === 'pdf') {
             this.action = '/jefatura/solicitudAceptadaJefatura';
-            this.enctype = 'multipart/form-data'; // Añadir el tipo de codificación para archivos
+            this.enctype = 'multipart/form-data';
         } else if (opcionSeleccionada === 'observaciones') {
             this.action = '/jefatura/solicitudRechazadaJefatura';
         }
-        else{
+        else {
             this.action = '/jefatura/errorSinSeleccionarJeftura';
         }
     });
-    
-    //------------Corregir Datos Dirección------------------------------------ 
-    //------------------Selección de uno u otro endpoints---------------------
+
+
     $('#solicitudFCT').submit(function (event) {
-        event.preventDefault(); // Evitar el envío predeterminado del formulario
+        event.preventDefault();
         var opcionSeleccionada = $('input[name="opcion"]:checked').val();
         if (opcionSeleccionada === 'pdf') {
             this.action = '/direccion/solicitudAceptadaDireccion';
             this.enctype = 'multipart/form-data';
         } else if (opcionSeleccionada === 'observaciones') {
             this.action = '/direccion/solicitudRechazadaDireccion';
-            
+
         }
-        else{
+        else {
             this.action = '/direccion/errorSinSeleccionarDireccion';
         }
-        this.submit(); // Envía el formulario después de actualizar el action y enctype
+        this.submit();
     });
 
-    
+
 });

@@ -51,7 +51,6 @@ public class InicioSesionController {
             List<Mensaje> mensajesConNovedad = inicioSesionService.obtenerMensajesConNovedadParaUsuario(usuario);
 
             s.setAttribute("usuario", usuario);
-            // Agregar los mensajes con novedad al modelo para enviar al frontend
             s.setAttribute("mensajesConNovedad", mensajesConNovedad);
         } catch (Exception e) {
             PRG.error("Usuario o contraseña incorrectos");

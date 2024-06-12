@@ -7,13 +7,15 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label for="apellido">Apellidos del Usuario:</label>
-                    <input type="text" class="form-control" id="apellidosAlumno" name="apellido" required th:value="${usuario.apellido}">
+                    <input type="text" class="form-control" id="apellidosAlumno" name="apellido" required
+                        th:value="${usuario.apellido}">
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-group">
                     <label for="nombre">Nombre del Usuario:</label>
-                    <input type="text" class="form-control" id="nombreAlumno" name="nombre" required th:value="${usuario.nombre}">
+                    <input type="text" class="form-control" id="nombreAlumno" name="nombre" required
+                        th:value="${usuario.nombre}">
                 </div>
             </div>
         </div>
@@ -21,8 +23,9 @@
         <input type="hidden" name="idUsuario" th:value="${usuario.id}" />
 
         <div class="row">
-            <input class="btn btn-outline-propio1 mb-2 col-4 mr-2" type="submit" value="Actualizar" id="boton"/>
-            <button class="btn btn-outline-propio1 mb-2 col-4 mr-2" type="button" onclick="window.location.href='/usuario/gestionarUsuarios'">Cancelar</button>
+            <input class="btn btn-outline-propio1 mb-2 col-4 mr-2" type="submit" value="Actualizar" id="boton" />
+            <button class="btn btn-outline-propio1 mb-2 col-4 mr-2" type="button"
+                onclick="window.location.href='/usuario/gestionarUsuarios'">Cancelar</button>
         </div>
     </form>
 

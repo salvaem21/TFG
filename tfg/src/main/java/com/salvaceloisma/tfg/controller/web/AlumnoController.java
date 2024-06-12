@@ -35,7 +35,7 @@ public class AlumnoController {
         m.put("view", "alumno/verAlumnos");
         return "_t/frame";
     }
-    
+
     @GetMapping("verAlumnos")
     public String verAlumnos(
             ModelMap m, HttpSession session) throws DangerException {

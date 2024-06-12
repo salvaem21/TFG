@@ -23,7 +23,6 @@ import com.salvaceloisma.tfg.enumerados.RolUsuario;
 import com.salvaceloisma.tfg.exception.DangerException;
 import com.salvaceloisma.tfg.helper.PRG;
 import com.salvaceloisma.tfg.service.AlumnoService;
-// import com.salvaceloisma.tfg.service.ArchivoService;
 import com.salvaceloisma.tfg.service.ArchivoServiceImpl;
 import com.salvaceloisma.tfg.service.EmailService;
 import com.salvaceloisma.tfg.service.InicioSesionService;
@@ -62,8 +61,6 @@ public class JefaturaController {
     @Autowired
     private ArchivoServiceImpl archivoServiceImpl;
 
-    // ---------------JEFATURA------------------------/////////////////////////////////
-
     @GetMapping("/solicitudesPendientesJefatura")
     public String solicitudesPendientesJefatura(Model model, HttpSession session,
             @RequestParam(name = "sort", required = false, defaultValue = "idSolicitud") String sortField,
@@ -75,24 +72,20 @@ public class JefaturaController {
         if (usuario == null || usuario.getRol() != RolUsuario.JEFATURA) {
             PRG.error("No tienes los privilegios necesarios para realizar esta accion.");
         } else {
-            model.addAttribute("nombreUsuario", usuario.getNombre()); // Agregar nombre del usuario al modelo
+            model.addAttribute("nombreUsuario", usuario.getNombre());
         }
 
-        // Obtener los mensajes enviados y recibidos por el usuario
         List<Mensaje> mensajes = mensajeService.recibirMensajes(usuario);
 
-        // Extraer las solicitudes de los mensajes y agregarlas a una lista
         List<Solicitud> solicitudes = new ArrayList<>();
         for (Mensaje mensaje : mensajes) {
             Solicitud solicitud = mensaje.getSolicitud();
             if (solicitud != null) {
-                // Cargar los alumnos vinculados a esta solicitud
                 solicitud.setAlumnos(alumnoService.findBySolicitudIdSolicitud(solicitud.getIdSolicitud()));
                 solicitudes.add(solicitud);
             }
         }
 
-        // Ordenar las solicitudes
         solicitudes.sort((s1, s2) -> {
             int result;
             switch (sortField) {
@@ -115,7 +108,6 @@ public class JefaturaController {
             return "asc".equals(sortDir) ? result : -result;
         });
 
-        // Crear la paginación
         Pageable pageable = PageRequest.of(page, size);
         int start = (int) pageable.getOffset();
         int end = Math.min((start + pageable.getPageSize()), solicitudes.size());
@@ -144,16 +136,15 @@ public class JefaturaController {
 
         Solicitud solicitud = solicitudService.findById(idSolicitud);
         String horarioSinSegundoHorario = solicitud.getHorario().replace("Segundo horario:", "");
-        solicitud.setHorario(horarioSinSegundoHorario); // ELIMINAMOS EL TEXTO PARA QUE NO DE ERROR AL RECORRER.
+        solicitud.setHorario(horarioSinSegundoHorario);
         m.put("solicitud", solicitud);
         m.put("alumnos", alumnoService.findBySolicitudIdSolicitud(idSolicitud));
         m.put("usuariosJefatura", inicioSesionService.obtenerUsuariosPorRol(RolUsuario.JEFATURA));
-        m.put("grados", Grados.values()); // Añadir el enum Grados al modelo
+        m.put("grados", Grados.values());
         m.put("view", "jefatura/correccionSolicitudPendienteJefatura");
         return "_t/frame";
     }
 
-    // MENSAJE Y NOTIFICACIÓN
     @PostMapping("/solicitudRechazadaJefatura")
     public String solicitudRechazadaJefatura(HttpServletResponse response, HttpSession session,
             @RequestParam("idSolicitud") String idSolicitud,
@@ -162,7 +153,6 @@ public class JefaturaController {
             PRG.error("Las observaciones estan vacias", "../");
         }
         Mensaje mensaje = mensajeService.findBySolicitudIdSolicitud(idSolicitud);
-        // Invertimos el correo devuelta
         Usuario destinatario = mensaje.getRemitente();
         Usuario remitente = mensaje.getDestinatario();
         String destinatarioCorreo = destinatario.getCorreo();
@@ -183,7 +173,6 @@ public class JefaturaController {
         return "redirect: ../";
     }
 
-    // ARCHIVO Y NOTIFICACIÓN
     @PostMapping("/solicitudAceptadaJefatura")
     public String solicitudAceptadaJefatura(HttpServletResponse response, HttpSession session,
             @RequestParam("idSolicitud") String idSolicitud,
@@ -192,7 +181,7 @@ public class JefaturaController {
             @RequestParam String nombreEmpresa, @RequestParam String tutorEmpresa,
             @RequestParam String cifEmpresa, @RequestParam String direccionPracticas,
             @RequestParam String localidadPracticas, @RequestParam String codigoPostalPracticas,
-            @RequestParam String cicloFormativoAlumno, @RequestParam int horasTotales,
+            @RequestParam Grados cicloFormativoAlumno, @RequestParam int horasTotales,
             @RequestParam LocalDate fechaInicio, @RequestParam LocalDate fechaFin,
             @RequestParam LocalTime lunesInicio1, @RequestParam LocalTime martesInicio1,
             @RequestParam LocalTime lunesFin1, @RequestParam LocalTime martesFin1,
@@ -213,10 +202,8 @@ public class JefaturaController {
         }
 
         try {
-            // Obtener la solicitud para recuperar la ruta
             Solicitud solicitud = solicitudService.findById(idSolicitud);
 
-            // Actualizar los datos de la solicitud
             StringBuilder horarioBuilder = new StringBuilder();
             horarioBuilder.append("Lunes: ").append(lunesInicio1).append(" - ").append(lunesFin1).append(".\n")
                     .append("Martes: ").append(martesInicio1).append(" - ").append(martesFin1).append(".\n")
@@ -237,15 +224,12 @@ public class JefaturaController {
                     fechaInicio, fechaFin,
                     horasDia, horasTotales, horario, null, solicitud.getEstado());
 
-            // Actualizar o crear los alumnos
             for (int i = 0; i < apellidosAlumno.length; i++) {
                 String dniAlumno = nifAlumno[i];
                 Alumno alumnoExistente = alumnoService.findByDniAndSolicitudIdSolicitud(dniAlumno, idSolicitud);
                 if (alumnoExistente != null) {
-                    // Actualizar el alumno existente
                     alumnoService.updateByDni(dniAlumno, nombreAlumno[i], apellidosAlumno[i], idSolicitud);
                 } else {
-                    // Crear un nuevo alumno
                     alumnoService.save(nifAlumno[i], nombreAlumno[i], apellidosAlumno[i], idSolicitud);
                 }
             }
@@ -256,14 +240,12 @@ public class JefaturaController {
             solicitudService.save(solicitud);
             File carpetaSolicitud = new File(rutaSolicitud);
             if (!carpetaSolicitud.exists()) {
-                carpetaSolicitud.mkdirs(); // Crear la carpeta si no existe
+                carpetaSolicitud.mkdirs();
             }
             String nombreArchivo = "APROBADO_POR_JEFATURA " + idSolicitud + ".pdf";
 
-            // Guardar el archivo en la ruta especificada
             archivoServiceImpl.guardarArchivo(archivo, solicitud.getRutaSolicitud(), nombreArchivo);
 
-            // Actualizar la notificación y el estado de la solicitud
             EstadoSolicitud estadoSolicitud = EstadoSolicitud.APROBADO_JEFATURA_PDF;
 
             Usuario remitente = (Usuario) session.getAttribute("usuario");
@@ -271,7 +253,6 @@ public class JefaturaController {
             mensajeService.actualizarNotificacion(idSolicitud, destinatario, remitente);
             solicitudService.cambiarEstadoSolicitud(idSolicitud, estadoSolicitud, remitente);
 
-            // Enviar el correo
             emailService.enviarEmail(destinatario.getCorreo(),
                     "(FCT'S) Solicitud aceptada por Jefatura.",
                     "Jefatura ha aceptado tu solicitud y podras descargar el PDF. Revisa tu bandeja de entrada.");

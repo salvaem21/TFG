@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.salvaceloisma.tfg.enumerados.EstadoSolicitud;
+import com.salvaceloisma.tfg.enumerados.Grados;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -60,8 +61,8 @@ public class Solicitud {
     @Column(name = "cp")
     private String cp;
 
-    @Column(name = "ciclo_formativo")
-    private String cicloFormativo;
+    @Enumerated(EnumType.STRING)
+    private Grados cicloFormativo;
 
     @Column(name = "fecha_inicio")
     private LocalDate fechaInicio;
@@ -81,9 +82,6 @@ public class Solicitud {
     @Column(name = "observaciones")
     private String observaciones;
 
-    // @Column(name = "ruta_pdf")
-    // private String rutaPDF;
-
     @Column(name = "ruta_solicitud")
     private String rutaSolicitud;
 
@@ -91,7 +89,7 @@ public class Solicitud {
     private EstadoSolicitud estado;
 
     public Solicitud(String numeroConvenio, String empresa, String cif, String tutorEmpresa, String direccion,
-            String localidad, String cp, String cicloFormativo,
+            String localidad, String cp, Grados cicloFormativo,
             Usuario usuario, LocalDate fechaInicio, LocalDate fechaFin, int horasDia, int horasTotales, String horario,
             String observaciones, EstadoSolicitud estado) {
         this.idSolicitud = LocalDateTime.now().toString().replaceAll("[^0-9]", "");
@@ -111,7 +109,7 @@ public class Solicitud {
         this.horario = horario;
         this.observaciones = observaciones;
         this.estado = estado;
-        this.alumnos = new ArrayList<>(); // Inicializar la lista de alumnos
+        this.alumnos = new ArrayList<>();
         this.rutaSolicitud = "";
         this.usuarioJefatura = null;
     }

@@ -1,7 +1,5 @@
 package com.salvaceloisma.tfg.domain;
 
-
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -27,14 +25,10 @@ public class Alumno {
     @JoinColumn(name = "idSolicitud")
     private Solicitud solicitud;
 
-
-    // ==================
-
     public Alumno(String dni, String nombre, String apellido) {
-        this.dni =dni;
+        this.dni = dni;
         this.nombre = nombre;
         this.apellido = apellido;
     }
-
 
 }

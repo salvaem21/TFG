@@ -13,15 +13,14 @@ public class CarpetaUsuarioService {
     private String carpetaUsuariosPath;
 
     public String crearCarpetaUsuario(String correo) {
-        String rutaCarpetaUsuario = carpetaUsuariosPath + File.separator + LocalDate.now().getYear() + File.separator +correo;
+        String rutaCarpetaUsuario = carpetaUsuariosPath + File.separator + LocalDate.now().getYear() + File.separator
+                + correo;
         File carpetaUsuario = new File(rutaCarpetaUsuario);
-        
-        // Verificar si la carpeta del usuario ya existe
+
         if (!carpetaUsuario.exists()) {
-            carpetaUsuario.mkdirs(); // Crear la carpeta del usuario
+            carpetaUsuario.mkdirs();
         }
-        
-        return rutaCarpetaUsuario; // Devolver la ruta completa de la carpeta del usuario
+
+        return rutaCarpetaUsuario;
     }
 }
-

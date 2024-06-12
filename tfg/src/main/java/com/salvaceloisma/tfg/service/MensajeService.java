@@ -3,7 +3,6 @@ package com.salvaceloisma.tfg.service;
 import java.io.IOException;
 import java.util.List;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -12,8 +11,6 @@ import com.salvaceloisma.tfg.domain.Mensaje;
 import com.salvaceloisma.tfg.domain.Solicitud;
 import com.salvaceloisma.tfg.domain.Usuario;
 import com.salvaceloisma.tfg.repository.MensajeRepository;
-
-// import java.io.IOException;
 
 @Service
 public class MensajeService {
@@ -42,30 +39,25 @@ public class MensajeService {
     }
 
     public void enviarMensaje(Usuario remitente, Usuario destinatario, String contenido, Solicitud solicitud) {
-    Mensaje mensaje = mensajeRepository.findBySolicitud(solicitud);
+        Mensaje mensaje = mensajeRepository.findBySolicitud(solicitud);
 
-    if (mensaje == null) {
-        // El mensaje no existe, crear uno nuevo
-        mensaje = new Mensaje();
-        mensaje.setRemitente(remitente);
-        mensaje.setDestinatario(destinatario);
-        mensaje.setSolicitud(solicitud);
-        mensaje.setNovedad(true);
+        if (mensaje == null) {
+            mensaje = new Mensaje();
+            mensaje.setRemitente(remitente);
+            mensaje.setDestinatario(destinatario);
+            mensaje.setSolicitud(solicitud);
+            mensaje.setNovedad(true);
 
-    } else {
-        // El mensaje ya existe, actualizar su contenido y establecer novedad a true
-        mensaje.setContenido(contenido);
-        mensaje.setRemitente(remitente);
-        mensaje.setDestinatario(destinatario);
-        mensaje.setNovedad(true);
+        } else {
+            mensaje.setContenido(contenido);
+            mensaje.setRemitente(remitente);
+            mensaje.setDestinatario(destinatario);
+            mensaje.setNovedad(true);
+        }
+
+        mensajeRepository.save(mensaje);
     }
-    
-    // Guardar el mensaje (ya sea nuevo o actualizado)
-    mensajeRepository.save(mensaje);
-}
 
-
-    //Con este necesitamos CONTENIDO
     public void actualizarMensaje(String solicitud, Usuario destinatario, Usuario remitente, String contenido) {
         Mensaje mensaje = mensajeRepository.findBySolicitudIdSolicitud(solicitud);
         mensaje.setDestinatario(destinatario);
@@ -75,7 +67,6 @@ public class MensajeService {
         mensajeRepository.save(mensaje);
     }
 
-    //Sin CONTENIDO
     public void actualizarNotificacion(String idSolicitud, Usuario destinatario, Usuario remitente) {
         Mensaje mensaje = mensajeRepository.findBySolicitudIdSolicitud(idSolicitud);
         mensaje.setDestinatario(destinatario);
@@ -88,8 +79,10 @@ public class MensajeService {
         mensajeRepository.delete(mensajeRepository.getReferenceById(idMensaje));
     }
 
-     public void savePdfFiles(Long id, MultipartFile solicitudInicial, MultipartFile solicitudFirmadoEmpresa, MultipartFile solicitudFinalizada) throws IOException {
-        Mensaje mensaje = mensajeRepository.findById(id).orElseThrow(() -> new RuntimeException("Mensaje no encontrado"));
+    public void savePdfFiles(Long id, MultipartFile solicitudInicial, MultipartFile solicitudFirmadoEmpresa,
+            MultipartFile solicitudFinalizada) throws IOException {
+        Mensaje mensaje = mensajeRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Mensaje no encontrado"));
 
         mensajeRepository.save(mensaje);
     }

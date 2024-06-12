@@ -51,13 +51,11 @@ public class DireccionController {
         if (usuario == null || usuario.getRol() != RolUsuario.DIRECTOR) {
             PRG.error("No tienes los privilegios necesarios para realizar esta accion.");
         } else {
-            model.addAttribute("nombreUsuario", usuario.getNombre()); // Agregar nombre del usuario al modelo
+            model.addAttribute("nombreUsuario", usuario.getNombre());
         }
-        // Obtener los mensajes recibidos por el usuario
         EstadoSolicitud estadoPendienteDireccion = EstadoSolicitud.PENDIENTE_FIRMA_DIRECCION;
         List<Mensaje> mensajes = mensajeService.recibirMensajes(usuario);
 
-        // Ordenar las solicitudes pendientes según el campo especificado
         mensajes.sort((m1, m2) -> {
             Solicitud solicitud1 = m1.getSolicitud();
             Solicitud solicitud2 = m2.getSolicitud();
@@ -82,7 +80,6 @@ public class DireccionController {
             }
         });
 
-        // Crear la paginación
         int start = page * size;
         int end = Math.min((start + size), mensajes.size());
         List<Mensaje> mensajesPaginados = mensajes.subList(start, end);
@@ -99,7 +96,6 @@ public class DireccionController {
         return "_t/frame";
     }
 
-    // SOLICITUD UNA A UNA
     @GetMapping("/solicitudPendienteDireccionIndividual")
     public String solicitudPendienteDireccionIndividual(ModelMap m, HttpSession session,
             @RequestParam("id") String idSolicitud)
@@ -116,7 +112,6 @@ public class DireccionController {
         return "_t/frame";
     }
 
-    // ARCHIVO Y NOTIFICACIÓN DIRECCIÓN PROFESOR
     @PostMapping("/solicitudAceptadaDireccion")
     public String solicitudAceptadaDireccion(
             @RequestParam("idSolicitud") String idSolicitud,
@@ -133,20 +128,16 @@ public class DireccionController {
         EstadoSolicitud estadoSolicitud = EstadoSolicitud.SOLICITUD_FINALIZADA;
 
         try {
-            // Obtener la solicitud para recuperar la ruta
             Solicitud solicitud = solicitudService.findById(idSolicitud);
             String rutaSolicitud = solicitud.getRutaSolicitud();
 
             String nombreArchivo = "SOLICITUD_FINALIZADA " + idSolicitud + ".pdf";
 
-            // Guardar el archivo en la ruta especificada
             archivoServiceImpl.guardarArchivo(archivo, rutaSolicitud, nombreArchivo);
 
-            // Actualizar la notificación y el estado de la solicitud
             mensajeService.actualizarNotificacion(idSolicitud, destinatario, remitente);
             solicitudService.cambiarEstadoSolicitud(idSolicitud, estadoSolicitud, remitente);
 
-            // Enviar el correo
             emailService.enviarEmail(destinatarioCorreo,
                     "(FCT'S) Solicitud firmada por Direccion y finalizada.",
                     "Direccion ha firmado tu solicitud y podras descargar todos los PDFs.Revisa tu bandeja de entrada.");
@@ -159,7 +150,6 @@ public class DireccionController {
         return "redirect: ../";
     }
 
-    // MENSAJE Y NOTIFICACIÓN
     @PostMapping("/solicitudRechazadaDireccion")
     public String solicitudRechazadaDireccion(
             @RequestParam("idSolicitud") String idSolicitud,
@@ -169,7 +159,6 @@ public class DireccionController {
             PRG.error("Las observaciones estan vacias", "../");
         }
         Mensaje mensaje = mensajeService.findBySolicitudIdSolicitud(idSolicitud);
-        // Invertimos el correo de vuelta
         Usuario destinatario = mensaje.getRemitente();
         Usuario remitente = mensaje.getDestinatario();
         String destinatarioCorreo = destinatario.getCorreo();

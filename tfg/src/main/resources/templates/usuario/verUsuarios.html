@@ -11,18 +11,19 @@
         </thead>
 
         <tr th:each="usuario : ${usuarios}">
-            
+
             <td th:text="${usuario.nombre}">
             <td th:text="${usuario.apellido}">
             <td th:text="${usuario.correo}">
             <td th:text="${usuario.rol}">
 
             <td>
-                <button class="btn btn-outline-propio1 mb-2 col-4 mr-2" th:onclick="|window.location.href='/usuario/actualizarUsuario?id=${usuario.id}'|">
+                <button class="btn btn-outline-propio1 mb-2 col-4 mr-2"
+                    th:onclick="|window.location.href='/usuario/actualizarUsuario?id=${usuario.id}'|">
                     <img src="/img/lapiz.png" height="20" width="20">
                 </button>
             </td>
-            
+
             <td>
                 <form action="/usuario/borrarUsuario" method="post">
                     <input type="hidden" name="id" th:value="${usuario.id}">

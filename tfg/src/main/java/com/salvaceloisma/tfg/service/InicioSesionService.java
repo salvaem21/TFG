@@ -34,7 +34,6 @@ public class InicioSesionService {
     }
 
     public List<Mensaje> obtenerMensajesConNovedadParaUsuario(Usuario usuario) {
-        // Obtener los mensajes con novedad para el usuario destinatario
         List<Mensaje> mensajes = mensajeRepository.findByDestinatario(usuario);
         List<Mensaje> mensajesNuevos = new ArrayList<>();
         for (Mensaje mensaje : mensajes) {
@@ -82,7 +81,6 @@ public class InicioSesionService {
             throws Exception {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         if (encoder.matches(contraseniaActual, usuario.getContrasenia())) {
-            // Cifrar la contraseña nueva
             String contraseniaNuevaCifrada = encoder.encode(contraseniaNueva);
             usuario.setContrasenia(contraseniaNuevaCifrada);
             return inicioSesionRepository.save(usuario);
@@ -94,8 +92,8 @@ public class InicioSesionService {
     public void marcarMensajesComoVistos(Usuario usuario) {
         List<Mensaje> mensajes = mensajeRepository.findByDestinatario(usuario);
         for (Mensaje mensaje : mensajes) {
-            mensaje.setNovedad(false); // Establecer el booleano en false
+            mensaje.setNovedad(false);
         }
-        mensajeRepository.saveAll(mensajes); // Guardar los cambios en la base de datos
+        mensajeRepository.saveAll(mensajes);
     }
 }

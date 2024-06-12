@@ -1,8 +1,9 @@
 package com.salvaceloisma.tfg.enumerados;
 
 public enum Grados {
-    DAW,
+    DAW(),
     DAM,
     ASIR,
-    SMR
+    SMR,
+    AyF
 }

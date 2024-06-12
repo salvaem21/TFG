@@ -1,9 +1,9 @@
 <div class="container">
-    <div class="row justify-content-center"> <!-- Centra el contenido del formulario -->
-        <div class="col-md-6"> <!-- Tamaño de columna medio para pantallas medianas -->
+    <div class="row justify-content-center">
+        <div class="col-md-6">
             <h1 class="text-center">CREAR USUARIO</h1>
             <form action="/usuario/crearUsuario" method="post" id="formularioCreador">
-                <div class="form-group"> <!-- Agrupa los elementos del formulario -->
+                <div class="form-group">
                     <label for="nombreAlumno">Nombre</label>
                     <input id="nombreAlumno" type="text" name="nombre" autofocus="autofocus" class="form-control" />
                 </div>
@@ -13,7 +13,7 @@
                 </div>
                 <div class="form-group">
                     <label for="id-correo">Correo</label>
-                    <div class="input-group"> <!-- Agrupa el input de correo y el span -->
+                    <div class="input-group">
                         <input id="id-correo" type="text" name="correo" class="form-control" />
                         <div class="input-group-append">
                             <span class="input-group-text">@educa.madrid.org</span>
@@ -37,7 +37,8 @@
                 <div class="form-group">
                     <div class="row">
                         <div class="col-6">
-                            <input class="btn btn-outline-propio1 btn-block" type="submit" value="Crear Usuario" id="boton"/>
+                            <input class="btn btn-outline-propio1 btn-block" type="submit" value="Crear Usuario"
+                                id="boton" />
                         </div>
                         <div class="col-6">
                             <a class="nav-link btn btn-outline-propio1 btn-block" href="/">Cancelar</a>

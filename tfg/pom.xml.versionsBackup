@@ -6,7 +6,7 @@
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>3.2.4</version>
-		<relativePath/> <!-- lookup parent from repository -->
+		<relativePath/>
 	</parent>
 	<groupId>com.salvaceloisma</groupId>
 	<artifactId>tfg</artifactId>
@@ -49,7 +49,7 @@
 		<dependency>
     <groupId>org.apache.poi</groupId>
     <artifactId>poi</artifactId>
-    <version>5.2.5</version> <!-- O la última versión disponible -->
+    <version>5.2.5</version>
 </dependency>
 
 

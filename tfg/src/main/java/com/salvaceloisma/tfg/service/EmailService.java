@@ -8,7 +8,6 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-
 import org.springframework.core.io.ByteArrayResource;
 
 import jakarta.mail.MessagingException;
@@ -27,13 +26,10 @@ public class EmailService {
         helper.setTo(receptor);
         helper.setSubject(cabecera);
         helper.setText(texto);
-        // Validar que el nombre del archivo no sea nulo
         String nombreArchivo = archivo.getOriginalFilename();
         if (nombreArchivo == null) {
             throw new IllegalArgumentException("El nombre del archivo no puede ser nulo");
         }
-
-        // Adjuntar el archivo al mensaje
         helper.addAttachment(nombreArchivo, new ByteArrayResource(archivo.getBytes()));
 
         mailSender.send(message);
@@ -50,6 +46,5 @@ public class EmailService {
 
         mailSender.send(message);
     }
-
 
 }

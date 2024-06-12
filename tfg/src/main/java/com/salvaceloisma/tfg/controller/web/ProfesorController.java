@@ -64,21 +64,20 @@ public class ProfesorController {
             PRG.error("No tienes los privilegios necesarios para realizar esta accion.");
         }
         m.put("usuariosJefatura", inicioSesionService.obtenerUsuariosPorRol(RolUsuario.JEFATURA));
-        m.put("grados", Grados.values()); // Añadir el enum Grados al modelo
+        m.put("grados", Grados.values());
         m.put("view", "profesor/datosProfesorAJefatura");
         return "_t/frame";
     }
 
     @PostMapping("/datosProfesorAJefatura")
     public String datosProfesorAJefatura(HttpServletResponse response, HttpSession session,
-            @RequestParam(required = false) String idSolicitud, // Nuevo parámetro para identificar si se está creando o
-                                                                // actualizando
+            @RequestParam(required = false) String idSolicitud,
             @RequestParam String numeroConvenio,
             @RequestParam String nombreEmpresa, @RequestParam String tutorEmpresa,
             @RequestParam String cifEmpresa, @RequestParam String direccionPracticas,
             @RequestParam String localidadPracticas, @RequestParam String codigoPostalPracticas,
             @RequestParam String[] apellidosAlumno, @RequestParam String[] nombreAlumno,
-            @RequestParam String[] nifAlumno, @RequestParam String cicloFormativoAlumno,
+            @RequestParam String[] nifAlumno, @RequestParam Grados cicloFormativoAlumno,
             @RequestParam Integer horasTotales, @RequestParam LocalDate fechaInicio,
             @RequestParam LocalDate fechaFin, @RequestParam LocalTime lunesInicio1,
             @RequestParam LocalTime martesInicio1, @RequestParam LocalTime lunesFin1,
@@ -95,7 +94,6 @@ public class ProfesorController {
             @RequestParam(name = "rolUsuario", required = false) Long usuarioEnvio, ModelMap m)
             throws DangerException, InfoException {
 
-        // Verificar si se está creando una nueva solicitud o actualizando una existente
         boolean creandoNuevaSolicitud = (idSolicitud == null || idSolicitud.isEmpty());
         Usuario usuario = (Usuario) session.getAttribute("usuario");
 
@@ -115,7 +113,6 @@ public class ProfesorController {
 
         StringBuilder datos = new StringBuilder();
 
-        // Agregar los datos comunes al final
         datos.append("Datos comunes:\n");
         datos.append("Numero Convenio: ").append(numeroConvenio).append("\n");
         datos.append("Nombre empresa: ").append(nombreEmpresa).append("\n");
@@ -139,7 +136,6 @@ public class ProfesorController {
             }
             destinatario = mensaje.getRemitente();
         }
-        // Establecer el estado por defecto a PENDIENTE_JEFATURA
         EstadoSolicitud estado = EstadoSolicitud.PENDIENTE_FIRMA_JEFATURA;
         String observaciones = "";
         Solicitud solicitud = null;
@@ -157,14 +153,12 @@ public class ProfesorController {
                 String rutaSolicitud = rutaUsuario + "/" + empresa + "/" + idSolicitud;
                 File carpetaSolicitud = new File(rutaUsuario);
                 if (!carpetaSolicitud.exists()) {
-                    carpetaSolicitud.mkdirs(); // Crear la carpeta si no existe
+                    carpetaSolicitud.mkdirs();
                 }
                 solicitud.setRutaSolicitud(rutaSolicitud);
                 solicitud.setUsuarioJefatura(inicioSesionService.findById(usuarioEnvio));
                 solicitudService.save(solicitud);
             } else {
-                // Si se está actualizando, obtener la solicitud existente y actualizar sus
-                // datos
                 solicitudService.update(idSolicitud, numeroConvenio, nombreEmpresa, cifEmpresa, tutorEmpresa,
                         direccionPracticas, localidadPracticas, codigoPostalPracticas, cicloFormativoAlumno, usuario,
                         fechaInicio, fechaFin, horasDia, horasTotales, horario, observaciones, estado);
@@ -177,15 +171,13 @@ public class ProfesorController {
                 String rutaSolicitud = rutaUsuario + "/" + empresa + "/" + idSolicitud;
                 File carpetaSolicitud = new File(rutaUsuario);
                 if (!carpetaSolicitud.exists()) {
-                    carpetaSolicitud.mkdirs(); // Crear la carpeta si no existe
+                    carpetaSolicitud.mkdirs();
                 }
                 solicitud.setRutaSolicitud(rutaSolicitud);
                 solicitudService.save(solicitud);
             }
-            // DESPUES DE CREAR SOLICITUD
 
             alumnoService.deleteAllBySolicitud(solicitud);
-            // Crear o actualizar los alumnos
             for (int i = 0; i < apellidosAlumno.length; i++) {
                 datos.append("Alumno ").append(i + 1).append(":\n");
                 datos.append("Apellidos alumno: ").append(apellidosAlumno[i]).append("\n");
@@ -201,7 +193,6 @@ public class ProfesorController {
                 }
             }
 
-            // Enviar mensaje y correo electrónico solo si no ha habido errores antes
             String correo;
             if (usuarioEnvio != null) {
                 Usuario usuarioDestinatario = inicioSesionService.findById(usuarioEnvio);
@@ -230,9 +221,8 @@ public class ProfesorController {
         if (usuario == null || usuario.getRol() != RolUsuario.PROFESOR) {
             PRG.error("No tienes los privilegios necesarios para realizar esta accion.");
         } else {
-            model.addAttribute("nombreUsuario", usuario.getNombre()); // Agregar nombre del usuario al modelo
+            model.addAttribute("nombreUsuario", usuario.getNombre());
         }
-        // Obtener los mensajes recibidos por el usuario
         EstadoSolicitud estadoRechazado = EstadoSolicitud.RECHAZADO_JEFATURA;
         List<Mensaje> mensajes = mensajeService.recibirMensajes(usuario);
         List<Mensaje> mensajesPendientesCorreccion = mensajes.stream()
@@ -240,7 +230,6 @@ public class ProfesorController {
                         && mensaje.getSolicitud().getEstado() == estadoRechazado)
                 .collect(Collectors.toList());
 
-        // Ordenar las solicitudes pendientes de corrección
         mensajesPendientesCorreccion.sort((m1, m2) -> {
             Solicitud s1 = m1.getSolicitud();
             Solicitud s2 = m2.getSolicitud();
@@ -268,7 +257,6 @@ public class ProfesorController {
             return "asc".equals(sortDir) ? result : -result;
         });
 
-        // Crear la paginación
         int start = page * size;
         int end = Math.min((start + size), mensajesPendientesCorreccion.size());
         List<Mensaje> mensajesPaginados = mensajesPendientesCorreccion.subList(start, end);
@@ -295,16 +283,15 @@ public class ProfesorController {
         }
         Solicitud solicitud = solicitudService.findById(idSolicitud);
         String horarioSinSegundoHorario = solicitud.getHorario().replace("Segundo horario:", "");
-        solicitud.setHorario(horarioSinSegundoHorario); // ELIMINAMOS EL TEXTO PARA QUE NO DE ERROR AL RECORRER.
+        solicitud.setHorario(horarioSinSegundoHorario);
         m.put("solicitud", solicitud);
-        m.put("grados", Grados.values()); // Añadir el enum Grados al modelo
+        m.put("grados", Grados.values());
         m.put("alumnos", alumnoService.findBySolicitudIdSolicitud(idSolicitud));
         m.put("usuariosJefatura", inicioSesionService.obtenerUsuariosPorRol(RolUsuario.JEFATURA));
         m.put("view", "profesor/solicitudRechazadaPorJefaturaCorreccion");
         return "_t/frame";
     }
 
-    // APROBADOS
     @GetMapping("/solicitudesAprobadaPorJefatura")
     public String solicitudesAprobadaPorJefatura(ModelMap model, HttpSession session,
             @RequestParam(name = "sort", required = false, defaultValue = "idSolicitud") String sortField,
@@ -315,22 +302,19 @@ public class ProfesorController {
         if (usuario == null || usuario.getRol() != RolUsuario.PROFESOR) {
             PRG.error("No tienes los privilegios necesarios para realizar esta accion.");
         } else {
-            model.addAttribute("nombreUsuario", usuario.getNombre()); // Agregar nombre del usuario al modelo
+            model.addAttribute("nombreUsuario", usuario.getNombre());
         }
-        // Obtener los mensajes recibidos por el usuario
         EstadoSolicitud estadoAprobado1 = EstadoSolicitud.APROBADO_JEFATURA_PDF;
         EstadoSolicitud estadoAprobado2 = EstadoSolicitud.RECHAZADO_DIRECCION;
 
         List<Mensaje> mensajes = mensajeService.recibirMensajes(usuario);
 
-        // Filtrar y ordenar las solicitudes aprobadas
         List<Mensaje> mensajesAprobados = mensajes.stream()
                 .filter(mensaje -> mensaje.getSolicitud() != null &&
                         (mensaje.getSolicitud().getEstado() == estadoAprobado1
                                 || mensaje.getSolicitud().getEstado() == estadoAprobado2))
                 .collect(Collectors.toList());
 
-        // Ordenar las solicitudes aprobadas
         mensajesAprobados.sort((m1, m2) -> {
             Solicitud s1 = m1.getSolicitud();
             Solicitud s2 = m2.getSolicitud();
@@ -352,7 +336,6 @@ public class ProfesorController {
             return "asc".equals(sortDir) ? result : -result;
         });
 
-        // Crear la paginación
         int start = page * size;
         int end = Math.min((start + size), mensajesAprobados.size());
         List<Mensaje> mensajesPaginados = mensajesAprobados.subList(start, end);
@@ -376,7 +359,6 @@ public class ProfesorController {
             @RequestParam("idSolicitud") String idSolicitud,
             @RequestParam("archivo") MultipartFile archivo) throws Exception {
 
-        // Verificar si el archivo está vacío
         if (archivo.isEmpty()) {
             PRG.error("Por favor, seleccione un archivo antes de enviar.",
                     "/profesor/solicitudesAprobadaPorJefatura");
@@ -385,27 +367,22 @@ public class ProfesorController {
 
         Mensaje mensaje = mensajeService.findBySolicitudIdSolicitud(idSolicitud);
 
-        // Obtener los usuarios con el rol de DIRECTOR
         List<Usuario> directores = inicioSesionService.obtenerUsuariosPorRol(RolUsuario.DIRECTOR);
         if (directores.isEmpty()) {
-            // Manejar el caso donde no hay directores encontrados
             PRG.error("No se encontraron usuarios con el rol de DIRECTOR.", "/profesor/solicitudesAprobadaPorJefatura");
             return "redirect:/profesor/solicitudesAprobadaPorJefatura";
         }
-        // Obtener el primer director de la lista
         Usuario destinatario = directores.get(0);
         Usuario remitente = mensaje.getDestinatario();
         String destinatarioCorreo = destinatario.getCorreo();
         EstadoSolicitud estadoSolicitud = EstadoSolicitud.PENDIENTE_FIRMA_DIRECCION;
 
         try {
-            // Obtener la solicitud para recuperar la ruta
             Solicitud solicitud = solicitudService.findById(idSolicitud);
             String rutaSolicitud = solicitud.getRutaSolicitud();
 
             String nombreArchivo = "FIRMADO_POR_EMPRESA " + idSolicitud + ".pdf";
 
-            // Guardar el archivo en la ruta especificada
             archivoServiceImpl.guardarArchivo(archivo, rutaSolicitud, nombreArchivo);
             mensajeService.actualizarNotificacion(idSolicitud, destinatario, remitente);
             solicitudService.cambiarEstadoSolicitud(idSolicitud, estadoSolicitud, remitente);
@@ -421,7 +398,6 @@ public class ProfesorController {
         return "redirect: ../";
     }
 
-    // FINALIZADOS
     @GetMapping("/solicitudesFinalizadasProfesor")
     public String solicitudesFinalizadasProfesor(ModelMap model, HttpSession session,
             @RequestParam(name = "sort", required = false, defaultValue = "idSolicitud") String sortField,
@@ -437,18 +413,15 @@ public class ProfesorController {
         List<Solicitud> allSolicitudes = solicitudService.findAllByUsuarioAndEstado(usuario,
                 EstadoSolicitud.SOLICITUD_FINALIZADA);
 
-        // Procesar el campo de horario de cada solicitud
         for (Solicitud solicitud : allSolicitudes) {
             String horarioProcesado = solicitud.getHorario().replace("Segundo horario:",
                     "<br><strong>Segundo horario:</strong><br><br>");
             horarioProcesado = horarioProcesado.replace(".", "<br>");
             solicitud.setHorario(horarioProcesado);
-            // Cargar los alumnos vinculados a esta solicitud (LISTA) ya que se utilizara en
-            // la vista
+
             solicitud.setAlumnos(alumnoService.findBySolicitudIdSolicitud(solicitud.getIdSolicitud()));
         }
 
-        // Ordenar las solicitudes finalizadas
         allSolicitudes.sort((s1, s2) -> {
             int result;
             switch (sortField) {
@@ -474,8 +447,6 @@ public class ProfesorController {
             return "asc".equals(sortDir) ? result : -result;
         });
 
-        // Crear la paginación
-        // Crear la paginación
         int start = page * size;
         int end = Math.min((start + size), allSolicitudes.size());
         List<Solicitud> solicitudesPaginadas = allSolicitudes.subList(start, end);
@@ -492,7 +463,6 @@ public class ProfesorController {
         return "_t/frame";
     }
 
-    // TODAS LAS SOLICITUDES DEL PROFESOR
     @GetMapping("/todasSolicitudesJefaturaProfesor")
     public String todasSolicitudesJefaturaProfesor(ModelMap model, HttpSession session,
             @RequestParam(name = "sort", required = false, defaultValue = "idSolicitud") String sortField,
@@ -505,18 +475,15 @@ public class ProfesorController {
         }
         List<Solicitud> allSolicitudesProfesor = solicitudService.findAllByUsuario(usuario);
 
-        // Procesar el campo de horario de cada solicitud
         for (Solicitud solicitud : allSolicitudesProfesor) {
             String horarioProcesado = solicitud.getHorario().replace("Segundo horario:",
                     "<br><strong>Segundo horario:</strong><br><br>");
             horarioProcesado = horarioProcesado.replace(".", "<br>");
             solicitud.setHorario(horarioProcesado);
-            // Cargar los alumnos vinculados a esta solicitud (LISTA) ya que se utilizara en
-            // la vista
+
             solicitud.setAlumnos(alumnoService.findBySolicitudIdSolicitud(solicitud.getIdSolicitud()));
         }
 
-        // Ordenar las solicitudes según el campo especificado
         allSolicitudesProfesor.sort((s1, s2) -> {
             int result;
             switch (sortField) {
@@ -542,7 +509,6 @@ public class ProfesorController {
             return "asc".equals(sortDir) ? result : -result;
         });
 
-        // Crear la paginación
         int start = page * size;
         int end = Math.min((start + size), allSolicitudesProfesor.size());
         List<Solicitud> solicitudesPaginadas = allSolicitudesProfesor.subList(start, end);

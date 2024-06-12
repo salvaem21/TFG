@@ -46,32 +46,35 @@ body {
 
 
 
-/* Subir archivo  Bajar archivo */
 .documento {
     margin-top: 50px;
-  }
+}
+
 .documento h2 {
     margin-bottom: 20px;
     text-align: center;
-  }
+}
 
 .documento input[type="file"] {
     display: block;
     width: 100%;
     margin-bottom: 20px;
-  }
+}
+
 .documento button[type="submit"] {
     display: block;
     width: 100%;
-  }
-.custom-file-input {
-    width: 50px; /* Ajusta el ancho según tu necesidad */
-    padding: 5px;  /* Ajusta el padding según tu necesidad */
 }
 
-.table-header, .table-header a{
-    color: lightcoral;           /* Color del texto */
-    font-weight: bold;        /* Texto en negrita */
-    text-align: center;       /* Centrar el texto */
-    padding: 10px;            /* Espaciado interior */
+.custom-file-input {
+    width: 50px;
+    padding: 5px;
+}
+
+.table-header,
+.table-header a {
+    color: lightcoral;
+    font-weight: bold;
+    text-align: center;
+    padding: 10px;
 }

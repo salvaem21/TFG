@@ -34,7 +34,7 @@ public class Usuario {
     private String correo;
 
     private String contrasenia;
-    
+
     @Enumerated(EnumType.STRING)
     private RolUsuario rol;
 
@@ -43,8 +43,6 @@ public class Usuario {
 
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Solicitud> solicitudes;
-
-    // ==================
 
     public Usuario(String nombre, String apellido, String correo, String contrasenia, RolUsuario rol) {
         this.nombre = nombre;

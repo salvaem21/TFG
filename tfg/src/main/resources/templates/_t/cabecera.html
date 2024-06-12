@@ -4,17 +4,19 @@
     </a>
     <ul class="navbar-nav ml-auto" th:if="${session.usuario!=null}">
         <li class="nav-item mt-2">
-            <span class="badge badge-pill badge-danger mr-2" th:if="${#lists.size(session.mensajesConNovedad) >= 1}" th:text="${#lists.size(session.mensajesConNovedad)}"
-                style="font-size: 0.8rem;"></span>
-            <i class="fa-regular fa-bell fa-shake fa-2x mr-2" th:if="${#lists.size(session.mensajesConNovedad) >= 1 && session.usuario.rol != T(com.salvaceloisma.tfg.enumerados.RolUsuario).ADMIN}"
+            <span class="badge badge-pill badge-danger mr-2" th:if="${#lists.size(session.mensajesConNovedad) >= 1}"
+                th:text="${#lists.size(session.mensajesConNovedad)}" style="font-size: 0.8rem;"></span>
+            <i class="fa-regular fa-bell fa-shake fa-2x mr-2"
+                th:if="${#lists.size(session.mensajesConNovedad) >= 1 && session.usuario.rol != T(com.salvaceloisma.tfg.enumerados.RolUsuario).ADMIN}"
                 style="color: #fafad2; cursor: pointer;" onclick="toggleCanvas()"></i>
-            <i class="fa-regular fa-bell fa-2xl mr-2" th:if="${#lists.size(session.mensajesConNovedad) == 0 && session.usuario.rol != T(com.salvaceloisma.tfg.enumerados.RolUsuario).ADMIN}"
+            <i class="fa-regular fa-bell fa-2xl mr-2"
+                th:if="${#lists.size(session.mensajesConNovedad) == 0 && session.usuario.rol != T(com.salvaceloisma.tfg.enumerados.RolUsuario).ADMIN}"
                 style="color: #fafad2; cursor: pointer;" onclick="toggleCanvas()"></i>
         </li>
         <li class="nav-item"
             th:if="${session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).ADMIN || session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).DIRECTOR}">
-            <a class="nav-link btn btn-outline-light mr-2" th:if="${session.usuario!=null}"
-                href="/usuario/crearUsuario" id="registrarse">REGISTRAR USUARIO</a>
+            <a class="nav-link btn btn-outline-light mr-2" th:if="${session.usuario!=null}" href="/usuario/crearUsuario"
+                id="registrarse">REGISTRAR USUARIO</a>
         </li>
         <li class="nav-item"
             th:if="${session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).ADMIN || session.usuario.rol == T(com.salvaceloisma.tfg.enumerados.RolUsuario).DIRECTOR}">
@@ -30,12 +32,10 @@
             <a class="nav-link btn btn-outline-light mr-2" th:if="${session.usuario!=null}"
                 href="/inicioSesion/cambiarContrasenia" id="registrarse">CAMBIAR CONTRASEÑA</a>
         </li>
-        <!-- Opción de logout -->
         <li class="nav-item">
             <a class="nav-link btn btn-outline-light" href="/inicioSesion/logout" id="registrarse">LOGOUT</a>
             <span class="text-light" th:text="|Hola ${session.usuario.nombre} / ${session.usuario.rol} |"></span>
         </li>
-        <!-- Aquí van los demás elementos del menú -->
     </ul>
 </nav>
 
@@ -62,40 +62,38 @@
 
 <script>
     function toggleCanvas() {
-    var canvas = document.getElementById("canvasMenu");
-    var canvasContent = canvas.children[0];
-    if (canvas.style.display === "none" || canvas.style.display === "") {
-        canvas.style.display = "block";
-        setTimeout(function () {
-            canvasContent.style.opacity = 1;
-            canvasContent.style.transform = "translateX(0%)";
-        }, 100);
-        document.body.classList.add("no-click"); // Añadir clase para deshabilitar eventos de clic en la página
+        var canvas = document.getElementById("canvasMenu");
+        var canvasContent = canvas.children[0];
+        if (canvas.style.display === "none" || canvas.style.display === "") {
+            canvas.style.display = "block";
+            setTimeout(function () {
+                canvasContent.style.opacity = 1;
+                canvasContent.style.transform = "translateX(0%)";
+            }, 100);
+            document.body.classList.add("no-click");
 
-        // Cuando se abre el canvas, enviar una solicitud al servidor para marcar los mensajes como vistos
-        fetch('/inicioSesion/actualizarMensajes', {
-            method: 'POST',
-        })
-        .then(response => {
-            // Eliminar todos los elementos span con la clase badge
-            var badges = document.querySelectorAll('.badge');
-            badges.forEach(badge => {
-                badge.remove();
-            });
-            return response.json();
-        })
-        .then(data => console.log(data))
-        .catch(error => console.error('Error:', error));
+            fetch('/inicioSesion/actualizarMensajes', {
+                method: 'POST',
+            })
+                .then(response => {
+                    var badges = document.querySelectorAll('.badge');
+                    badges.forEach(badge => {
+                        badge.remove();
+                    });
+                    return response.json();
+                })
+                .then(data => console.log(data))
+                .catch(error => console.error('Error:', error));
 
-    } else {
-        canvasContent.style.opacity = 0;
-        canvasContent.style.transform = "translateX(100%)";
-        setTimeout(function () {
-            canvas.style.display = "none";
-        }, 500);
-        document.body.classList.remove("no-click"); // Eliminar clase para habilitar eventos de clic en la página
+        } else {
+            canvasContent.style.opacity = 0;
+            canvasContent.style.transform = "translateX(100%)";
+            setTimeout(function () {
+                canvas.style.display = "none";
+            }, 500);
+            document.body.classList.remove("no-click");
+        }
     }
-}
 </script>
 
 

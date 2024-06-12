@@ -19,12 +19,11 @@
                                 <option th:value="${grado}" th:text="${grado}"></option>
                             </th:block>
                         </select>
-                    </div>  
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Información de la empresa -->
         <div class="mb-4 pb-2 border-bottom">
             <h3 class="text-center">Datos de la Empresa</h3>
             <div class="row">
@@ -66,12 +65,9 @@
             </div>
         </div>
 
-        <!-- Información del alumno -->
         <div id="contenedorAlumnos">
-            <!-- Los campos de datos del primer alumno se dejan aquí inicialmente -->
             <div class="mb-4 pb-2 datos-alumno">
                 <h3 class="text-center">Datos del Alumno</h3>
-                <!-- Campos de datos del primer alumno -->
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
@@ -95,18 +91,15 @@
             </div>
         </div>
 
-        <!-- Botón para agregar más alumnos -->
         <div class="text-center pb-2 mb-4 border-bottom">
             <button type="button" class="btn btn-secondary" id="agregarAlumno">Agregar otro alumno</button>
         </div>
 
-        <!-- Fechas y Horarios -->
         <div class="mb-4 pb-2">
             <h3 class="text-center">Fechas y Horarios</h3>
 
             <div class="row border-bottom">
                 <div class="col-md-5 border-right">
-                    <!-- Campos de fechas y horarios -->
                     <div class="form-group">
                         <label for="horasTotales">Horas Totales:</label>
                         <input type="text" class="form-control" id="horasTotales" name="horasTotales" required>
@@ -132,7 +125,6 @@
                     </div>
                 </div>
                 <div class="col-md-7">
-                    <!-- Tabla de horarios -->
                     <div class="form-group">
                         <table class="table table-responsive">
                             <thead>
@@ -189,7 +181,8 @@
                                     <td><input type="time" class="form-control" name="viernesFin2" required></td>
                                 </tr>
                                 <tr>
-                                    <td colspan="5"><button type="button" class="btn btn-outline-propio1 mt-3 w-100 " id="copiarHoras">Copiar horas del lunes</button></td>
+                                    <td colspan="5"><button type="button" class="btn btn-outline-propio1 mt-3 w-100 "
+                                            id="copiarHoras">Copiar horas del lunes</button></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -198,8 +191,8 @@
             </div>
         </div>
         <div class="row">
-        <button type="submit" class="btn btn-outline-propio1 mt-3 col-6" id="boton">Enviar Datos FCTs</button>
-        <a class="btn btn-outline-propio1 mt-3 col-6" href="../">Volver</a>
+            <button type="submit" class="btn btn-outline-propio1 mt-3 col-6" id="boton">Enviar Datos FCTs</button>
+            <a class="btn btn-outline-propio1 mt-3 col-6" href="../">Volver</a>
         </div>
     </form>
 </div>

@@ -8,4 +8,3 @@ public enum EstadoSolicitud {
     RECHAZADO_DIRECCION,
     SOLICITUD_FINALIZADA
 }
-

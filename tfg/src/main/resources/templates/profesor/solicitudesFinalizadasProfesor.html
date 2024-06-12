@@ -53,22 +53,16 @@
                 </tr>
             </thead>
             <tbody>
-                <!-- Bucle de solicitudes -->
                 <tr class="row solicitud-row" th:each="solicitud : ${solicitudes}" th:if="${solicitud.estado == estadoFinalizado}">
-                    <!-- Fila de la solicitud -->
                     <td class="col-2 small" data-attribute="idSolicitud" th:text="${solicitud.idSolicitud}"></td>
                     <td class="col-1 small" data-attribute="empresa" th:text="${solicitud.empresa}"></td>
                     <td class="col-1 small" data-attribute="numeroConvenio" th:text="${solicitud.numeroConvenio}"></td>
                     <td class="col-2 small" data-attribute="cicloFormativo" th:text="${solicitud.cicloFormativo}"></td>
                     <td class="col-1 small" data-attribute="fechaInicio" th:text="${solicitud.fechaInicio}"></td>
-                    <!-- Columna para los detalles de los alumnos -->
                     <td class="col-2">
-                        <!-- Detalles de los alumnos -->
                         <details class="alumnos-details">
                             <summary><b>Mostrar alumnos</b></summary>
-                            <!-- Lista de alumnos -->
                             <div class="alumnos-list">
-                                <!-- Bucle de alumnos -->
                                 <li class="alumno" th:each="alumno : ${solicitud?.alumnos}">
                                     <span th:text="${alumno.nombre}"></span> <span th:text="${alumno.apellido}"></span>
                                 </li>
@@ -78,7 +72,6 @@
                     <td class="col-2">
                         <details class="descargas-details">
                             <summary><b>Descargas</b></summary>
-                            <!-- Lista de descargas -->
                             <div class="descargas-list">
                                 <a th:href="@{/descargas/descargarSolicitudAprobadaJefatura/{idSolicitud}(idSolicitud=${solicitud.idSolicitud})}" class="btn btn-link btn-sm">
                                     Aprobada Por Jefatura

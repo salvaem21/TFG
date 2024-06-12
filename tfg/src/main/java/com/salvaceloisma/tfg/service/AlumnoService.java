@@ -1,6 +1,5 @@
 package com.salvaceloisma.tfg.service;
 
-
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +12,7 @@ import com.salvaceloisma.tfg.repository.AlumnoRepository;
 
 @Service
 public class AlumnoService {
-    
+
     @Autowired
     private AlumnoRepository alumnoRepository;
 
@@ -28,7 +27,7 @@ public class AlumnoService {
         return alumnoRepository.findByDni(dni);
     }
 
-    public Alumno save(String dni,String nombre, String apellido, String idSolicitud) {
+    public Alumno save(String dni, String nombre, String apellido, String idSolicitud) {
         Alumno alumno = new Alumno(dni, nombre, apellido);
         Solicitud solicitud = solicitudService.findById(idSolicitud);
         alumno.setSolicitud(solicitud);
@@ -38,17 +37,15 @@ public class AlumnoService {
     public Alumno updateByDni(String dni, String nombre, String apellido, String idSolicitud) {
         List<Alumno> alumnos = alumnoRepository.findByDni(dni);
         if (!alumnos.isEmpty()) {
-            Alumno alumno = alumnos.get(0); // Se toma el primer alumno encontrado
+            Alumno alumno = alumnos.get(0);
             alumno.setNombre(nombre);
             alumno.setApellido(apellido);
-            // Verificar si la solicitud asociada debe actualizarse
             if (idSolicitud != null && !idSolicitud.isEmpty()) {
                 Solicitud solicitud = solicitudService.findById(idSolicitud);
                 alumno.setSolicitud(solicitud);
             }
             return alumnoRepository.save(alumno);
         } else {
-            // Manejar la situación en la que no se encuentra ningún alumno con el DNI especificado
             throw new RuntimeException("No se encontró ningún alumno con DNI: " + dni);
         }
     }
@@ -60,8 +57,8 @@ public class AlumnoService {
     public List<Alumno> findBySolicitudIdSolicitud(String idSolicitud) {
         return alumnoRepository.findBySolicitudIdSolicitud(idSolicitud);
     }
-    
-    public void update(Long idAlumno,String dni,String nombre, String apellido) {
+
+    public void update(Long idAlumno, String dni, String nombre, String apellido) {
         Alumno alumno = alumnoRepository.findById(idAlumno).get();
         alumno.setDni(dni);
         alumno.setNombre(nombre);
@@ -74,15 +71,16 @@ public class AlumnoService {
     }
 
     public void deleteByDniAndSolicitud(String dni, String idSolicitud) {
-       alumnoRepository.deleteByDniAndSolicitudIdSolicitud(dni, idSolicitud);
+        alumnoRepository.deleteByDniAndSolicitudIdSolicitud(dni, idSolicitud);
     }
 
     public Alumno findByDniAndSolicitudIdSolicitud(String dni, String idSolicitud) {
         return alumnoRepository.findByDniAndSolicitudIdSolicitud(dni, idSolicitud);
     }
+
     @Transactional
     public void deleteAllBySolicitud(Solicitud solicitud) {
-    alumnoRepository.deleteAllBySolicitud(solicitud);
+        alumnoRepository.deleteAllBySolicitud(solicitud);
 
     }
 

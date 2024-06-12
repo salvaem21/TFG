@@ -12,10 +12,11 @@
             <option value="fechaInicio">Fecha Inicio</option>
             <option value="estado">Estado</option>
         </select>
-        <input class="form-control search-tables" id="buscador" placeholder="Buscar..." type="text"/>
+        <input class="form-control search-tables" id="buscador" placeholder="Buscar..." type="text" />
     </div>
     <div class="input-group mt-2 mb-2">
-        <select class="form-select" id="pageSizeSelect" aria-label="Seleccionar tamaño de página" onchange="updatePageSize()">
+        <select class="form-select" id="pageSizeSelect" aria-label="Seleccionar tamaño de página"
+            onchange="updatePageSize()">
             <option value="5" th:selected="${pageSize == 5}">5</option>
             <option value="10" th:selected="${pageSize == 10}">10</option>
             <option value="20" th:selected="${pageSize == 20}">20</option>
@@ -25,32 +26,41 @@
         <thead class="thead">
             <tr class="row">
                 <th class="col-2 table-header">
-                    <a th:href="@{/jefatura/todasSolicitudesJefatura(sort='idSolicitud', dir=${sortField == 'idSolicitud' ? (sortDir == 'asc' ? 'desc' : 'asc') : 'asc'}, page=${currentPage}, size=${pageSize})}">
-                        Nº Solicitud <span th:text="${sortField == 'idSolicitud' ? (sortDir == 'asc' ? '▲' : '▼') : ''}"></span>
+                    <a
+                        th:href="@{/jefatura/todasSolicitudesJefatura(sort='idSolicitud', dir=${sortField == 'idSolicitud' ? (sortDir == 'asc' ? 'desc' : 'asc') : 'asc'}, page=${currentPage}, size=${pageSize})}">
+                        Nº Solicitud <span
+                            th:text="${sortField == 'idSolicitud' ? (sortDir == 'asc' ? '▲' : '▼') : ''}"></span>
                     </a>
                 </th>
                 <th class="col-1 table-header">
-                    <a th:href="@{/jefatura/todasSolicitudesJefatura(sort='empresa', dir=${sortField == 'empresa' ? (sortDir == 'asc' ? 'desc' : 'asc') : 'asc'}, page=${currentPage}, size=${pageSize})}">
+                    <a
+                        th:href="@{/jefatura/todasSolicitudesJefatura(sort='empresa', dir=${sortField == 'empresa' ? (sortDir == 'asc' ? 'desc' : 'asc') : 'asc'}, page=${currentPage}, size=${pageSize})}">
                         Empresa <span th:text="${sortField == 'empresa' ? (sortDir == 'asc' ? '▲' : '▼') : ''}"></span>
                     </a>
                 </th>
                 <th class="col-1 table-header">
-                    <a th:href="@{/jefatura/todasSolicitudesJefatura(sort='numeroConvenio', dir=${sortField == 'numeroConvenio' ? (sortDir == 'asc' ? 'desc' : 'asc') : 'asc'}, page=${currentPage}, size=${pageSize})}">
-                        Numero convenio <span th:text="${sortField == 'numeroConvenio' ? (sortDir == 'asc' ? '▲' : '▼') : ''}"></span>
+                    <a
+                        th:href="@{/jefatura/todasSolicitudesJefatura(sort='numeroConvenio', dir=${sortField == 'numeroConvenio' ? (sortDir == 'asc' ? 'desc' : 'asc') : 'asc'}, page=${currentPage}, size=${pageSize})}">
+                        Numero convenio <span
+                            th:text="${sortField == 'numeroConvenio' ? (sortDir == 'asc' ? '▲' : '▼') : ''}"></span>
                     </a>
                 </th>
                 <th class="col-1 table-header">
-                    <a th:href="@{/jefatura/todasSolicitudesJefatura(sort='cicloFormativo', dir=${sortField == 'cicloFormativo' ? (sortDir == 'asc' ? 'desc' : 'asc') : 'asc'}, page=${currentPage}, size=${pageSize})}">
-                        Ciclo Formativo <span th:text="${sortField == 'cicloFormativo' ? (sortDir == 'asc' ? '▲' : '▼') : ''}"></span>
+                    <a
+                        th:href="@{/jefatura/todasSolicitudesJefatura(sort='cicloFormativo', dir=${sortField == 'cicloFormativo' ? (sortDir == 'asc' ? 'desc' : 'asc') : 'asc'}, page=${currentPage}, size=${pageSize})}">
+                        Ciclo Formativo <span
+                            th:text="${sortField == 'cicloFormativo' ? (sortDir == 'asc' ? '▲' : '▼') : ''}"></span>
                     </a>
                 </th>
                 <th class="col-2 table-header">
-                    <a th:href="@{/jefatura/todasSolicitudesJefatura(sort='estado', dir=${sortField == 'estado' ? (sortDir == 'asc' ? 'desc' : 'asc') : 'asc'}, page=${currentPage}, size=${pageSize})}">
+                    <a
+                        th:href="@{/jefatura/todasSolicitudesJefatura(sort='estado', dir=${sortField == 'estado' ? (sortDir == 'asc' ? 'desc' : 'asc') : 'asc'}, page=${currentPage}, size=${pageSize})}">
                         Estado <span th:text="${sortField == 'estado' ? (sortDir == 'asc' ? '▲' : '▼') : ''}"></span>
                     </a>
                 </th>
                 <th class="col-1 table-header">
-                    <a th:href="@{/jefatura/todasSolicitudesJefatura(sort='usuario', dir=${sortField == 'usuario' ? (sortDir == 'asc' ? 'desc' : 'asc') : 'asc'}, page=${currentPage}, size=${pageSize})}">
+                    <a
+                        th:href="@{/jefatura/todasSolicitudesJefatura(sort='usuario', dir=${sortField == 'usuario' ? (sortDir == 'asc' ? 'desc' : 'asc') : 'asc'}, page=${currentPage}, size=${pageSize})}">
                         Profesor <span th:text="${sortField == 'usuario' ? (sortDir == 'asc' ? '▲' : '▼') : ''}"></span>
                     </a>
                 </th>
@@ -95,13 +105,18 @@
     <nav aria-label="Page navigation example">
         <ul class="pagination justify-content-center">
             <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-                <a class="page-link" th:href="@{/jefatura/todasSolicitudesJefatura(sort=${sortField}, dir=${sortDir}, page=${currentPage - 1}, size=${pageSize})}">Anterior</a>
+                <a class="page-link"
+                    th:href="@{/jefatura/todasSolicitudesJefatura(sort=${sortField}, dir=${sortDir}, page=${currentPage - 1}, size=${pageSize})}">Anterior</a>
             </li>
-            <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}" th:classappend="${i == currentPage} ? 'active'">
-                <a class="page-link" th:href="@{/jefatura/todasSolicitudesJefatura(sort=${sortField}, dir=${sortDir}, page=${i}, size=${pageSize})}" th:text="${i + 1}"></a>
+            <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                th:classappend="${i == currentPage} ? 'active'">
+                <a class="page-link"
+                    th:href="@{/jefatura/todasSolicitudesJefatura(sort=${sortField}, dir=${sortDir}, page=${i}, size=${pageSize})}"
+                    th:text="${i + 1}"></a>
             </li>
             <li class="page-item" th:classappend="${currentPage + 1 == totalPages} ? 'disabled'">
-                <a class="page-link" th:href="@{/jefatura/todasSolicitudesJefatura(sort=${sortField}, dir=${sortDir}, page=${currentPage + 1}, size=${pageSize})}">Siguiente</a>
+                <a class="page-link"
+                    th:href="@{/jefatura/todasSolicitudesJefatura(sort=${sortField}, dir=${sortDir}, page=${currentPage + 1}, size=${pageSize})}">Siguiente</a>
             </li>
         </ul>
     </nav>
