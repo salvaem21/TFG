@@ -18,7 +18,7 @@
                             <option value="">Seleccione un grado</option>
                             <th:block th:each="grado : ${grados}">
                                 <option th:value="${grado}" th:text="${grado}"
-                                    th:selected="${grado.toString().equals(solicitud.cicloFormativo)}"></option>
+                                    th:selected="${grado.equals(solicitud.cicloFormativo)}"></option>
                             </th:block>
                         </select>
                     </div>
