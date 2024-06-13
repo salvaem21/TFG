@@ -26,10 +26,12 @@ public class UsuarioController {
     @Autowired
     private UsuarioService usuarioService;
 
+    // CARGAR LA VISTA DE USUARIOS
     @GetMapping("/gestionarUsuarios")
     public String gestionarUsuarios(
             ModelMap m, HttpSession session) throws DangerException {
         Usuario usuario = (Usuario) session.getAttribute("usuario");
+        //SI NO ESTAS LOGEADO Y CON EL ROL CORRECTO SALTA EXCEPCION
         if (usuario == null || (usuario.getRol() != RolUsuario.ADMIN && usuario.getRol() != RolUsuario.DIRECTOR)) {
             PRG.error("No tienes los privilegios necesarios para realizar esta accion.");
         }
@@ -38,10 +40,12 @@ public class UsuarioController {
         return "_t/frame";
     }
 
+    // VISTA DE USUARIOS
     @GetMapping("verUsuarios")
     public String verUsuarios(
             ModelMap m, HttpSession session) throws DangerException {
         Usuario usuario = (Usuario) session.getAttribute("usuario");
+        //SI NO ESTAS LOGEADO Y CON EL ROL CORRECTO SALTA EXCEPCION
         if (usuario == null || (usuario.getRol() != RolUsuario.ADMIN && usuario.getRol() != RolUsuario.DIRECTOR)) {
             PRG.error("No tienes los privilegios necesarios para realizar esta accion.");
         }
@@ -51,10 +55,12 @@ public class UsuarioController {
 
     }
 
+    // VISTA PARA CREAR USUARIOS NUEVOS
     @GetMapping("/crearUsuario")
     public String crearUsuario(
             ModelMap m, HttpSession session) throws DangerException {
         Usuario usuario = (Usuario) session.getAttribute("usuario");
+        //SI NO ESTAS LOGEADO Y CON EL ROL CORRECTO SALTA EXCEPCION
         if (usuario == null || (usuario.getRol() != RolUsuario.ADMIN && usuario.getRol() != RolUsuario.DIRECTOR)) {
             PRG.error("No tienes los privilegios necesarios para realizar esta accion.");
         }
@@ -67,6 +73,7 @@ public class UsuarioController {
         return "_t/frame";
     }
 
+    // MODIFICACION DE LA BASE DE DATOS PARA CREAR UN USUARIO
     @PostMapping("/crearUsuario")
     public String crearUsuarioPost(
             @RequestParam("nombre") String nombre,
@@ -85,11 +92,13 @@ public class UsuarioController {
         return "redirect:../";
     }
 
+    // VISTA PARA ACTUALIZAR USUARIOS
     @GetMapping("actualizarUsuario")
     public String actualizarUsuario(
             @RequestParam("id") Long idUsuario, HttpSession session,
             ModelMap m) throws DangerException {
         Usuario usuario = (Usuario) session.getAttribute("usuario");
+        //SI NO ESTAS LOGEADO Y CON EL ROL CORRECTO SALTA EXCEPCION
         if (usuario == null || (usuario.getRol() != RolUsuario.ADMIN && usuario.getRol() != RolUsuario.DIRECTOR)) {
             PRG.error("No tienes los privilegios necesarios para realizar esta accion.");
         }
@@ -98,6 +107,7 @@ public class UsuarioController {
         return "_t/frame";
     }
 
+    // MODIFICACION DE LA BASE DE DATOS PARA ACTUALIZAR LOS DATOS DEL USUARIO
     @PostMapping("actualizarUsuario")
     public String actualizarUsuarioPost(
             @RequestParam("idUsuario") Long idUsuario,
@@ -112,6 +122,7 @@ public class UsuarioController {
         return "redirect:/usuario/verUsuarios";
     }
 
+    // MODIFICACION DE LA BASE DE DATOS PARA ELIMINAR AL USUARIO
     @PostMapping("borrarUsuario")
     public String borrarUsuario(
             @RequestParam("id") Long idUsuario) throws DangerException, InfoException {

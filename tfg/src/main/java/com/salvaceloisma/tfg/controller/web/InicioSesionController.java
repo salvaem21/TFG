@@ -28,10 +28,12 @@ public class InicioSesionController {
     @Autowired
     private InicioSesionService inicioSesionService;
 
+    //VISTA DE INICIO DE SESION
     @GetMapping("/inicioSesion")
     public String inicioSesion(
             ModelMap m, HttpSession session) throws DangerException {
         Usuario usuario = (Usuario) session.getAttribute("usuario");
+        // SI NO ESTAS LOGEADO Y CON EL ROL CORRECTO SALTA EXCEPCION
         if (usuario != null) {
             PRG.error("Ya tienes una sesion iniciada. Cierra sesion y vuelve.");
         }
@@ -39,6 +41,7 @@ public class InicioSesionController {
         return "_t/frame";
     }
 
+    //COMPRUEBA SI EL CORREO Y CONTRASEÑA ESTAN RELACIONADOS ENTRE SI Y CREA UNA SESION
     @PostMapping("/inicioSesion")
     public String inicioSesionPost(
             @RequestParam("correo") String correo,
@@ -59,11 +62,13 @@ public class InicioSesionController {
         return "redirect:../";
     }
 
+    //QUITA LA SESION CREADA CON EL INICIO DE SESION
     @GetMapping("/logout")
     public String logout(
             HttpSession s,
             ModelMap m, HttpSession session) throws DangerException {
         Usuario usuario = (Usuario) session.getAttribute("usuario");
+        // SI NO ESTAS LOGEADO Y CON EL ROL CORRECTO SALTA EXCEPCION
         if (usuario == null) {
             PRG.error("No tienes ninguna sesion iniciada. Inicia sesion y vuelve.");
         }
@@ -72,10 +77,12 @@ public class InicioSesionController {
         return "redirect:../";
     }
 
+    //VISTA DE CAMBIO DE CONTRASEÑAS
     @GetMapping("/cambiarContrasenia")
     public String cambiarContrasenia(
             ModelMap m, HttpSession session) throws DangerException {
         Usuario usuario = (Usuario) session.getAttribute("usuario");
+        // SI NO ESTAS LOGEADO Y CON EL ROL CORRECTO SALTA EXCEPCION
         if (usuario == null) {
             PRG.error("No tienes ninguna sesion iniciada. Inicia sesion y vuelve.");
         }
@@ -83,6 +90,7 @@ public class InicioSesionController {
         return "_t/frame";
     }
 
+    //COMPRUEBA SI LA CONTRASEÑA DE LA USUARIO INICIADO ES IGUAL QUE LA CONTRASEÑA ACTUAL INTRODUCIDA
     @PostMapping("/cambiarContrasenia")
     public String cambiarContrasenia(
             @RequestParam("contraseniaActual") String contraseniaAntigua,
@@ -101,6 +109,7 @@ public class InicioSesionController {
         return "redirect:../";
     }
 
+    //PONE LOS MENSAJES COMO NUEVOS
     @PostMapping("/actualizarMensajes")
     public ResponseEntity<String> actualizarMensajes(HttpSession session) {
         Usuario usuario = (Usuario) session.getAttribute("usuario");

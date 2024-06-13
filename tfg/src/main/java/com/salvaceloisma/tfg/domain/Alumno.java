@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class Alumno {
-
+    //CLASE ALUMNO CON DATOS COMO DNI, NOMBRE Y APELLIDO PARA IDENTIFICARLOS BIEN
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

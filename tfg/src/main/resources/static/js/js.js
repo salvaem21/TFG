@@ -1,7 +1,7 @@
 var $ = jQuery.noConflict();
-
+// HAY QUE RESETEAR LA CACHE A VECES
 $(document).ready(function () {
-
+    // ACTUALIZA LA SOLICITUDES MOSTARADAS EN CADA PAGINACION
     function updatePageSize() {
         const pageSize = $('#pageSizeSelect').val();
         const url = new URL(window.location.href);
@@ -10,10 +10,12 @@ $(document).ready(function () {
         window.location.href = url.toString();
     }
 
+    // SELECCIONA EL TAMAÑO DE LA PAGINACION
     $('#pageSizeSelect').on('change', function () {
         updatePageSize();
     });
 
+    // CUANDO LEVANTA LA TECLA BUSCA EN LA TABLA DEPENDIENDO DEL FILTRO USADO
     $(".search-tables").on("keyup", function () {
         var value = $(this).val().toLowerCase();
         var attribute = $(".search-attribute").val();
@@ -26,6 +28,7 @@ $(document).ready(function () {
         });
     });
 
+    // ORDENA LA TABLA DE MENOR A MAYOR O AL REVES
     function sortTable(columnIndex, order) {
         var rows = $('#solicitudes-table .solicitud-row').get();
         rows.sort(function (a, b) {
@@ -45,6 +48,7 @@ $(document).ready(function () {
         });
     }
 
+    // ORDENA TABLA CUANDO HACES CLICK EN LA CABECERA
     $('th a').click(function (e) {
         e.preventDefault();
         var columnIndex = $(this).parent().index();
@@ -58,6 +62,7 @@ $(document).ready(function () {
         return letras.charAt(numero % 23);
     }
 
+    // TIENE QUE TENER 8 NUMEROS Y 1 LETRA CORRECTA
     function validarDNI(dniInput) {
         var dni = dniInput.val();
         var dniRegex = /^\d{8}[a-zA-Z]$/;
@@ -538,6 +543,7 @@ $(document).ready(function () {
         }
     });
 
+    // COPIA LAS HORAS DEL LUNES A TODOS LOS DIAS DE LA SEMANA RESTANTES
     $("#copiarHoras").click(function () {
         const horasLunesInicio1 = document.getElementsByName("lunesInicio1")[0].value;
         const horasLunesFin1 = document.getElementsByName("lunesFin1")[0].value;
@@ -582,6 +588,7 @@ $(document).ready(function () {
         }
     });
 
+    // SI SELECCIONAS OBSERVACIONES Y ENVIAS SE ENVIAN POR LAS OBSERVACION Y CON LOS ARCHIVOS IGUAL
     $('#formularioAlumnos').submit(function (event) {
         var opcionSeleccionada = $('input[name="opcion"]:checked').val();
         if (opcionSeleccionada === 'pdf') {
@@ -595,7 +602,7 @@ $(document).ready(function () {
         }
     });
 
-
+    // SI SELECCIONAS OBSERVACIONES Y ENVIAS SE ENVIAN POR LAS OBSERVACION Y CON LOS ARCHIVOS IGUAL
     $('#solicitudFCT').submit(function (event) {
         event.preventDefault();
         var opcionSeleccionada = $('input[name="opcion"]:checked').val();

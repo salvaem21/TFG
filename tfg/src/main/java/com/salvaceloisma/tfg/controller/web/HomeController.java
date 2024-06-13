@@ -11,14 +11,15 @@ import jakarta.servlet.http.HttpSession;
 @Controller
 public class HomeController {
 
+	// CARGAR EL HOME
 	@GetMapping("/")
 	public String home(
 			ModelMap m, HttpSession session) {
 		Usuario usuario = (Usuario) session.getAttribute("usuario");
-		if (usuario == null) {
+		if (usuario == null) { // SI NO ESTAS LOGEADO CARGA EL LOGIN
 			m.put("view", "inicioSesion/inicioSesion");
 			return "_t/frame";
-		} else {
+		} else { // SI ESTAS LOGEADO CARGA EL HOME
 			m.put("view", "home/home");
 			return "_t/frame";
 		}

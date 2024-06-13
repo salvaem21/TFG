@@ -57,9 +57,11 @@ public class ProfesorController {
     @Autowired
     private ArchivoServiceImpl archivoServiceImpl;
 
+    // VISTA PARA RELLENAR LOS DATOS PARA LA SOLICITUD
     @GetMapping("/datosProfesorAJefatura")
     public String datosProfesorAJefatura(ModelMap m, HttpSession session) throws DangerException {
         Usuario usuario = (Usuario) session.getAttribute("usuario");
+        // SI NO ESTAS LOGEADO Y CON EL ROL CORRECTO SALTA EXCEPCION
         if (usuario == null || usuario.getRol() != RolUsuario.PROFESOR) {
             PRG.error("No tienes los privilegios necesarios para realizar esta accion.");
         }
@@ -69,6 +71,8 @@ public class ProfesorController {
         return "_t/frame";
     }
 
+    // ENVIO DE DATOS AL USUARIO DE JEFATURA CORRESPONDIENTE (CREA LA SOLICITUD,
+    // USUARIOS, MENSAJE EN LA BBDD)
     @PostMapping("/datosProfesorAJefatura")
     public String datosProfesorAJefatura(HttpServletResponse response, HttpSession session,
             @RequestParam(required = false) String idSolicitud,
@@ -211,6 +215,7 @@ public class ProfesorController {
         return "redirect:../";
     }
 
+    // VISTA DE SOLICITUDES RECHAZADAS POR JEFATURA
     @GetMapping("/solicitudesRechazadasPorJefatura")
     public String solicitudesRechazadasPorJefatura(Model model, HttpSession session,
             @RequestParam(name = "sort", required = false, defaultValue = "idSolicitud") String sortField,
@@ -218,6 +223,7 @@ public class ProfesorController {
             @RequestParam(name = "page", required = false, defaultValue = "0") int page,
             @RequestParam(name = "size", required = false, defaultValue = "5") int size) throws DangerException {
         Usuario usuario = (Usuario) session.getAttribute("usuario");
+        // SI NO ESTAS LOGEADO Y CON EL ROL CORRECTO SALTA EXCEPCION
         if (usuario == null || usuario.getRol() != RolUsuario.PROFESOR) {
             PRG.error("No tienes los privilegios necesarios para realizar esta accion.");
         } else {
@@ -273,11 +279,13 @@ public class ProfesorController {
         return "_t/frame";
     }
 
+    // VISTA DE CORRECCION DE LA SOLICITUD RECHAZADA POR JEFATURA SELECCIONADA
     @GetMapping("/solicitudRechazadaPorJefaturaCorreccion")
     public String solicitudRechazadaPorJefaturaCorreccion(@RequestParam("id") String idSolicitud, ModelMap m,
             HttpSession session)
             throws DangerException {
         Usuario usuario = (Usuario) session.getAttribute("usuario");
+        // SI NO ESTAS LOGEADO Y CON EL ROL CORRECTO SALTA EXCEPCION
         if (usuario == null || usuario.getRol() != RolUsuario.PROFESOR) {
             PRG.error("No tienes los privilegios necesarios para realizar esta accion.");
         }
@@ -292,6 +300,7 @@ public class ProfesorController {
         return "_t/frame";
     }
 
+    // VISTA DE LAS SOLICITUDES APROBADAS POR JEFATURA CON SU PDF
     @GetMapping("/solicitudesAprobadaPorJefatura")
     public String solicitudesAprobadaPorJefatura(ModelMap model, HttpSession session,
             @RequestParam(name = "sort", required = false, defaultValue = "idSolicitud") String sortField,
@@ -299,6 +308,7 @@ public class ProfesorController {
             @RequestParam(name = "page", required = false, defaultValue = "0") int page,
             @RequestParam(name = "size", required = false, defaultValue = "5") int size) throws DangerException {
         Usuario usuario = (Usuario) session.getAttribute("usuario");
+        // SI NO ESTAS LOGEADO Y CON EL ROL CORRECTO SALTA EXCEPCION
         if (usuario == null || usuario.getRol() != RolUsuario.PROFESOR) {
             PRG.error("No tienes los privilegios necesarios para realizar esta accion.");
         } else {
@@ -353,6 +363,7 @@ public class ProfesorController {
         return "_t/frame";
     }
 
+    // ENVIO DEL PDF A DIRECCION UNA VEZ APROBADA POR JEFATURA
     @PostMapping("/solicitudesAprobadaPorJefatura")
     public String solicitudesAprobadaPorJefatura(HttpServletResponse response,
             HttpSession session,
@@ -398,6 +409,7 @@ public class ProfesorController {
         return "redirect: ../";
     }
 
+    // SOLICITUDES DESPUES DE SER FIRMADAS POR DIRECCION Y YA ESTAR FINALIZADAS
     @GetMapping("/solicitudesFinalizadasProfesor")
     public String solicitudesFinalizadasProfesor(ModelMap model, HttpSession session,
             @RequestParam(name = "sort", required = false, defaultValue = "idSolicitud") String sortField,
@@ -405,6 +417,7 @@ public class ProfesorController {
             @RequestParam(name = "page", required = false, defaultValue = "0") int page,
             @RequestParam(name = "size", required = false, defaultValue = "5") int size) throws DangerException {
         Usuario usuario = (Usuario) session.getAttribute("usuario");
+        // SI NO ESTAS LOGEADO Y CON EL ROL CORRECTO SALTA EXCEPCION
         if (usuario == null || usuario.getRol() != RolUsuario.PROFESOR) {
             PRG.error("No tienes los privilegios necesarios para realizar esta accion.");
         }
@@ -463,6 +476,7 @@ public class ProfesorController {
         return "_t/frame";
     }
 
+    // VISTA DE TODAS LAS SOLICITUDES INVOLUCRADAS DEL USUARIO DE PROFESOR INICIADO
     @GetMapping("/todasSolicitudesJefaturaProfesor")
     public String todasSolicitudesJefaturaProfesor(ModelMap model, HttpSession session,
             @RequestParam(name = "sort", required = false, defaultValue = "idSolicitud") String sortField,
@@ -470,6 +484,7 @@ public class ProfesorController {
             @RequestParam(name = "page", required = false, defaultValue = "0") int page,
             @RequestParam(name = "size", required = false, defaultValue = "5") int size) throws DangerException {
         Usuario usuario = (Usuario) session.getAttribute("usuario");
+        // SI NO ESTAS LOGEADO Y CON EL ROL CORRECTO SALTA EXCEPCION
         if (usuario == null || usuario.getRol() != RolUsuario.PROFESOR) {
             PRG.error("No tienes los privilegios necesarios para realizar esta accion.");
         }

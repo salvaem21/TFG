@@ -13,6 +13,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class Mensaje {
+    //CLASE MENSAJE CON DATOS COMO REMITENTE, DESTINATARIO, SOLICITUD Y NOVEDAD PARA SABER QUIEN INTERVIENE
+    //Y QUIEN TIENE UNA SOLICITUD CONCRETAMENTE (ESTA HECHO PARA LIBERAR UN POCO DE ESPACIO EN LA TABLA SOLICITUD)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

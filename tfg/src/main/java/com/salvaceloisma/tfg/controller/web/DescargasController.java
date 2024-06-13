@@ -27,11 +27,14 @@ public class DescargasController {
     @Autowired
     private SolicitudService solicitudService;
 
+    // DESCARGA LA SOLICITUD APROBADA POR JEFATURA CORRESPONDIENTE AL ID DE LA
+    // SOLICITUD SELECCIONADA
     @GetMapping("/descargarSolicitudAprobadaJefatura/{idSolicitud}")
     public void descargarSolicitudAprobadaJefatura(@PathVariable String idSolicitud, HttpSession session,
             HttpServletResponse response)
             throws IOException, DangerException {
         Usuario usuario = (Usuario) session.getAttribute("usuario");
+        // SI NO ESTAS LOGEADO Y CON EL ROL CORRECTO SALTA EXCEPCION
         if (usuario == null) {
             PRG.error("No tienes los privilegios necesarios para realizar esta accion.");
         }
@@ -52,11 +55,14 @@ public class DescargasController {
         }
     }
 
+    // DESCARGA LA SOLICITUD FRIMADA POR LA EMPRESA CORRESPONDIENTE AL ID DE LA
+    // SOLICITUD SELECCIONADA
     @GetMapping("/descargarSolicitudFirmadaEmpresa/{idSolicitud}")
     public void descargarSolicitudFirmadaEmpresa(@PathVariable String idSolicitud, HttpSession session,
             HttpServletResponse response)
             throws IOException, DangerException {
         Usuario usuario = (Usuario) session.getAttribute("usuario");
+        // SI NO ESTAS LOGEADO Y CON EL ROL CORRECTO SALTA EXCEPCION
         if (usuario == null) {
             PRG.error("No tienes los privilegios necesarios para realizar esta accion.");
         }
@@ -76,11 +82,13 @@ public class DescargasController {
         }
     }
 
+    // DESCARGA LA SOLICITUD FIRMADA POR DIRECCION CORRESPONDIENTE AL ID DE LA SOLICITUD SELECCIONADA
     @GetMapping("/descargarSolicitudFirmadaDireccion/{idSolicitud}")
     public void descargarSolicitudFirmadaDireccion(@PathVariable String idSolicitud, HttpSession session,
             HttpServletResponse response)
             throws IOException, DangerException {
         Usuario usuario = (Usuario) session.getAttribute("usuario");
+        // SI NO ESTAS LOGEADO Y CON EL ROL CORRECTO SALTA EXCEPCION
         if (usuario == null) {
             PRG.error("No tienes los privilegios necesarios para realizar esta accion.");
         }

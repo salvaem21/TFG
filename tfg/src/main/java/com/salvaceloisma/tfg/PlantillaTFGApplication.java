@@ -16,6 +16,7 @@ public class PlantillaTFGApplication {
         SpringApplication.run(PlantillaTFGApplication.class, args);
     }
 
+    // CREACION DE 4 USUARIOS BASE AL INICIAR LA APLICACION Y SI ESTA VACIO
     @Bean
     CommandLineRunner initDatabase(UsuarioService repository) {
         return args -> {

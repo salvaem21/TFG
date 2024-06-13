@@ -1,5 +1,6 @@
 package com.salvaceloisma.tfg.enumerados;
 
+//ENUMERADO PARA LOS DISTINTOS ESTADOS Y PODER DIFERENCIAR DONDE ESTA CADA SOLICITUD
 public enum EstadoSolicitud {
     PENDIENTE_FIRMA_JEFATURA,
     RECHAZADO_JEFATURA,

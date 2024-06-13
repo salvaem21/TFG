@@ -24,7 +24,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class Solicitud {
-
+    //CLASE SOLICITUD CON TODOS LOS DATOS CORRESPONDIENTES A ELLA, ADEMAS DE RUTAS PARA PODER GUARDAR
+    //Y DESCARGAR PDFs
     @Id
     @Column(name = "id_solicitud")
     private String idSolicitud;

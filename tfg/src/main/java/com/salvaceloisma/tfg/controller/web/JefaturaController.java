@@ -61,14 +61,15 @@ public class JefaturaController {
     @Autowired
     private ArchivoServiceImpl archivoServiceImpl;
 
+    // VISTA DE SOLICITUDES PENDIENTES DE ACEPTAR POR JEFATURA
     @GetMapping("/solicitudesPendientesJefatura")
     public String solicitudesPendientesJefatura(Model model, HttpSession session,
             @RequestParam(name = "sort", required = false, defaultValue = "idSolicitud") String sortField,
             @RequestParam(name = "dir", required = false, defaultValue = "asc") String sortDir,
             @RequestParam(name = "page", required = false, defaultValue = "0") int page,
             @RequestParam(name = "size", required = false, defaultValue = "5") int size) throws DangerException {
-
         Usuario usuario = (Usuario) session.getAttribute("usuario");
+        // SI NO ESTAS LOGEADO Y CON EL ROL CORRECTO SALTA EXCEPCION
         if (usuario == null || usuario.getRol() != RolUsuario.JEFATURA) {
             PRG.error("No tienes los privilegios necesarios para realizar esta accion.");
         } else {
@@ -124,12 +125,13 @@ public class JefaturaController {
         return "_t/frame";
     }
 
+    // VISTA DE CORRECCION DE LA SOLICITUD SELECCIONADA
     @GetMapping("/correccionSolicitudPendienteJefatura")
     public String correccionSolicitudPendienteJefatura(
             @RequestParam("id") String idSolicitud, HttpSession session,
             ModelMap m) throws DangerException {
-
         Usuario usuario = (Usuario) session.getAttribute("usuario");
+        // SI NO ESTAS LOGEADO Y CON EL ROL CORRECTO SALTA EXCEPCION
         if (usuario == null || usuario.getRol() != RolUsuario.JEFATURA) {
             PRG.error("No tienes los privilegios necesarios para realizar esta accion.");
         }
@@ -145,6 +147,8 @@ public class JefaturaController {
         return "_t/frame";
     }
 
+    // RELLENA LAS OBSERVACIONES PORQUE POR ALGUN MOTIVO ESE PDF NO ES CORRECTO O NO
+    // SE PUEDE FIRMAR
     @PostMapping("/solicitudRechazadaJefatura")
     public String solicitudRechazadaJefatura(HttpServletResponse response, HttpSession session,
             @RequestParam("idSolicitud") String idSolicitud,
@@ -173,6 +177,7 @@ public class JefaturaController {
         return "redirect: ../";
     }
 
+    // INCLUYE EL PDF DE JEFATURA PARA INICIAR ASI LA SOLICITUD
     @PostMapping("/solicitudAceptadaJefatura")
     public String solicitudAceptadaJefatura(HttpServletResponse response, HttpSession session,
             @RequestParam("idSolicitud") String idSolicitud,
@@ -265,6 +270,7 @@ public class JefaturaController {
         return "redirect: ../";
     }
 
+    // VISTA DE TODAS LAS SOLICITUDES INVOLUCRADAS DEL USUARIO DE JEFATURA INICIADO
     @GetMapping("/todasSolicitudesJefatura")
     public String todasSolicitudesJefatura(ModelMap model, HttpSession session,
             @RequestParam(name = "sort", required = false, defaultValue = "idSolicitud") String sortField,
@@ -272,6 +278,7 @@ public class JefaturaController {
             @RequestParam(name = "page", required = false, defaultValue = "0") int page,
             @RequestParam(name = "size", required = false, defaultValue = "5") int size) throws DangerException {
         Usuario usuario = (Usuario) session.getAttribute("usuario");
+        // SI NO ESTAS LOGEADO Y CON EL ROL CORRECTO SALTA EXCEPCION
         if (usuario == null || usuario.getRol() != RolUsuario.JEFATURA) {
             PRG.error("No tienes los privilegios necesarios para realizar esta accion.");
         }
@@ -327,6 +334,7 @@ public class JefaturaController {
         return "_t/frame";
     }
 
+    // ERROR SI NO ANCLAS PDF NI RELLENAS OBSERVACIONES
     @PostMapping("/errorSinSeleccionarJeftura")
     public void errorSinSeleccionarJefatura()
             throws IOException, DangerException {

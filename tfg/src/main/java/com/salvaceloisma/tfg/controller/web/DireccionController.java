@@ -41,6 +41,7 @@ public class DireccionController {
     @Autowired
     private ArchivoServiceImpl archivoServiceImpl;
 
+    // VISTA DE SOLICITUDES PENDIENTES DE FIRMA POR DIRECCION
     @GetMapping("/solicitudesPendientesDireccion")
     public String solicitudesPendientesDireccion(ModelMap model, HttpSession session,
             @RequestParam(name = "sort", required = false, defaultValue = "idSolicitud") String sortField,
@@ -48,6 +49,7 @@ public class DireccionController {
             @RequestParam(name = "page", required = false, defaultValue = "0") int page,
             @RequestParam(name = "size", required = false, defaultValue = "5") int size) throws DangerException {
         Usuario usuario = (Usuario) session.getAttribute("usuario");
+        // SI NO ESTAS LOGEADO Y CON EL ROL CORRECTO SALTA EXCEPCION
         if (usuario == null || usuario.getRol() != RolUsuario.DIRECTOR) {
             PRG.error("No tienes los privilegios necesarios para realizar esta accion.");
         } else {
@@ -96,11 +98,13 @@ public class DireccionController {
         return "_t/frame";
     }
 
+    // VISTA DE SOLICITUD GESTIONADA
     @GetMapping("/solicitudPendienteDireccionIndividual")
     public String solicitudPendienteDireccionIndividual(ModelMap m, HttpSession session,
             @RequestParam("id") String idSolicitud)
             throws DangerException {
         Usuario usuario = (Usuario) session.getAttribute("usuario");
+        // SI NO ESTAS LOGEADO Y CON EL ROL CORRECTO SALTA EXCEPCION
         if (usuario == null || usuario.getRol() != RolUsuario.DIRECTOR) {
             PRG.error("No tienes los privilegios necesarios para realizar esta accion.");
         }
@@ -112,6 +116,7 @@ public class DireccionController {
         return "_t/frame";
     }
 
+    // INCLUYE EL PDF FIRMADO POR DIRECCION PARA FINALIZAR ASI LA SOLICITUD
     @PostMapping("/solicitudAceptadaDireccion")
     public String solicitudAceptadaDireccion(
             @RequestParam("idSolicitud") String idSolicitud,
@@ -150,6 +155,7 @@ public class DireccionController {
         return "redirect: ../";
     }
 
+    // RELLENA LAS OBSERVACIONES PORQUE POR ALGUN MOTIVO ESE PDF NO ES CORRECTO O NO SE PUEDE FIRMAR
     @PostMapping("/solicitudRechazadaDireccion")
     public String solicitudRechazadaDireccion(
             @RequestParam("idSolicitud") String idSolicitud,
@@ -176,6 +182,7 @@ public class DireccionController {
         return "redirect:/";
     }
 
+    // ERROR SI NO ANCLAS PDF NI RELLENAS OBSERVACIONES
     @PostMapping("/errorSinSeleccionarDireccion")
     public void errorSinSeleccionarDireccion()
             throws IOException, DangerException {

@@ -24,10 +24,12 @@ public class AlumnoController {
     @Autowired
     private AlumnoService alumnoService;
 
+    //CARGAR LA VISTA DE ALUMNOS
     @GetMapping("/gestionarAlumnos")
     public String gestionarAlumnos(
             ModelMap m, HttpSession session) throws DangerException {
         Usuario usuario = (Usuario) session.getAttribute("usuario");
+        //SI NO ESTAS LOGEADO Y CON EL ROL CORRECTO SALTA EXCEPCION
         if (usuario == null || (usuario.getRol() != RolUsuario.ADMIN && usuario.getRol() != RolUsuario.DIRECTOR)) {
             PRG.error("No tienes los privilegios necesarios para realizar esta accion.");
         }
@@ -36,10 +38,12 @@ public class AlumnoController {
         return "_t/frame";
     }
 
+    //VISTA DE ALUMNOS
     @GetMapping("verAlumnos")
     public String verAlumnos(
             ModelMap m, HttpSession session) throws DangerException {
         Usuario usuario = (Usuario) session.getAttribute("usuario");
+        //SI NO ESTAS LOGEADO Y CON EL ROL CORRECTO SALTA EXCEPCION
         if (usuario == null || (usuario.getRol() != RolUsuario.ADMIN && usuario.getRol() != RolUsuario.DIRECTOR)) {
             PRG.error("No tienes los privilegios necesarios para realizar esta accion.");
         }
@@ -48,11 +52,13 @@ public class AlumnoController {
         return "_t/frame";
     }
 
+    //VISTA PARA ACTUALIZAR ALUMNOS
     @GetMapping("actualizarAlumno")
     public String actualizarAlumno(
             @RequestParam("id") Long idAlumno, HttpSession session,
             ModelMap m) throws DangerException {
         Usuario usuario = (Usuario) session.getAttribute("usuario");
+        //SI NO ESTAS LOGEADO Y CON EL ROL CORRECTO SALTA EXCEPCION
         if (usuario == null || (usuario.getRol() != RolUsuario.ADMIN && usuario.getRol() != RolUsuario.DIRECTOR)) {
             PRG.error("No tienes los privilegios necesarios para realizar esta accion.");
         }
@@ -61,6 +67,7 @@ public class AlumnoController {
         return "_t/frame";
     }
 
+    //MODIFICACION DE LA BASE DE DATOS PARA ACTUALIZAR LOS DATOS DEL ALUMNO
     @PostMapping("actualizarAlumno")
     public String actualizarAlumnoPost(
             @RequestParam("idAlumno") Long idAlumno,
@@ -76,6 +83,7 @@ public class AlumnoController {
         return "redirect:/alumno/verAlumnos";
     }
 
+    //MODIFICACION DE LA BASE DE DATOS PARA BORRAR AL ALUMNO
     @PostMapping("borrarAlumno")
     public String borrarAlumno(
             @RequestParam("id") Long idAlumno) throws DangerException, InfoException {

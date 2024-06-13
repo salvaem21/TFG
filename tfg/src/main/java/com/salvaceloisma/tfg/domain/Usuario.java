@@ -21,7 +21,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class Usuario {
-
+    //CLASE USUARIO CON CORREOS UNICOS Y ROLES PARA TENER DISTINTOS INICIOS DE SESION
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
